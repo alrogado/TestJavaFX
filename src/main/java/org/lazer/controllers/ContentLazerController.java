@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Skin;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -32,6 +33,7 @@ import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.lazer.HelloGlyphFont;
+import org.lazer.LazerTileSkin;
 import org.reactfx.EventStreams;
 
 import javax.annotation.PostConstruct;
@@ -77,14 +79,16 @@ public class ContentLazerController {
     @FXML
     private JFXDialog dialog;
 
-
-
     static {
         InputStream devicons = ContentLazerController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
         GlyphFontRegistry.register("devicons", devicons, 16);
     }
 
     private GlyphFont devicons = GlyphFontRegistry.font("devicons");
+
+    Tile personalTile;
+    LazerTileSkin personalSkin;
+
     /**
      * init fxml when loaded.
      */
@@ -93,7 +97,6 @@ public class ContentLazerController {
 
         root.getChildren().remove(dialog);
 
-        //Glyph effectGlyph3 = devicons.create('\ue60b')
         Glyph effectGlyph3 = devicons.create(Devicons.ANDROID.getCode())
                 .color(Color.BLUE)
                 .size(48)
@@ -106,11 +109,15 @@ public class ContentLazerController {
         fontIcon.setIconSize(48);
         fontIcon.setIconColor(Color.BLUE);
         Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
-        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, stops);
         fontIcon.setFill(lg1);
 
         leftButton.setGraphic(fontIcon);
         topButton.setGraphic(new FontIcon(Typicons.BOOK));
+        //topButton.setText("fuentes con gradiente");
+        topButton.setTextFill(lg1);
+        //topButton.setRipplerFill(lg1);
+
 
 
 
@@ -182,6 +189,7 @@ public class ContentLazerController {
                 .unit("\u00B0C")
                 .build();
 
+
         Tile sliderTile = TileBuilder.create()
                 .skinType(Tile.SkinType.SLIDER)
                 //.prefSize(TILE_WIDTH, TILE_HEIGHT)
@@ -202,7 +210,7 @@ public class ContentLazerController {
         Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
         flowGridPaneInternal.setBackground(whiteBckgr);
         flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
-        Tile tile = TileBuilder.create().skinType(Tile.SkinType.SPARK_LINE)
+        Tile tile = TileBuilder.create().skinType(Tile.SkinType.CUSTOM)
                 .minValue(0)
                 .maxValue(30)
                 .title("Data")
@@ -213,8 +221,26 @@ public class ContentLazerController {
                 .autoReferenceValue(true)
                 .tooltipText("Aloha")
                 .build();
+
+        ;
+        personalTile= new Tile()/*{
+            protected Skin createDefaultSkin(){
+                return (personalSkin = new LazerTileSkin(personalTile));
+            }
+        }*/;
+                tile.setMinValue(0);
+                tile.setMaxValue(30);
+                tile.setTitle("Data");
+                tile.setTitleAlignment(TextAlignment.RIGHT);
+                tile.setText("Test");
+                tile.setTextVisible(false);
+                tile.setAveragingPeriod(48);
+                tile.setAutoReferenceValue(true);
+                tile.setTooltipText("Aloha");
+
+
         tile.setBackground(whiteBckgr);
-        flowGridPaneInternal.add(tile,0,0);
+        flowGridPaneInternal.add(personalTile,0,0);
         flowGridPaneInternal.add(sliderTile,1,0);
         //flowGridPaneInternal.add(clockTile,0,1);
 
