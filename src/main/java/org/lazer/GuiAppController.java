@@ -41,6 +41,7 @@ public class GuiAppController {
 
         // create the inner flow and content
         context = new ViewFlowContext();
+
         // set the default controller
         Flow dialogLazerFlowCtrl = new Flow(ContentLazerController.class);
 

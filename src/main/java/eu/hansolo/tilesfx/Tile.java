@@ -58,6 +58,8 @@ import java.util.concurrent.*;
 
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
+import static org.lazer.GuiColors.BKGCOL;
+import static org.lazer.GuiColors.FRGCOL;
 
 
 /**
@@ -127,8 +129,8 @@ public class Tile extends Control {
         }
     }
 
-    public  static final Color       BACKGROUND            = Color.GRAY;
-    public  static final Color       FOREGROUND            = Color.rgb(223, 223, 223);
+    public  static final Color       BACKGROUND            = BKGCOL;
+    public  static final Color       FOREGROUND            = FRGCOL;
     public  static final Color       GRAY                  = TileColor.GRAY.color;
     public  static final Color       RED                   = TileColor.RED.color;
     public  static final Color       LIGHT_RED             = TileColor.LIGHT_RED.color;

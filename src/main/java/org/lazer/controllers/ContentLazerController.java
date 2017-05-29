@@ -43,6 +43,8 @@ import java.time.Duration;
 import java.util.Locale;
 import java.util.Random;
 
+import static org.lazer.GuiColors.*;
+
 @ViewController(value = "/org/lazer/fxml/ui/contentLazer.fxml", title = "Material Design Example")
 public class ContentLazerController {
 
@@ -103,23 +105,20 @@ public class ContentLazerController {
                 .useGradientEffect().useHoverEffect();
 
         customButton.setGraphic(effectGlyph3);
+
+        centerButton.setTextFill(FRGCOL_FILL);
         centerButton.setGraphic(new FontIcon(Typicons.DROPBOX));
         rightButton.setGraphic(new FontIcon(Elusive.ADDRESS_BOOK));
         FontIcon fontIcon = new FontIcon(Fontelico.EMO_DEVIL);
         fontIcon.setIconSize(48);
         fontIcon.setIconColor(Color.BLUE);
-        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
-        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, stops);
-        fontIcon.setFill(lg1);
 
+        fontIcon.setFill(GRAD_FGR_BGR);
         leftButton.setGraphic(fontIcon);
         topButton.setGraphic(new FontIcon(Typicons.BOOK));
         //topButton.setText("fuentes con gradiente");
-        topButton.setTextFill(lg1);
-        //topButton.setRipplerFill(lg1);
-
-
-
+        topButton.setTextFill(GRAD_FGR_BGR);
+        //topButton.setRipplerFill(GRAD_FGR_BGR);
 
         StringProperty timestamp = new SimpleStringProperty();
         SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -222,7 +221,8 @@ public class ContentLazerController {
                 .tooltipText("Aloha")
                 .build();
 
-        ;
+
+
         personalTile= new Tile()/*{
             protected Skin createDefaultSkin(){
                 return (personalSkin = new LazerTileSkin(personalTile));

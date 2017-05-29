@@ -50,7 +50,7 @@
 }
 
 .dialog-trigger {
-    -fx-background-color: red;
+    -fx-background-color: #0091DC;
     -jfx-button-type: RAISED;
     -fx-font-size: 14.0px;
 }

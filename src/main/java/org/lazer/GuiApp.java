@@ -22,6 +22,10 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.fxmisc.cssfx.CSSFX;
@@ -67,6 +71,9 @@ public class GuiApp extends Application {
 
         JFXDecorator decorator = new JFXDecorator(stage, container.getView());
         decorator.setCustomMaximize(true);
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+
 
         Scene scene = new Scene(decorator);
         //Scene scene = new Scene(new StackPane(label = new Label()), 800, 850);
@@ -76,6 +83,13 @@ public class GuiApp extends Application {
                 getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
                 getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
         //stage.setMaxWidth(400.0);
+
+        /*Rectangle r1 = new Rectangle(0, 0, 100, 100);
+        r1.setFill(lg1);*/
+
+        scene.setFill(lg1);
+
+
         stage.setMinHeight(400.0);
         stage.setMinWidth(400.0);
         stage.setScene(scene);
