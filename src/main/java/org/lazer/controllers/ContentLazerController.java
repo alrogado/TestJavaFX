@@ -15,24 +15,19 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Skin;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.text.TextAlignment;
 import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
-import org.kordamp.ikonli.Ikonli;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.devicons.Devicons;
-import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.typicons.Typicons;
-import org.lazer.HelloGlyphFont;
+import org.kordamp.ikonli.websymbols.Websymbols;
 import org.lazer.LazerTileSkin;
 import org.reactfx.EventStreams;
 
@@ -99,23 +94,15 @@ public class ContentLazerController {
 
         root.getChildren().remove(dialog);
 
-        Glyph effectGlyph3 = devicons.create(Devicons.ANDROID.getCode())
-                .color(Color.BLUE)
-                .size(48)
-                .useGradientEffect().useHoverEffect();
-
-        customButton.setGraphic(effectGlyph3);
+        customButton.setGraphic(customizeIcon(Fontelico.EMO_BEER));
 
         centerButton.setTextFill(FRGCOL_FILL);
-        centerButton.setGraphic(new FontIcon(Typicons.DROPBOX));
-        rightButton.setGraphic(new FontIcon(Elusive.ADDRESS_BOOK));
-        FontIcon fontIcon = new FontIcon(Fontelico.EMO_DEVIL);
-        fontIcon.setIconSize(48);
-        fontIcon.setIconColor(Color.BLUE);
+        centerButton.setGraphic(customizeIcon(Fontelico.EMO_SHOOT));
+        rightButton.setGraphic(customizeIcon(Fontelico.EMO_COFFEE));
+        leftButton.setGraphic(customizeIcon(Typicons.CHEVRON_LEFT));
 
-        fontIcon.setFill(GRAD_FGR_BGR);
-        leftButton.setGraphic(fontIcon);
-        topButton.setGraphic(new FontIcon(Typicons.BOOK));
+        leftButton.setGraphic(customizeIcon(Fontelico.EMO_DEVIL));
+        topButton.setGraphic(customizeIcon(Typicons.BOOK));
         //topButton.setText("fuentes con gradiente");
         topButton.setTextFill(GRAD_FGR_BGR);
         //topButton.setRipplerFill(GRAD_FGR_BGR);
@@ -268,6 +255,14 @@ public class ContentLazerController {
             }
         };
         timer.start();
+    }
+
+    private FontIcon customizeIcon(Ikon ikon) {
+        FontIcon fontIcon = new FontIcon(ikon);
+        fontIcon.setIconSize(48);
+        fontIcon.setIconColor(Color.BLUE);
+        fontIcon.setFill(GRAD_FGR_BGR);
+        return fontIcon;
     }
 
     private void configureTilePane(FlowGridPane flowGridPane) {
