@@ -55,7 +55,7 @@ public class LazerTileSkin extends TileSkin {
         pane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(PREFERRED_WIDTH * 0.025), new BorderWidths(tile.getBorderWidth()))));
         pane.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(PREFERRED_WIDTH * 0.025), Insets.EMPTY)));
 
-        Tooltip.install(pane, tooltip);
+        //Tooltip.install(pane, tooltip);
 
         getChildren().setAll(pane);
 

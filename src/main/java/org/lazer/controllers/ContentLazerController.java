@@ -189,7 +189,7 @@ public class ContentLazerController {
         flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
         configureTilePane(flowGridPaneInternal);
         flowGridPaneInternal.setCenterShape(true);
-        flowGridPaneInternal.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
         flowGridPaneInternal.setBackground(whiteBckgr);
         flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
@@ -212,15 +212,15 @@ public class ContentLazerController {
                 return (personalSkin = new LazerTileSkin(personalTile));
             }
         }*/;
-        tile.setMinValue(0);
-        tile.setMaxValue(30);
-        tile.setTitle("Data");
-        tile.setTitleAlignment(TextAlignment.RIGHT);
-        tile.setText("Test");
-        tile.setTextVisible(false);
-        tile.setAveragingPeriod(48);
-        tile.setAutoReferenceValue(true);
-        tile.setTooltipText("Aloha");
+        personalTile.setMinValue(0);
+        personalTile.setMaxValue(30);
+        personalTile.setTitle("Data");
+        personalTile.setTitleAlignment(TextAlignment.RIGHT);
+        personalTile.setText("Test");
+        personalTile.setTextVisible(false);
+        personalTile.setAveragingPeriod(48);
+        personalTile.setAutoReferenceValue(true);
+        personalTile.setTooltipText("Aloha");
 
 
         tile.setBackground(whiteBckgr);
