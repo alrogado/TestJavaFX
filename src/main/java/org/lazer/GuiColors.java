@@ -19,5 +19,5 @@ public class GuiColors {
     public static Color FRGCOL_FILL = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.85);
 
     public static Stop[] stops = new Stop[] { new Stop(0, FRGCOL), new Stop(1, BKGCOL)};
-    public static LinearGradient GRAD_FGR_BGR = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, stops);
+    public static LinearGradient ICON_GRAD_FGR_BGR = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, stops);
 }

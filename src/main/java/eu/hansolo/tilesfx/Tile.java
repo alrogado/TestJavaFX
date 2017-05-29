@@ -56,6 +56,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static eu.hansolo.tilesfx.Tile.TileColor.TILEFRGCOL;
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
 import static org.lazer.GuiColors.BKGCOL;
@@ -94,6 +95,7 @@ public class Tile extends Control {
         }
     }
     public enum TileColor {
+        TILEFRGCOL(Color.rgb(new Double(FRGCOL.getRed()).intValue(),new Double(FRGCOL.getGreen()).intValue(),new Double(FRGCOL.getBlue()).intValue()),"foregourd"),
         GRAY(Color.rgb(139,144,146), "gray"),
         RED(Color.rgb(229, 80, 76), "red"),
         LIGHT_RED(Color.rgb(255, 84, 56), "light-red"),
@@ -523,7 +525,7 @@ public class Tile extends Control {
         alarmsToRemove                      = new ArrayList<>();
         barChartItems                       = FXCollections.observableArrayList();
         track                               = new ArrayList<>();
-        _trackColor                         = TileColor.BLUE;
+        _trackColor                         = TILEFRGCOL;
         _mapProvider                        = MapProvider.BW;
         leaderBoardItems                    = new ArrayList<>();
         gradientStops                       = new ArrayList<>(4);

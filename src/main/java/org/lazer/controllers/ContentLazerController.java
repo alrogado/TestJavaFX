@@ -19,15 +19,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
-import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.typicons.Typicons;
-import org.kordamp.ikonli.websymbols.Websymbols;
 import org.lazer.LazerTileSkin;
 import org.reactfx.EventStreams;
 
@@ -104,8 +101,8 @@ public class ContentLazerController {
         leftButton.setGraphic(customizeIcon(Fontelico.EMO_DEVIL));
         topButton.setGraphic(customizeIcon(Typicons.BOOK));
         //topButton.setText("fuentes con gradiente");
-        topButton.setTextFill(GRAD_FGR_BGR);
-        //topButton.setRipplerFill(GRAD_FGR_BGR);
+        topButton.setTextFill(ICON_GRAD_FGR_BGR);
+        //topButton.setRipplerFill(ICON_GRAD_FGR_BGR);
 
         StringProperty timestamp = new SimpleStringProperty();
         SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -261,7 +258,7 @@ public class ContentLazerController {
         FontIcon fontIcon = new FontIcon(ikon);
         fontIcon.setIconSize(48);
         fontIcon.setIconColor(Color.BLUE);
-        fontIcon.setFill(GRAD_FGR_BGR);
+        fontIcon.setFill(ICON_GRAD_FGR_BGR);
         return fontIcon;
     }
 
