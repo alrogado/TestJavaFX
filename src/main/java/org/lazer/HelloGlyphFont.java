@@ -49,8 +49,6 @@ public class HelloGlyphFont extends Application {
         // Register a custom default font
         InputStream resourceAsStream = HelloGlyphFont.class.getResourceAsStream("/fonts/icomoon.ttf");
         GlyphFontRegistry.register("icomoon", resourceAsStream, 16);
-        //home/alrogado/.m2/repository/org/kordamp/ikonli/ikonli-devicons-pack/1.9.0/ikonli-devicons-pack-1.9.0.jar!/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf
-        GlyphFontRegistry.register("icomoon", resourceAsStream, 16);
         InputStream devicons = HelloGlyphFont.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
         GlyphFontRegistry.register("devicons", devicons, 16);
     }
@@ -114,7 +112,7 @@ public class HelloGlyphFont extends Application {
                 new Button("tres", effectGlyph2));
         root.getChildren().add(toolbar);
 
-        Glyph effectGlyph3 = devicons.create('\ue60b')
+        Glyph deviIcon = devicons.create('\ue60b')
                 .color(Color.BLUE)
                 .size(48)
                 .useGradientEffect().useHoverEffect();
@@ -122,7 +120,7 @@ public class HelloGlyphFont extends Application {
         toolbar = new ToolBar(
                 // Since we have a custom font without named characters,
                 // we have to use unicode character codes for the icons:
-                new Button("la fuente que se quiera con el color que se quiera", effectGlyph3));
+                new Button("la fuente que se quiera con el color que se quiera", deviIcon));
         root.getChildren().add(toolbar);
         
         GridPane fontDemo = new GridPane();

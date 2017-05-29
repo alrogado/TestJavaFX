@@ -18,6 +18,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.TextAlignment;
 import org.controlsfx.glyphfont.Glyph;
 import org.controlsfx.glyphfont.GlyphFont;
@@ -27,6 +30,7 @@ import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.typicons.Typicons;
 import org.lazer.HelloGlyphFont;
 import org.reactfx.EventStreams;
 
@@ -74,18 +78,13 @@ public class ContentLazerController {
     private JFXDialog dialog;
 
 
+
     static {
         InputStream devicons = ContentLazerController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
         GlyphFontRegistry.register("devicons", devicons, 16);
-        InputStream fontelicoicons = ContentLazerController.class.getResourceAsStream("/META-INF/resources/fontelico/0.0/fonts/fontelico.ttf");
-        GlyphFontRegistry.register("fontelicoicons", fontelicoicons, 16);
-        InputStream elusiveicons = ContentLazerController.class.getResourceAsStream("/META-INF/resources/elusive/2.0/fonts/Elusive-Icons.ttf");
-        GlyphFontRegistry.register("elusiveicons", elusiveicons, 16);
     }
 
     private GlyphFont devicons = GlyphFontRegistry.font("devicons");
-    private GlyphFont fontelicoicons = GlyphFontRegistry.font("fontelicoicons");
-    private GlyphFont elusiveicons = GlyphFontRegistry.font("elusiveicons");
     /**
      * init fxml when loaded.
      */
@@ -100,20 +99,18 @@ public class ContentLazerController {
                 .size(48)
                 .useGradientEffect().useHoverEffect();
 
-        Glyph fontelicoDevilIconGlypth = fontelicoicons.create(Fontelico.EMO_DEVIL.getCode())
-                .color(Color.BLUE)
-                .size(48)
-                .useGradientEffect().useHoverEffect();
-        Glyph elusiveIconGlypth = fontelicoicons.create(Elusive.ADDRESS_BOOK.getCode())
-                .color(Color.BLUE)
-                .size(48)
-                .useGradientEffect().useHoverEffect();
-
         customButton.setGraphic(effectGlyph3);
-        centerButton.setGraphic(fontelicoDevilIconGlypth);
+        centerButton.setGraphic(new FontIcon(Typicons.DROPBOX));
         rightButton.setGraphic(new FontIcon(Elusive.ADDRESS_BOOK));
-        leftButton.setGraphic(new FontIcon(Fontelico.EMO_DEVIL));
-        topButton.setGraphic(elusiveIconGlypth);
+        FontIcon fontIcon = new FontIcon(Fontelico.EMO_DEVIL);
+        fontIcon.setIconSize(48);
+        fontIcon.setIconColor(Color.BLUE);
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.RED)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+        fontIcon.setFill(lg1);
+
+        leftButton.setGraphic(fontIcon);
+        topButton.setGraphic(new FontIcon(Typicons.BOOK));
 
 
 
