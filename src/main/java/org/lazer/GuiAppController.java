@@ -48,7 +48,11 @@ public class GuiAppController {
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", dialogLazerFlowCtrl);
         final Duration containerAnimationDuration = Duration.millis(3200);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        try {
+            drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        }catch(Exception e){
+            //e.printStackTrace();
+        }
         context.register("ContentPane", drawer.getContent().get(0));
 
         /*// side controller will add links to the content flow

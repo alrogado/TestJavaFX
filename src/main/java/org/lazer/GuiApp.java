@@ -62,7 +62,7 @@ public class GuiApp extends Application {
         try {
             handler.start(container);
         } catch (FlowException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         JFXDecorator decorator = new JFXDecorator(stage, container.getView());
