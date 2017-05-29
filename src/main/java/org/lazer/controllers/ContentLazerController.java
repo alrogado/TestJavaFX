@@ -116,9 +116,7 @@ public class ContentLazerController {
         fontIcon.setFill(GRAD_FGR_BGR);
         leftButton.setGraphic(fontIcon);
         topButton.setGraphic(new FontIcon(Typicons.BOOK));
-        //topButton.setText("fuentes con gradiente");
         topButton.setTextFill(GRAD_FGR_BGR);
-        //topButton.setRipplerFill(GRAD_FGR_BGR);
 
         StringProperty timestamp = new SimpleStringProperty();
         SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
@@ -205,8 +203,8 @@ public class ContentLazerController {
         flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
         configureTilePane(flowGridPaneInternal);
         flowGridPaneInternal.setCenterShape(true);
-        flowGridPaneInternal.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
+        flowGridPaneInternal.setBorder(new Border(new BorderStroke(BKGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        Background whiteBckgr = new Background(new BackgroundFill(BKGCOL, CornerRadii.EMPTY, Insets.EMPTY));
         flowGridPaneInternal.setBackground(whiteBckgr);
         flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
         Tile tile = TileBuilder.create().skinType(Tile.SkinType.CUSTOM)
@@ -228,15 +226,15 @@ public class ContentLazerController {
                 return (personalSkin = new LazerTileSkin(personalTile));
             }
         }*/;
-                tile.setMinValue(0);
-                tile.setMaxValue(30);
-                tile.setTitle("Data");
-                tile.setTitleAlignment(TextAlignment.RIGHT);
-                tile.setText("Test");
-                tile.setTextVisible(false);
-                tile.setAveragingPeriod(48);
-                tile.setAutoReferenceValue(true);
-                tile.setTooltipText("Aloha");
+        tile.setMinValue(0);
+        tile.setMaxValue(30);
+        tile.setTitle("Data");
+        tile.setTitleAlignment(TextAlignment.RIGHT);
+        tile.setText("Test");
+        tile.setTextVisible(false);
+        tile.setAveragingPeriod(48);
+        tile.setAutoReferenceValue(true);
+        tile.setTooltipText("Aloha");
 
 
         tile.setBackground(whiteBckgr);
