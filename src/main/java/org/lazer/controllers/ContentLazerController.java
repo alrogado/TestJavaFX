@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialog.DialogTransition;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.TimeSection;
+import eu.hansolo.tilesfx.TimeSectionBuilder;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -32,6 +34,7 @@ import javax.annotation.PostConstruct;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Random;
 
@@ -214,16 +217,15 @@ public class ContentLazerController {
         }*/;
         personalTile.setMinValue(0);
         personalTile.setMaxValue(30);
-        personalTile.setTitle("Data");
+        personalTile.setTitle("Personal");
         personalTile.setTitleAlignment(TextAlignment.RIGHT);
-        personalTile.setText("Test");
+        personalTile.setText("Sin nada");
         personalTile.setTextVisible(false);
         personalTile.setAveragingPeriod(48);
         personalTile.setAutoReferenceValue(true);
         personalTile.setTooltipText("Aloha");
 
 
-        tile.setBackground(whiteBckgr);
         flowGridPaneInternal.add(personalTile,0,0);
         flowGridPaneInternal.add(sliderTile,1,0);
         //flowGridPaneInternal.add(clockTile,0,1);
@@ -234,7 +236,28 @@ public class ContentLazerController {
         flowGridPane.setNoOfColsAndNoOfRows(2,2);
         //flowGridPane.add(flowGridPaneInternal,0,1);
         flowGridPane.add(gaugeTile,1,0);
-        flowGridPane.add(plusMinusTile,1,0);
+
+        TimeSection timeSection = TimeSectionBuilder.create()
+                .start(LocalTime.now().plusSeconds(20))
+                .stop(LocalTime.now().plusHours(1))
+                //.days(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
+                .color(Tile.GRAY)
+                .highlightColor(Tile.RED)
+                .build();
+
+        timeSection.setOnTimeSectionEntered(e -> System.out.println("Section ACTIVE"));
+        timeSection.setOnTimeSectionLeft(e -> System.out.println("Section INACTIVE"));
+        Tile timerControlTile = TileBuilder.create()
+                .skinType(Tile.SkinType.TIMER_CONTROL)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Control de tiempos, zona gris")
+                .text("Controla cuando entra y sale de la zona de tiempos")
+                .secondsVisible(true)
+                .dateVisible(true)
+                .timeSections(timeSection)
+                .running(true)
+                .build();
+        flowGridPane.add(timerControlTile,1,0);
 
         //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
 

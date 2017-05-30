@@ -13,6 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.lazer.controllers.ContentLazerController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
@@ -20,6 +22,8 @@ import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT
 
 @ViewController(value = "fxml/lazer-f.fxml", title = "Lazer Application")
 public class GuiAppController {
+
+    private static Logger logger = LoggerFactory.getLogger(GuiAppController.class);
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -52,7 +56,7 @@ public class GuiAppController {
         try {
             drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
         }catch(Exception e){
-            //e.printStackTrace();
+            logger.error("",e);
         }
         context.register("ContentPane", drawer.getContent().get(0));
 

@@ -30,6 +30,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.fxmisc.cssfx.CSSFX;
 import org.reactfx.EventStreams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -38,6 +40,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class GuiApp extends Application {
+
+    private static Logger logger = LoggerFactory.getLogger(GuiApp.class);
 
     @FXMLViewFlowContext
     private ViewFlowContext ViewFlowContext = null;
@@ -66,7 +70,7 @@ public class GuiApp extends Application {
         try {
             handler.start(container);
         } catch (FlowException e) {
-            //e.printStackTrace();
+            logger.error("",e);
         }
 
         JFXDecorator decorator = new JFXDecorator(stage, container.getView());
