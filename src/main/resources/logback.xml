@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./../log/lazer-gui.log</file>
+        <file>./log/lazer-gui.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>./../log/lazer-gui.%d{yyyy-MM-dd}.log</fileNamePattern>
             <totalSizeCap>1mb</totalSizeCap>
@@ -17,7 +17,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <!--<priority value="OFF"/>-->
         <appender-ref ref="file"/>
         <appender-ref ref="standardOut"/>
