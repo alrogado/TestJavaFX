@@ -94,6 +94,147 @@ public class ContentLazerController {
 
         root.getChildren().remove(dialog);
 
+        configureButtonsPane();
+
+        bindingProps();
+
+        configureFlowGridPaneInternal();
+
+        Tile gaugeTile = TileBuilder.create()
+                .skinType(Tile.SkinType.GAUGE)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Tile ")
+                .unit("V")
+                .threshold(75)
+                .build();
+
+
+
+        configureTilePane(flowGridPane);
+        flowGridPane.setNoOfColsAndNoOfRows(2,2);
+        //flowGridPane.add(flowGridPaneInternal,0,1);
+        flowGridPane.add(gaugeTile,1,0);
+
+        TimeSection timeSection = TimeSectionBuilder.create()
+                .start(LocalTime.now().plusSeconds(20))
+                .stop(LocalTime.now().plusHours(1))
+                //.days(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
+                .color(Tile.GRAY)
+                .highlightColor(Tile.RED)
+                .build();
+
+        timeSection.setOnTimeSectionEntered(e -> System.out.println("Section ACTIVE"));
+        timeSection.setOnTimeSectionLeft(e -> System.out.println("Section INACTIVE"));
+        Tile timerControlTile = TileBuilder.create()
+                .skinType(Tile.SkinType.TIMER_CONTROL)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Control de tiempos, zona gris")
+                .text("Controla cuando entra y sale de la zona de tiempos")
+                .secondsVisible(true)
+                .dateVisible(true)
+                .timeSections(timeSection)
+                .running(true)
+                .build();
+        flowGridPane.add(timerControlTile,1,0);
+
+        //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
+
+        //root.getChildren().add(pane);
+
+        this.value = new SimpleDoubleProperty(0);
+        lastTimerCall = System.nanoTime();
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (now > lastTimerCall + 3_500_000_000L) {
+                    gaugeTile.setValue(RND.nextDouble() * gaugeTile.getRange() * 1.5 + gaugeTile.getMinValue());
+                    lastTimerCall = now;
+                }
+            }
+        };
+        timer.start();
+    }
+
+    private void configureFlowGridPaneInternal() {
+        Tile clockTile = TileBuilder.create()
+                .skinType(Tile.SkinType.CLOCK)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Tile Reloj")
+                //.text("Whatever text")
+                .dateVisible(true)
+                .locale(new Locale("es","ES"))
+                .running(true)
+                .build();
+
+
+        Tile plusMinusTile = TileBuilder.create()
+                .skinType(Tile.SkinType.PLUS_MINUS)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .maxValue(30)
+                .minValue(0)
+                .title("Suma y resta")
+                //.text("Whatever text")
+                .description("Test")
+                .unit("\u00B0C")
+                .build();
+
+
+        Tile sliderTile = TileBuilder.create()
+                .skinType(Tile.SkinType.SLIDER)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Slider Tile")
+                .text("Whatever text")
+                .description("Test")
+                .unit("\u00B0C")
+                .barBackgroundColor(Tile.BACKGROUND)
+                .roundedCorners(false)
+                .build();
+
+
+        //FlowGridPane flowGridPaneInternal = new FlowGridPane(1,1);
+        flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
+        configureTilePane(flowGridPaneInternal);
+        flowGridPaneInternal.setCenterShape(true);
+        flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
+        flowGridPaneInternal.setBackground(whiteBckgr);
+        flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
+        Tile tile = TileBuilder.create().skinType(Tile.SkinType.CUSTOM)
+                .minValue(0)
+                .maxValue(30)
+                .title("Data")
+                .titleAlignment(TextAlignment.RIGHT)
+                .text("Test")
+                .textVisible(false)
+                .averagingPeriod(48)
+                .autoReferenceValue(true)
+                .tooltipText("Aloha")
+                .build();
+
+
+        personalTile= new Tile()/*{
+            protected Skin createDefaultSkin(){
+                return (personalSkin = new LazerTileSkin(personalTile));
+            }
+        }*/;
+        personalTile.setMinValue(0);
+        personalTile.setMaxValue(30);
+        personalTile.setTitle("Personal");
+        personalTile.setTitleAlignment(TextAlignment.RIGHT);
+        personalTile.setText("Sin nada");
+        personalTile.setTextVisible(false);
+        personalTile.setAveragingPeriod(48);
+        personalTile.setAutoReferenceValue(true);
+        personalTile.setTooltipText("Aloha");
+
+
+        flowGridPaneInternal.add(personalTile,0,0);
+        flowGridPaneInternal.add(sliderTile,1,0);
+        //flowGridPaneInternal.add(clockTile,0,1);
+
+    }
+
+    private void configureButtonsPane() {
         customButton.setGraphic(customizeIcon(Fontelico.EMO_BEER));
 
         centerButton.setTextFill(FRGCOL_FILL);
@@ -144,137 +285,6 @@ public class ContentLazerController {
         });
 
         acceptDialogButton.setOnMouseClicked((e) -> dialog.close());
-        bindingProps();
-
-        Tile clockTile = TileBuilder.create()
-                .skinType(Tile.SkinType.CLOCK)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Tile Reloj")
-                //.text("Whatever text")
-                .dateVisible(true)
-                .locale(new Locale("es","ES"))
-                .running(true)
-                .build();
-
-        Tile gaugeTile = TileBuilder.create()
-                .skinType(Tile.SkinType.GAUGE)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Tile ")
-                .unit("V")
-                .threshold(75)
-                .build();
-
-        Tile plusMinusTile = TileBuilder.create()
-                .skinType(Tile.SkinType.PLUS_MINUS)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .maxValue(30)
-                .minValue(0)
-                .title("Suma y resta")
-                //.text("Whatever text")
-                .description("Test")
-                .unit("\u00B0C")
-                .build();
-
-
-        Tile sliderTile = TileBuilder.create()
-                .skinType(Tile.SkinType.SLIDER)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Slider Tile")
-                .text("Whatever text")
-                .description("Test")
-                .unit("\u00B0C")
-                .barBackgroundColor(Tile.BACKGROUND)
-                .roundedCorners(false)
-                .build();
-
-
-        //FlowGridPane flowGridPaneInternal = new FlowGridPane(1,1);
-        flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
-        configureTilePane(flowGridPaneInternal);
-        flowGridPaneInternal.setCenterShape(true);
-        flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
-        flowGridPaneInternal.setBackground(whiteBckgr);
-        flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
-        Tile tile = TileBuilder.create().skinType(Tile.SkinType.CUSTOM)
-                .minValue(0)
-                .maxValue(30)
-                .title("Data")
-                .titleAlignment(TextAlignment.RIGHT)
-                .text("Test")
-                .textVisible(false)
-                .averagingPeriod(48)
-                .autoReferenceValue(true)
-                .tooltipText("Aloha")
-                .build();
-
-
-
-        personalTile= new Tile()/*{
-            protected Skin createDefaultSkin(){
-                return (personalSkin = new LazerTileSkin(personalTile));
-            }
-        }*/;
-        personalTile.setMinValue(0);
-        personalTile.setMaxValue(30);
-        personalTile.setTitle("Personal");
-        personalTile.setTitleAlignment(TextAlignment.RIGHT);
-        personalTile.setText("Sin nada");
-        personalTile.setTextVisible(false);
-        personalTile.setAveragingPeriod(48);
-        personalTile.setAutoReferenceValue(true);
-        personalTile.setTooltipText("Aloha");
-
-
-        flowGridPaneInternal.add(personalTile,0,0);
-        flowGridPaneInternal.add(sliderTile,1,0);
-        //flowGridPaneInternal.add(clockTile,0,1);
-
-
-
-        configureTilePane(flowGridPane);
-        flowGridPane.setNoOfColsAndNoOfRows(2,2);
-        //flowGridPane.add(flowGridPaneInternal,0,1);
-        flowGridPane.add(gaugeTile,1,0);
-
-        TimeSection timeSection = TimeSectionBuilder.create()
-                .start(LocalTime.now().plusSeconds(20))
-                .stop(LocalTime.now().plusHours(1))
-                //.days(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
-                .color(Tile.GRAY)
-                .highlightColor(Tile.RED)
-                .build();
-
-        timeSection.setOnTimeSectionEntered(e -> System.out.println("Section ACTIVE"));
-        timeSection.setOnTimeSectionLeft(e -> System.out.println("Section INACTIVE"));
-        Tile timerControlTile = TileBuilder.create()
-                .skinType(Tile.SkinType.TIMER_CONTROL)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Control de tiempos, zona gris")
-                .text("Controla cuando entra y sale de la zona de tiempos")
-                .secondsVisible(true)
-                .dateVisible(true)
-                .timeSections(timeSection)
-                .running(true)
-                .build();
-        flowGridPane.add(timerControlTile,1,0);
-
-        //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
-
-        //root.getChildren().add(pane);
-
-        this.value = new SimpleDoubleProperty(0);
-        lastTimerCall = System.nanoTime();
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (now > lastTimerCall + 3_500_000_000L) {
-                    gaugeTile.setValue(RND.nextDouble() * gaugeTile.getRange() * 1.5 + gaugeTile.getMinValue());
-                    lastTimerCall = now;
-                }
-            }
-        };
-        timer.start();
     }
 
     private FontIcon customizeIcon(Ikon ikon) {

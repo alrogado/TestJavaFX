@@ -74,7 +74,8 @@ public class GuiApp extends Application {
 
         int width = 800;
         int height = 850;
-        Scene scene = new Scene(decorator, width, height);
+        //Scene scene = new Scene(decorator, width, height);
+        Scene scene = new Scene(decorator);
         //Scene scene = new Scene(new StackPane(label = new Label()), 800, 850);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
@@ -92,12 +93,12 @@ public class GuiApp extends Application {
         //mainStage.setFullScreen(true);
         //mainStage.setAlwaysOnTop(true);
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        mainStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - width / 2);
+        /*mainStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - width / 2);
         mainStage.setY(bounds.getMinY() + bounds.getHeight() / 2 - height/ 2);
         mainStage.setMinHeight(height);
         mainStage.setMinWidth(width);
         mainStage.setHeight(height);
-        mainStage.setWidth(width);
+        mainStage.setWidth(width);*/
         mainStage.setScene(scene);
         mainStage.setTitle("LAZER App");
         //mainStage.initStyle(StageStyle.UNDECORATED);

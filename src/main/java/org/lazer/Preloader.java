@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,13 +69,18 @@ public class Preloader extends javafx.application.Preloader {
 
     @Override
     public void start(Stage stage) {
-        logger.debug("PreloaderFx::start();");
+        logger.debug("PreloaderFx::start(stage);");
         //stage.setTitle("Progress Bar");
         //stage.getIcons().add(new Image(APPLICATION_ICON));
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
         stage.setScene(new Scene(stackPane));
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
+        //this has to be done here
+        stage.setFullScreen(true);
+        stage.setAlwaysOnTop(true);
+        stage.setFullScreenExitHint("");
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         dialog.show();
     }
@@ -85,11 +91,6 @@ public class Preloader extends javafx.application.Preloader {
             dialog.close();
         }
     }
-
-    /*@Override
-    public void handleProgressNotification(ProgressNotification pn) {
-        loadProgress.setProgress(pn.getProgress());
-    }*/
 
     public void setProgress(double d) {
         loadProgress.setProgress(d);
@@ -110,12 +111,6 @@ public class Preloader extends javafx.application.Preloader {
             }
         }
     }
-
-    /*@Override
-    public void handleStateChangeNotification(StateChangeNotification evt) {
-        //ignore, hide after application signals it is ready
-        logger.debug("PreloaderFx::handleStateChangeNotification(); state = " + evt.getType());
-    }*/
 
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
