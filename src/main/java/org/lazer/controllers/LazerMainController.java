@@ -42,7 +42,6 @@ public class LazerMainController {
      */
     @PostConstruct
     public void init() throws FlowException {
-
         // create the inner flow and content
         configureContent(ContentLazerController.class);
 

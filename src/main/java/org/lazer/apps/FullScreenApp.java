@@ -1,4 +1,4 @@
-package org.lazer.util.apps;
+package org.lazer.apps;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
