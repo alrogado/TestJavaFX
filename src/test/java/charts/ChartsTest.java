@@ -1,12 +1,6 @@
 package charts;
 
-import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXSlider;
-import com.jfoenix.svg.SVGGlyphLoader;
-import demos.MainDemoApp;
-import demos.gui.main.MainController;
-import io.datafx.controller.flow.Flow;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
@@ -15,21 +9,17 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.fxmisc.easybind.EasyBind;
 import org.reactfx.EventStreams;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Random;

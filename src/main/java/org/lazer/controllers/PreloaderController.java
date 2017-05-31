@@ -3,7 +3,7 @@ package org.lazer.controllers;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
-import demos.datafx.ExtendedAnimatedFlowContainer;
+
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowHandler;
@@ -20,6 +20,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

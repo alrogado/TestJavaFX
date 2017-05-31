@@ -7,7 +7,6 @@ import demos.datafx.ExtendedAnimatedFlowContainer;
 import demos.gui.sidemenu.SideMenuController;
 import demos.gui.uicomponents.ButtonController;
 import io.datafx.controller.ViewController;
-import io.datafx.controller.context.ViewResourceBundle;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;

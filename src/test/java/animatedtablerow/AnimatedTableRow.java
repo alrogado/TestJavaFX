@@ -1,4 +1,4 @@
-package animatedtablerow ;
+package animatedtablerow;
 
 import java.util.Arrays;
 

@@ -61,8 +61,13 @@ public class GuiApp extends Application {
                     createJFXDecorator(stageI, configureDataFlow(LazerMainController.class, stageI));
                     configureFullScreenStage(stageI);
                     Scene scene = new Scene(decorator);
-                    configureAndSetScene(stage, scene);
-                    stageI.setScene(scene);
+                    final ObservableList<String> stylesheets = scene.getStylesheets();
+                    stylesheets.addAll(
+                            getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                            getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
+                            getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                            getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+                    configureAndSetScene(stageI, scene);
                     stageI.show();
                     stage.close();
                 });

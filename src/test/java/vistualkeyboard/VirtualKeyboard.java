@@ -107,7 +107,7 @@ public class VirtualKeyboard {
   }
   
   /**
-   * Creates a vistualkeyboard.VirtualKeyboard which uses the focusProperty of the scene to which it is attached as its target
+   * Creates a VirtualKeyboard which uses the focusProperty of the scene to which it is attached as its target
    */
   public VirtualKeyboard() {
     this(null);

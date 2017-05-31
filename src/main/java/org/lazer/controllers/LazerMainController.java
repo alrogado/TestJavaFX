@@ -2,7 +2,6 @@ package org.lazer.controllers;
 
 
 import com.jfoenix.controls.JFXDrawer;
-import demos.datafx.ExtendedAnimatedFlowContainer;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -13,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

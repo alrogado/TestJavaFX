@@ -11,7 +11,7 @@
    <BorderPane>
       <!-- Content Area -->
       <center>
-         <JFXDrawer fx:id="drawer" defaultDrawerSize="250" direction="LEFT">
+         <JFXDrawer fx:id="drawer" direction="LEFT">
             <styleClass>
                <String fx:value="body"/>
             </styleClass>
