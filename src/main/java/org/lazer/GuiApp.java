@@ -37,7 +37,7 @@ public class GuiApp extends Application {
     private long epochSeconds;
 
     public static JFXDecorator decorator;
-    static ResourceBundle bundle = ResourceBundle.getBundle("lazer", new Locale("fr"));
+    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", new Locale("fr"));
     public static String applicationTitle = "LAZER App";
 
     BooleanProperty ready = new SimpleBooleanProperty(false);
@@ -51,15 +51,20 @@ public class GuiApp extends Application {
         configureAndSetScene(stage, scene);
         stage.show();*/
 
-        createJFXDecorator(stage, configureDataFlow(LazerMainController.class, stage));
         loadSplashAndInitTask(stage);
 
         ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
             if (Boolean.TRUE.equals(t1)) {
                 Platform.runLater(() -> {
                     logger.debug("Init Task  completed. Now executes configureAndSetScene");
+                    Stage stageI = new Stage();
+                    createJFXDecorator(stageI, configureDataFlow(LazerMainController.class, stageI));
+                    configureFullScreenStage(stageI);
                     Scene scene = new Scene(decorator);
                     configureAndSetScene(stage, scene);
+                    stageI.setScene(scene);
+                    stageI.show();
+                    stage.close();
                 });
             }
         });
@@ -74,7 +79,6 @@ public class GuiApp extends Application {
                 getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
                 getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
                 getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
-
         scene.setFill(ICON_GRAD_FGR_BGR);
         stage.setScene(scene);
         CSSFX.start(stage);
@@ -106,7 +110,7 @@ public class GuiApp extends Application {
 
     public static DefaultFlowContainer configureDataFlow(Class startViewControllerClass, Stage stage) {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(bundle);
+        viewConfiguration.setResources(APP_BUNDLE);
 
         Flow flow = new Flow(startViewControllerClass, viewConfiguration);
         ViewFlowContext flowContext = new ViewFlowContext();
@@ -158,7 +162,7 @@ public class GuiApp extends Application {
 
     public static void createJFXDecorator(Stage stage, DefaultFlowContainer container) {
         decorator = new JFXDecorator(stage, container.getView());
-        decorator.setCustomMaximize(true);
+        decorator.setMaximized(true);
     }
 
     public static void main(String[] args) {

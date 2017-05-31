@@ -26,7 +26,7 @@ public class LazerMainController {
     private static Logger logger = LoggerFactory.getLogger(LazerMainController.class);
 
     @FXMLViewFlowContext
-    private ViewFlowContext context;
+    private ViewFlowContext context = new ViewFlowContext();
 
     @FXML
     private StackPane root;
@@ -44,8 +44,6 @@ public class LazerMainController {
     public void init() throws FlowException {
 
         // create the inner flow and content
-        context = new ViewFlowContext();
-
         configureContent(ContentLazerController.class);
 
         /*// side controller will add links to the content flow
@@ -56,7 +54,7 @@ public class LazerMainController {
 
     }
 
-    private void configureContent(Class controllerClass) throws FlowException {
+    public void configureContent(Class controllerClass) throws FlowException {
         // set the content Lazer controller
         Flow contentLazerFlow = new Flow(controllerClass);
         final FlowHandler contentLazerflowHandler = contentLazerFlow.createHandler(context);

@@ -1,14 +1,29 @@
 package org.lazer.util.apps;
 
+import com.jfoenix.controls.JFXDrawer;
+import demos.datafx.ExtendedAnimatedFlowContainer;
+import io.datafx.controller.flow.Flow;
+import io.datafx.controller.flow.FlowException;
+import io.datafx.controller.flow.FlowHandler;
+import io.datafx.controller.flow.context.FXMLViewFlowContext;
+import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
+import org.lazer.PreloaderFX;
+import org.lazer.controllers.ContentLazerController;
+import org.lazer.controllers.LazerMainController;
 import org.lazer.controllers.PreloaderController;
 
 import java.net.URL;
 
+import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
 
 /**
