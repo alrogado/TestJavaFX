@@ -381,14 +381,20 @@
 .jfx-progress-bar > .bar{
     -fx-pref-width: 100.0;
     -fx-padding: 3;
-    -fx-width: 100.0;
+    -fx-width: 20.0px;
 }
 
 .jfx-progress-bar > .track, .jfx-progress-bar > .bar {
     -fx-background-radius: 0;
     -fx-background-insets: 0;
+    -fx-pref-width: 20.0px;
+    -fx-width: 20.0px;
 }
 
+
+/**
+Asignacion de color
+*/
 .jfx-progress-bar > .track {
     -fx-background-color: #0091DC;
 }

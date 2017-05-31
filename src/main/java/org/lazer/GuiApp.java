@@ -38,7 +38,7 @@ public class GuiApp extends Application {
 
     public static JFXDecorator decorator;
     public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", new Locale("fr"));
-    public static String applicationTitle = "LAZER App";
+    public static String APP_TITLE = "LAZER App";
 
     BooleanProperty ready = new SimpleBooleanProperty(false);
 
@@ -78,7 +78,7 @@ public class GuiApp extends Application {
     public static void configureFullScreenStage(Stage stage) {
         stage.setFullScreen(true);
         stage.setAlwaysOnTop(true);
-        stage.setTitle(applicationTitle);
+        stage.setTitle(APP_TITLE);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
     }
@@ -94,7 +94,7 @@ public class GuiApp extends Application {
         stage.setMinWidth(WIDTH);
         stage.setHeight(HEIGHT);
         stage.setWidth(WIDTH);
-        stage.setTitle(applicationTitle);
+        stage.setTitle(APP_TITLE);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
     }

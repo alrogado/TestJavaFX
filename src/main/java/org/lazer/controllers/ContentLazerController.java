@@ -12,6 +12,7 @@ import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -98,6 +99,29 @@ public class ContentLazerController {
 
         configureFlowGridPaneInternal();
 
+        flowGridPane.setHgap(5);
+        flowGridPane.setVgap(5);
+        flowGridPane.setAlignment(Pos.CENTER);
+        flowGridPane.setCenterShape(true);
+        flowGridPane.setPadding(new Insets(5));
+        flowGridPane.setNoOfColsAndNoOfRows(2,2);
+        //flowGridPane.add(flowGridPaneInternal,0,1);
+        flowGridPane.add(createGaugeTile(),1,0);
+        flowGridPane.add(createTimeTile(),1,0);
+
+        //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
+
+        //root.getChildren().add(pane);
+
+        this.value = new SimpleDoubleProperty(0);
+
+        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(1000), root);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+    }
+
+    private Tile createGaugeTile() {
         Tile gaugeTile = TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE)
                 //.prefSize(TILE_WIDTH, TILE_HEIGHT)
@@ -105,41 +129,6 @@ public class ContentLazerController {
                 .unit("V")
                 .threshold(75)
                 .build();
-
-
-
-        configureTilePane(flowGridPane);
-        flowGridPane.setNoOfColsAndNoOfRows(2,2);
-        //flowGridPane.add(flowGridPaneInternal,0,1);
-        flowGridPane.add(gaugeTile,1,0);
-
-        TimeSection timeSection = TimeSectionBuilder.create()
-                .start(LocalTime.now().plusSeconds(20))
-                .stop(LocalTime.now().plusHours(1))
-                //.days(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
-                .color(Tile.GRAY)
-                .highlightColor(Tile.RED)
-                .build();
-
-        timeSection.setOnTimeSectionEntered(e -> System.out.println("Section ACTIVE"));
-        timeSection.setOnTimeSectionLeft(e -> System.out.println("Section INACTIVE"));
-        Tile timerControlTile = TileBuilder.create()
-                .skinType(Tile.SkinType.TIMER_CONTROL)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Control de tiempos, zona gris")
-                .text("Controla cuando entra y sale de la zona de tiempos")
-                .secondsVisible(true)
-                .dateVisible(true)
-                .timeSections(timeSection)
-                .running(true)
-                .build();
-        flowGridPane.add(timerControlTile,1,0);
-
-        //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
-
-        //root.getChildren().add(pane);
-
-        this.value = new SimpleDoubleProperty(0);
         lastTimerCall = System.nanoTime();
         timer = new AnimationTimer() {
             @Override
@@ -151,6 +140,30 @@ public class ContentLazerController {
             }
         };
         timer.start();
+        return gaugeTile;
+    }
+
+    private Tile createTimeTile() {
+        TimeSection timeSection = TimeSectionBuilder.create()
+                .start(LocalTime.now().plusSeconds(20))
+                .stop(LocalTime.now().plusHours(1))
+                //.days(DayOfWeek.MONDAY, DayOfWeek.FRIDAY)
+                .color(Tile.GRAY)
+                .highlightColor(Tile.RED)
+                .build();
+
+        timeSection.setOnTimeSectionEntered(e -> System.out.println("Section ACTIVE"));
+        timeSection.setOnTimeSectionLeft(e -> System.out.println("Section INACTIVE"));
+        return TileBuilder.create()
+                .skinType(Tile.SkinType.TIMER_CONTROL)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Control de tiempos, zona gris")
+                .text("Controla cuando entra y sale de la zona de tiempos")
+                .secondsVisible(true)
+                .dateVisible(true)
+                .timeSections(timeSection)
+                .running(true)
+                .build();
     }
 
     private void configureFlowGridPaneInternal() {
@@ -177,21 +190,15 @@ public class ContentLazerController {
                 .build();
 
 
-        Tile sliderTile = TileBuilder.create()
-                .skinType(Tile.SkinType.SLIDER)
-                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
-                .title("Slider Tile")
-                .text("Whatever text")
-                .description("Test")
-                .unit("\u00B0C")
-                .barBackgroundColor(Tile.BACKGROUND)
-                .roundedCorners(false)
-                .build();
-
-
         //FlowGridPane flowGridPaneInternal = new FlowGridPane(1,1);
         flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
-        configureTilePane(flowGridPaneInternal);
+
+        flowGridPaneInternal.setHgap(5);
+        flowGridPaneInternal.setVgap(5);
+        flowGridPaneInternal.setAlignment(Pos.CENTER);
+        flowGridPaneInternal.setCenterShape(true);
+        flowGridPaneInternal.setPadding(new Insets(5));
+
         flowGridPaneInternal.setCenterShape(true);
         flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
@@ -226,6 +233,17 @@ public class ContentLazerController {
         personalTile.setTooltipText("Aloha");
 
 
+        Tile sliderTile = TileBuilder.create()
+                .skinType(Tile.SkinType.SLIDER)
+                //.prefSize(TILE_WIDTH, TILE_HEIGHT)
+                .title("Slider Tile")
+                .text("Whatever text")
+                .description("Test")
+                .unit("\u00B0C")
+                .barBackgroundColor(Tile.BACKGROUND)
+                .roundedCorners(false)
+                .build();
+
         flowGridPaneInternal.add(personalTile,0,0);
         flowGridPaneInternal.add(sliderTile,1,0);
         //flowGridPaneInternal.add(clockTile,0,1);
@@ -250,7 +268,6 @@ public class ContentLazerController {
         SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         ///eventos para el reloj
         EventStreams.ticks(Duration.ofMillis(1000)).subscribe(tick -> timestamp.setValue(sdf.format(System.currentTimeMillis())));
-
 
         time.textProperty().bind(timestamp);
         //dt.format(new Date(timestamp.get()))::toString));
@@ -293,13 +310,6 @@ public class ContentLazerController {
         return fontIcon;
     }
 
-    private void configureTilePane(FlowGridPane flowGridPane) {
-        flowGridPane.setHgap(5);
-        flowGridPane.setVgap(5);
-        flowGridPane.setAlignment(Pos.CENTER);
-        flowGridPane.setCenterShape(true);
-        flowGridPane.setPadding(new Insets(5));
-    }
 
     private static final Random RND = new Random();
     private long            lastTimerCall;

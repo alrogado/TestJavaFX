@@ -2,6 +2,7 @@ package org.lazer;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXProgressBar;
+import javafx.animation.FadeTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,11 +19,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.lazer.GuiApp.APP_BUNDLE;
+import static org.lazer.GuiApp.APP_TITLE;
 import static org.lazer.GuiApp.configureAndSetScene;
 import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
@@ -59,11 +62,10 @@ public class PreloaderFX extends javafx.application.Preloader {
         splash.setFitWidth(SPLASH_WIDTH);
         loadProgress = new JFXProgressBar();
         loadProgress.setPrefWidth(SPLASH_WIDTH);
-        loadProgress.setStyle("-fx-background-color: #0091DC;"+
+        /*loadProgress.setStyle("-fx-background-color: #0091DC;"+
                 "-fx-background-color: #0091DC; " +
-                "-fx-padding: 3;");
+                "-fx-padding: 3;");*/
         loadProgress.setMaxWidth(SPLASH_WIDTH);
-        //loadProgress.setWidth(SPLASH_WIDTH);
         progressText = new Label(APP_BUNDLE.getString("menu.title.cut"));
         progressText.setStyle("-fx-padding: 6;");
         progressText.setAlignment(Pos.CENTER);
@@ -73,19 +75,19 @@ public class PreloaderFX extends javafx.application.Preloader {
             "-fx-padding: 10; " +
             "-fx-background-color: white; " +
             "-fx-border-width:5; " +
-            "-fx-width: 100;"
+            "-fx-width: 100px;"
         );
         splashLayout.setEffect(new DropShadow());
         stackPane = new StackPane();
         dialog = new JFXDialog(stackPane, splashLayout, JFXDialog.DialogTransition.CENTER);
         dialog.setPrefWidth(100);
-        dialog.setStyle("-fx-width: 100;");
+        dialog.setStyle("-fx-width: 100px;");
     }
 
     @Override
     public void start(Stage stage) {
         logger.debug("PreloaderFx::start(stage);");
-        //stage.setTitle("Progress Bar");
+        stage.setTitle(APP_TITLE);
         //stage.getIcons().add(new Image(APPLICATION_ICON));
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
         Scene scene = new Scene(stackPane);
@@ -100,6 +102,14 @@ public class PreloaderFX extends javafx.application.Preloader {
         stage.setAlwaysOnTop(true);
         stage.setFullScreenExitHint("");
         stage.initStyle(StageStyle.UNDECORATED);
+
+        final ObservableList<String> stylesheets = scene.getStylesheets();
+        stylesheets.addAll(
+                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+                //GuiApp.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                GuiApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+
         stage.show();
         dialog.show();
         CSSFX.start(stage);
@@ -154,6 +164,15 @@ public class PreloaderFX extends javafx.application.Preloader {
     }
 
     public void stop() {
+        /*FadeTransition ft = new FadeTransition(Duration.millis(3000), dialog);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.3);
+        ft.setCycleCount(4);
+        ft.setAutoReverse(true);
+
+        ft.play();*/
         dialog.close();
+
+
     }
 }
