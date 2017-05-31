@@ -1,4 +1,4 @@
-package org.lazer;
+package org.lazer.controllers;
 
 
 import com.jfoenix.controls.JFXDrawer;
@@ -13,19 +13,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import org.lazer.controllers.ContentLazerController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
-import static io.datafx.controller.flow.container.ContainerAnimations.FADE;
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 
-@ViewController(value = "fxml/preloader.fxml", title = "Lazer Application")
-public class GuiAppController {
+@ViewController(value = "/org/lazer/fxml/lazer_main.fxml", title = "Lazer Application")
+public class LazerMainController {
 
-    private static Logger logger = LoggerFactory.getLogger(GuiAppController.class);
+    private static Logger logger = LoggerFactory.getLogger(LazerMainController.class);
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -48,8 +46,7 @@ public class GuiAppController {
         // create the inner flow and content
         context = new ViewFlowContext();
 
-
-        configureContentLazer(ContentLazerController.class);
+        configureContent(ContentLazerController.class);
 
         /*// side controller will add links to the content flow
         Flow sideMenuFlow = new Flow(SideMenuController.class);
@@ -59,7 +56,7 @@ public class GuiAppController {
 
     }
 
-    private void configureContentLazer(Class controllerClass) throws FlowException {
+    private void configureContent(Class controllerClass) throws FlowException {
         // set the content Lazer controller
         Flow contentLazerFlow = new Flow(controllerClass);
         final FlowHandler contentLazerflowHandler = contentLazerFlow.createHandler(context);

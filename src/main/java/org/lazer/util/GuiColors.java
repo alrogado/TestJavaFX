@@ -1,4 +1,4 @@
-package org.lazer;
+package org.lazer.util;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;

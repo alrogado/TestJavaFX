@@ -27,7 +27,6 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.typicons.Typicons;
-import org.lazer.LazerTileSkin;
 import org.reactfx.EventStreams;
 
 import javax.annotation.PostConstruct;
@@ -38,7 +37,7 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Random;
 
-import static org.lazer.GuiColors.*;
+import static org.lazer.util.GuiColors.*;
 
 @ViewController(value = "/org/lazer/fxml/ui/contentLazer.fxml", title = "Material Design Example")
 public class ContentLazerController {
@@ -84,7 +83,6 @@ public class ContentLazerController {
     private GlyphFont devicons = GlyphFontRegistry.font("devicons");
 
     Tile personalTile;
-    LazerTileSkin personalSkin;
 
     /**
      * init fxml when loaded.

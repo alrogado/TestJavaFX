@@ -59,8 +59,8 @@ import java.util.concurrent.*;
 import static eu.hansolo.tilesfx.Tile.TileColor.TILEFRGCOL;
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
-import static org.lazer.GuiColors.BKGCOL;
-import static org.lazer.GuiColors.FRGCOL;
+import static org.lazer.util.GuiColors.BKGCOL;
+import static org.lazer.util.GuiColors.FRGCOL;
 
 
 /**

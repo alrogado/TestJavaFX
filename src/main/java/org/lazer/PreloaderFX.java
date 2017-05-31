@@ -2,9 +2,7 @@ package org.lazer;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXProgressBar;
-import io.datafx.controller.ViewController;
 import javafx.beans.property.DoubleProperty;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -25,9 +23,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by alrogado on 5/30/17.
  */
-public class Preloader extends javafx.application.Preloader {
+public class PreloaderFX extends javafx.application.Preloader {
 
-    private static Logger logger = LoggerFactory.getLogger(Preloader.class);
+    private static Logger logger = LoggerFactory.getLogger(PreloaderFX.class);
 
     public static final String APPLICATION_ICON = "http://cdn1.iconfinder.com/data/icons/Copenhagen/PNG/32/people.png";
 
@@ -45,7 +43,7 @@ public class Preloader extends javafx.application.Preloader {
     private static final int SPLASH_WIDTH = 275;
     private static final int SPLASH_HEIGHT = 183;
 
-    public Preloader() {
+    public PreloaderFX() {
         init();
     }
 

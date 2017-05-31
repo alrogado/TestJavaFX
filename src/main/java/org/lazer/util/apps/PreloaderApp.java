@@ -1,20 +1,24 @@
-package org.lazer;
+package org.lazer.util.apps;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.lazer.controllers.PreloaderController;
+
+import java.net.URL;
 
 import static org.lazer.GuiApp.*;
 
 /**
  * Created by alrogado on 5/31/17.
  */
-public class FullScreenApp extends Application {
+public class PreloaderApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        createJFXDecorator(stage, configureDataFlow(GuiAppController.class, stage));
+        FXMLLoader fxmlLoader = FXMLLoader.load(getClass().getResource("/org/lazer/fxml/preloader.fxml"));
         Scene scene = new Scene(decorator);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(

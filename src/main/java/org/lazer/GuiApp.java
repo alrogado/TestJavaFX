@@ -20,6 +20,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.fxmisc.cssfx.CSSFX;
+import org.lazer.controllers.LazerMainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static org.lazer.GuiColors.ICON_GRAD_FGR_BGR;
+import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 public class GuiApp extends Application {
 
@@ -50,7 +51,7 @@ public class GuiApp extends Application {
         configureAndSetScene(stage, scene);
         stage.show();*/
 
-        createJFXDecorator(stage, configureDataFlow(GuiAppController.class, stage));
+        createJFXDecorator(stage, configureDataFlow(LazerMainController.class, stage));
         loadSplashAndInitTask(stage);
 
         ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
@@ -122,7 +123,7 @@ public class GuiApp extends Application {
     }
 
     private void loadSplashAndInitTask(Stage stage) {
-        Preloader preloaderFX = new Preloader();
+        PreloaderFX preloaderFX = new PreloaderFX();
         try {
             preloaderFX.start(stage);
         } catch (Exception e) {

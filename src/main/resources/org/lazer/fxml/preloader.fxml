@@ -7,6 +7,7 @@
 <?import java.lang.String?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/2.2">
    <!-- Header -->
@@ -21,16 +22,14 @@
                 <JFXDialog fx:id="dialog"/>
                 <Pane fx:id="splashLayout">
                     <ImageView fx:id="splash">
-
+                        <Image url="/images/logov.png" requestedWidth="275" requestedHeight="183" preserveRatio="false" smooth="false">
+                        </Image>
                     </ImageView>
-                    <ProgressBar fx:id="loadProgress">
-
-                    </ProgressBar>
-                    <Label fx:id="progressText">
-
+                    <JFXProgressBar fx:id="loadProgress">
+                    </JFXProgressBar>
+                    <Label fx:id="progressText" text="%menu.title.cut">
                     </Label>
                 </Pane>
-
             </StackPane>
          </JFXDrawer>
       </center>

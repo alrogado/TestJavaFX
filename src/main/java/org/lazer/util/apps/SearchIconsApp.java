@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lazer;
+package org.lazer.util.apps;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Application;
@@ -25,7 +25,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.devicons.Devicons;
@@ -52,7 +51,6 @@ import org.kordamp.ikonli.weathericons.WeatherIcons;
 import org.kordamp.ikonli.websymbols.Websymbols;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 import static java.util.EnumSet.allOf;
 
