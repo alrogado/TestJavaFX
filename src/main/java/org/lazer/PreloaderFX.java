@@ -3,6 +3,7 @@ package org.lazer;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXProgressBar;
 import javafx.beans.property.DoubleProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -19,6 +20,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.lazer.GuiApp.APP_BUNDLE;
 
 /**
  * Created by alrogado on 5/30/17.
@@ -52,7 +55,7 @@ public class PreloaderFX extends javafx.application.Preloader {
         splash = new ImageView(new Image(SPLASH_IMAGE,SPLASH_WIDTH,SPLASH_HEIGHT,false,false));
         loadProgress = new JFXProgressBar();
         loadProgress.setPrefWidth(SPLASH_WIDTH);
-        progressText = new Label("%menu.title.cut");
+        progressText = new Label(APP_BUNDLE.getString("menu.title.cut"));
         splashLayout = new VBox();
         splashLayout.getChildren().addAll(splash, loadProgress, progressText);
         progressText.setAlignment(Pos.CENTER);
@@ -72,7 +75,15 @@ public class PreloaderFX extends javafx.application.Preloader {
         //stage.setTitle("Progress Bar");
         //stage.getIcons().add(new Image(APPLICATION_ICON));
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        stage.setScene(new Scene(stackPane));
+        Scene scene = new Scene(stackPane);
+        final ObservableList<String> stylesheets = scene.getStylesheets();
+        /*stylesheets.addAll(
+                getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
+                getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());*/
+
+        stage.setScene(scene);
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
         //this has to be done here

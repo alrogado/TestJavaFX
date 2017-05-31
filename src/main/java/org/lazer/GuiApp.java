@@ -45,12 +45,6 @@ public class GuiApp extends Application {
     public void start(Stage stage) {
         logger.debug("start");
 
-        /*createJFXDecorator(stage, configureDataFlow(GuiAppController.class, stage));
-        configureNotFullScreenStage(stage);
-        Scene scene = new Scene(decorator, WIDTH, HEIGHT);
-        configureAndSetScene(stage, scene);
-        stage.show();*/
-
         loadSplashAndInitTask(stage);
 
         ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
@@ -61,12 +55,6 @@ public class GuiApp extends Application {
                     createJFXDecorator(stageI, configureDataFlow(LazerMainController.class, stageI));
                     configureFullScreenStage(stageI);
                     Scene scene = new Scene(decorator);
-                    final ObservableList<String> stylesheets = scene.getStylesheets();
-                    stylesheets.addAll(
-                            getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                            getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                            getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                            getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
                     configureAndSetScene(stageI, scene);
                     stageI.show();
                     stage.close();
