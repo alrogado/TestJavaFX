@@ -16,16 +16,8 @@ public class FullScreenApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, configureDataFlow(LazerMainController.class, stage));
-        Scene scene = new Scene(decorator);
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(
-                getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
-
+        configureAndSetScene(stage,new Scene(decorator));
         configureFullScreenStage(stage);
-        stage.setScene(scene);
         stage.show();
     }
 

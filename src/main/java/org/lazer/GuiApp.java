@@ -44,11 +44,9 @@ public class GuiApp extends Application {
 
     public void start(Stage stage) {
         logger.debug("start");
-
         loadSplashAndInitTask(stage);
-
-        ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            if (Boolean.TRUE.equals(t1)) {
+        ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean readyValue) -> {
+            if (Boolean.TRUE.equals(readyValue)) {
                 Platform.runLater(() -> {
                     logger.debug("Init Task  completed. Now executes configureAndSetScene");
                     Stage stageI = new Stage();
@@ -65,13 +63,13 @@ public class GuiApp extends Application {
         epochSeconds = Instant.now().getEpochSecond();
     }
 
-    private void configureAndSetScene(Stage stage, Scene scene) {
+    public static void configureAndSetScene(Stage stage, Scene scene) {
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(
-                getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+                GuiApp.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                GuiApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(ICON_GRAD_FGR_BGR);
         stage.setScene(scene);
         CSSFX.start(stage);
@@ -128,29 +126,30 @@ public class GuiApp extends Application {
         }
         preloaderFX.handleProgressNotification(new javafx.application.Preloader.ProgressNotification(0));
 
+        simulateTasks(preloaderFX);
+    }
+
+    private void simulateTasks(PreloaderFX preloaderFX) {
         //simulate long init in background
-        Task task = new Task<Void>() {
+        new Thread(new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 int max = 3;
                 for (int i = 1; i <= max; i++) {
-                    Thread.sleep(500);
+                    Thread.sleep(300);
                     logger.debug("loadSplashAndInitTask " + i);
                     // Send progress to preloader
                     preloaderFX.handleProgressNotification(new javafx.application.Preloader.ProgressNotification(((double) i)/max)); //this moves the progress bar of the preloader
                 }
                 ///Alwways close the dialog because the main can't be closed
                 preloaderFX.stop();
-                Thread.sleep(500);
-                // After init is ready, the app is ready to be shown
-                // Do this before hiding the preloader stage to prevent the
-                // app from exiting prematurely
+                //dejar sleep pq si no no se ve como desaparece el dialog
+                Thread.sleep(400);
                 ready.setValue(Boolean.TRUE);
                 //preloaderFX.handleStateChangeNotification(new Preloader.StateChangeNotification(Preloader.StateChangeNotification.Type.BEFORE_START));
                 return null;
             }
-        };
-        new Thread(task).start();
+        }).start();
     }
 
     public static void createJFXDecorator(Stage stage, DefaultFlowContainer container) {

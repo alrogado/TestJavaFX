@@ -378,8 +378,10 @@
 *                                                                              *
 *******************************************************************************/
 
-.jfx-progress-bar {
-    -fx-pref-width: 500.0;
+.jfx-progress-bar > .bar{
+    -fx-pref-width: 100.0;
+    -fx-padding: 3;
+    -fx-width: 100.0;
 }
 
 .jfx-progress-bar > .track, .jfx-progress-bar > .bar {
@@ -388,11 +390,11 @@
 }
 
 .jfx-progress-bar > .track {
-    -fx-background-color: #E0E0E0;
+    -fx-background-color: #0091DC;
 }
 
 .jfx-progress-bar > .bar {
-    -fx-background-color: #0F9D58;
+    -fx-background-color: #5264AE;
 }
 
 .custom-jfx-progress-bar > .bar {

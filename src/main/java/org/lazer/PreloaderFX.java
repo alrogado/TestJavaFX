@@ -18,10 +18,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.lazer.GuiApp.APP_BUNDLE;
+import static org.lazer.GuiApp.configureAndSetScene;
+import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 /**
  * Created by alrogado on 5/30/17.
@@ -53,20 +56,30 @@ public class PreloaderFX extends javafx.application.Preloader {
     @Override
     public void init() {
         splash = new ImageView(new Image(SPLASH_IMAGE,SPLASH_WIDTH,SPLASH_HEIGHT,false,false));
+        splash.setFitWidth(SPLASH_WIDTH);
         loadProgress = new JFXProgressBar();
         loadProgress.setPrefWidth(SPLASH_WIDTH);
+        loadProgress.setStyle("-fx-background-color: #0091DC;"+
+                "-fx-background-color: #0091DC; " +
+                "-fx-padding: 3;");
+        loadProgress.setMaxWidth(SPLASH_WIDTH);
+        //loadProgress.setWidth(SPLASH_WIDTH);
         progressText = new Label(APP_BUNDLE.getString("menu.title.cut"));
+        progressText.setStyle("-fx-padding: 6;");
+        progressText.setAlignment(Pos.CENTER);
         splashLayout = new VBox();
         splashLayout.getChildren().addAll(splash, loadProgress, progressText);
-        progressText.setAlignment(Pos.CENTER);
         splashLayout.setStyle(
-                "-fx-padding: 10; "
-                        + "-fx-background-color: white; "
-                        + "-fx-border-WIDTH:5; "
+            "-fx-padding: 10; " +
+            "-fx-background-color: white; " +
+            "-fx-border-width:5; " +
+            "-fx-width: 100;"
         );
         splashLayout.setEffect(new DropShadow());
         stackPane = new StackPane();
         dialog = new JFXDialog(stackPane, splashLayout, JFXDialog.DialogTransition.CENTER);
+        dialog.setPrefWidth(100);
+        dialog.setStyle("-fx-width: 100;");
     }
 
     @Override
@@ -76,13 +89,9 @@ public class PreloaderFX extends javafx.application.Preloader {
         //stage.getIcons().add(new Image(APPLICATION_ICON));
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
         Scene scene = new Scene(stackPane);
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        /*stylesheets.addAll(
-                getClass().getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                getClass().getResource("/css/jfoenix-design.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                getClass().getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());*/
-
+        scene.setFill(ICON_GRAD_FGR_BGR);
+        stage.setScene(scene);
+        CSSFX.start(stage);
         stage.setScene(scene);
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
@@ -93,6 +102,7 @@ public class PreloaderFX extends javafx.application.Preloader {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.show();
         dialog.show();
+        CSSFX.start(stage);
     }
 
     @Override

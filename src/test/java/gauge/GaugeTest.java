@@ -65,18 +65,5 @@ public class GaugeTest extends Application {
                     simpleMetroArcGauge.setValue(random.nextInt(100));
                     basicRoundDailGauge.setValue(random.nextInt(100));
                 });
-        /*Scene scene = new Scene(decorator, 800, 850);
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(MainDemoApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                MainDemoApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                MainDemoApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
-        stage.setMinWidth(700);
-        stage.setMinHeight(800);
-        stage.setScene(scene);
-        stage.show();*/
     }
-
-
-
-
 }
