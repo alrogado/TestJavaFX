@@ -1,6 +1,7 @@
 package org.lazer;
 
 import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXProgressBar;
 import io.datafx.controller.ViewController;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
@@ -51,7 +52,7 @@ public class Preloader extends javafx.application.Preloader {
     @Override
     public void init() {
         splash = new ImageView(new Image(SPLASH_IMAGE,SPLASH_WIDTH,SPLASH_HEIGHT,false,false));
-        loadProgress = new ProgressBar();
+        loadProgress = new JFXProgressBar();
         loadProgress.setPrefWidth(SPLASH_WIDTH);
         progressText = new Label("%menu.title.cut");
         splashLayout = new VBox();
@@ -60,7 +61,7 @@ public class Preloader extends javafx.application.Preloader {
         splashLayout.setStyle(
                 "-fx-padding: 10; "
                         + "-fx-background-color: white; "
-                        + "-fx-border-width:5; "
+                        + "-fx-border-WIDTH:5; "
         );
         splashLayout.setEffect(new DropShadow());
         stackPane = new StackPane();

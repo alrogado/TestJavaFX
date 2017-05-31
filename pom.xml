@@ -31,6 +31,11 @@
         </dependency>
         <dependency>
             <groupId>io.datafx</groupId>
+            <artifactId>core</artifactId>
+            <version>8.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.datafx</groupId>
             <artifactId>datafx</artifactId>
             <version>8.0.1</version>
         </dependency>

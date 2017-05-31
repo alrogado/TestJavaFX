@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXDrawer;
 import demos.datafx.ExtendedAnimatedFlowContainer;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
+import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
@@ -18,9 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
+import static io.datafx.controller.flow.container.ContainerAnimations.FADE;
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 
-@ViewController(value = "fxml/lazer-f.fxml", title = "Lazer Application")
+@ViewController(value = "fxml/preloader.fxml", title = "Lazer Application")
 public class GuiAppController {
 
     private static Logger logger = LoggerFactory.getLogger(GuiAppController.class);
@@ -41,24 +43,13 @@ public class GuiAppController {
      * init fxml when loaded.
      */
     @PostConstruct
-    public void init() throws Exception {
+    public void init() throws FlowException {
 
         // create the inner flow and content
         context = new ViewFlowContext();
 
-        // set the default controller
-        Flow dialogLazerFlowCtrl = new Flow(ContentLazerController.class);
 
-        final FlowHandler flowHandler = dialogLazerFlowCtrl.createHandler(context);
-        context.register("ContentFlowHandler", flowHandler);
-        context.register("ContentFlow", dialogLazerFlowCtrl);
-        final Duration containerAnimationDuration = Duration.millis(3200);
-        try {
-            drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
-        }catch(Exception e){
-            logger.error("",e);
-        }
-        context.register("ContentPane", drawer.getContent().get(0));
+        configureContentLazer(ContentLazerController.class);
 
         /*// side controller will add links to the content flow
         Flow sideMenuFlow = new Flow(SideMenuController.class);
@@ -66,5 +57,16 @@ public class GuiAppController {
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,
                 SWIPE_LEFT)));*/
 
+    }
+
+    private void configureContentLazer(Class controllerClass) throws FlowException {
+        // set the content Lazer controller
+        Flow contentLazerFlow = new Flow(controllerClass);
+        final FlowHandler contentLazerflowHandler = contentLazerFlow.createHandler(context);
+        context.register("ContentFlowHandler", contentLazerflowHandler);
+        context.register("ContentFlow", contentLazerFlow);
+        final Duration containerAnimationDuration = Duration.millis(320);
+        drawer.setContent(contentLazerflowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        context.register("ContentPane", drawer.getContent().get(0));
     }
 }

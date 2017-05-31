@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx/2.2">
+   <!-- Header -->
+   <BorderPane>
+      <!-- Content Area -->
+      <center>
+         <JFXDrawer fx:id="drawer" direction="LEFT">
+            <styleClass>
+               <String fx:value="body"/>
+            </styleClass>
+            <StackPane fx:id="stackPane">
+                <JFXDialog fx:id="dialog"/>
+                <Pane fx:id="splashLayout">
+                    <ImageView fx:id="splash">
+
+                    </ImageView>
+                    <ProgressBar fx:id="loadProgress">
+
+                    </ProgressBar>
+                    <Label fx:id="progressText">
+
+                    </Label>
+                </Pane>
+
+            </StackPane>
+         </JFXDrawer>
+      </center>
+   </BorderPane>
+</StackPane>
