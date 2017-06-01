@@ -38,9 +38,11 @@ public class GuiApp extends Application {
     private long epochSeconds;
 
     public static JFXDecorator decorator;
-    private static Locale LOCALE = new Locale("fr");
-    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
+
     public static String APP_TITLE = "LAZER App";
+
+    private static Locale LOCALE = new Locale("es");
+    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
 
     private ViewFlowContext context;
 
@@ -141,9 +143,10 @@ public class GuiApp extends Application {
         Application.launch(args);
     }
 
-    private static void configStaticValues(Config conf) {
+    public static void configStaticValues(Config conf) {
         if(conf.getString("application.locale")!=null) {
             LOCALE = new Locale(conf.getString("application.locale"));
+            APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
         }
     }
 }
