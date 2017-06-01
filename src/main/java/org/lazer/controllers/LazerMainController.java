@@ -6,6 +6,7 @@ import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
+import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
@@ -19,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
+import static org.lazer.GuiAppPreloader.flowContext;
+import static org.lazer.GuiAppPreloader.viewConfiguration;
 
-@ViewController(value = "/org/lazer/fxml/lazer_main.fxml", title = "Lazer Application")
+@ViewController(value = "/org/lazer/fxml/ui/lazer_main.fxml", title = "Lazer Application")
 public class LazerMainController {
 
     private static Logger logger = LoggerFactory.getLogger(LazerMainController.class);
@@ -55,12 +58,14 @@ public class LazerMainController {
 
     public void configureContent(Class controllerClass) throws FlowException {
         // set the content Lazer controller
-        Flow contentLazerFlow = new Flow(controllerClass);
-        final FlowHandler contentLazerflowHandler = contentLazerFlow.createHandler(context);
-        context.register("ContentFlowHandler", contentLazerflowHandler);
-        context.register("ContentFlow", contentLazerFlow);
+        Flow flow = new Flow(controllerClass, viewConfiguration);
+        FlowHandler flowHandler = new FlowHandler(flow, flowContext, viewConfiguration);
+        DefaultFlowContainer container = new DefaultFlowContainer();
+
+        context.register("ContentFlowHandler", flowHandler);
+        context.register("ContentFlow", flow);
         final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(contentLazerflowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
     }
 }

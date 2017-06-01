@@ -40,7 +40,7 @@ import java.util.Random;
 
 import static org.lazer.util.GuiColors.*;
 
-@ViewController(value = "/org/lazer/fxml/ui/contentLazer.fxml", title = "Material Design Example")
+@ViewController(value = "/org/lazer/fxml/ui/content_lazer.fxml", title = "Material Design Example")
 public class ContentLazerController {
 
     public static final String CONTENT_PANE = "ContentPane";
@@ -115,7 +115,7 @@ public class ContentLazerController {
 
         this.value = new SimpleDoubleProperty(0);
 
-        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(1000), root);
+        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(2000), root);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
         ft.play();

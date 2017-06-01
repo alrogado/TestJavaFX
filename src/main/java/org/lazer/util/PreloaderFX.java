@@ -1,8 +1,7 @@
-package org.lazer;
+package org.lazer.util;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXProgressBar;
-import javafx.animation.FadeTransition;
 import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,15 +17,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.lazer.GuiApp.APP_BUNDLE;
-import static org.lazer.GuiApp.APP_TITLE;
-import static org.lazer.GuiApp.configureAndSetScene;
+import static org.lazer.GuiAppPreloader.APP_BUNDLE;
+import static org.lazer.GuiAppPreloader.APP_TITLE;
 import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 /**
@@ -94,21 +90,20 @@ public class PreloaderFX extends javafx.application.Preloader {
         scene.setFill(ICON_GRAD_FGR_BGR);
         stage.setScene(scene);
         CSSFX.start(stage);
-        stage.setScene(scene);
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
         //this has to be done here
         stage.setFullScreen(true);
         stage.setAlwaysOnTop(true);
         stage.setFullScreenExitHint("");
-        stage.initStyle(StageStyle.UNDECORATED);
+        //stage.initStyle(StageStyle.UNDECORATED);
 
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(
-                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                //GuiApp.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                GuiApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+                PreloaderFX.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                PreloaderFX.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+                //PreloaderFX.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                PreloaderFX.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
 
         stage.show();
         dialog.show();

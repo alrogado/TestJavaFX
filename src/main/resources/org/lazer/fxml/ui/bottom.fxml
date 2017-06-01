@@ -3,15 +3,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="BOTTOM_CENTER" spacing="12.0" style="-fx-background-color: darkgray;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="BOTTOM_CENTER" spacing="12.0" style="-fx-background-color: darkgray;"
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Label fx:id="clock" mnemonicParsing="false" text="%menu.title.new">
-        <font>
-            <Font size="58.0"/>
-        </font>
+            <font>
+                <Font size="58.0"/>
+            </font>
         </Label>
     </children>
     <padding>
-        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
     </padding>
 </HBox>
