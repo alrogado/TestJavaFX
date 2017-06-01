@@ -108,13 +108,9 @@ public class ContentLazerController {
         //flowGridPane.add(flowGridPaneInternal,0,1);
         flowGridPane.add(createGaugeTile(),1,0);
         flowGridPane.add(createTimeTile(),1,0);
-
         //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
-
         //root.getChildren().add(pane);
-
         this.value = new SimpleDoubleProperty(0);
-
         FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(2000), root);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);

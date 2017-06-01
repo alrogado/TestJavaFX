@@ -79,10 +79,8 @@ public class PreloaderController {
                     FadeTransition ft = new FadeTransition(Duration.millis(2000), dialog);
                     ft.setFromValue(1.0);
                     ft.setToValue(0);
-                    //ft.setCycleCount(4);
-                    //ft.setAutoReverse(true);
                     ft.play();
-                    //dialog.close();
+                    //dialog.close(); //this throws an exception
                     try {
                         configureContent(LazerMainController.class, context, drawer);
                     } catch (Exception e) {
