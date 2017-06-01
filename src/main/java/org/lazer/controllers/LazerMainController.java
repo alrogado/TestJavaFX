@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.lazer.GuiAppPreloader.flowContext;
-import static org.lazer.GuiAppPreloader.viewConfiguration;
+import static org.lazer.GuiApp.flowContext;
+import static org.lazer.GuiApp.viewConfiguration;
 
 @ViewController(value = "/org/lazer/fxml/ui/lazer_main.fxml", title = "Lazer Application")
 public class LazerMainController {

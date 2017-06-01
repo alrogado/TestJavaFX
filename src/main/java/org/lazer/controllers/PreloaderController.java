@@ -4,17 +4,14 @@ package org.lazer.controllers;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXProgressBar;
-import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.application.Preloader;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -30,9 +27,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.lazer.GuiAppPreloader.APP_BUNDLE;
-import static org.lazer.GuiAppPreloader.flowContext;
-import static org.lazer.GuiAppPreloader.viewConfiguration;
+import static org.lazer.GuiApp.flowContext;
+import static org.lazer.GuiApp.viewConfiguration;
 import static org.lazer.controllers.ContentLazerController.CONTENT_PANE;
 
 @ViewController(value = "/org/lazer/fxml/ui/preloader.fxml", title = "Lazer Application")

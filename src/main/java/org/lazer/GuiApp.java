@@ -1,8 +1,6 @@
 package org.lazer;
 
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXProgressBar;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -10,25 +8,9 @@ import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.application.Preloader;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -43,9 +25,9 @@ import java.util.ResourceBundle;
 
 import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
-public class GuiAppPreloader extends Application {
+public class GuiApp extends Application {
 
-    private static Logger logger = LoggerFactory.getLogger(GuiAppPreloader.class);
+    private static Logger logger = LoggerFactory.getLogger(GuiApp.class);
 
     private long epochSeconds;
 
@@ -68,10 +50,10 @@ public class GuiAppPreloader extends Application {
     public static void configureAndSetScene(Stage stage, Scene scene) {
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(
-                GuiAppPreloader.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                GuiAppPreloader.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                GuiAppPreloader.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
-                GuiAppPreloader.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+                GuiApp.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
+                GuiApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(ICON_GRAD_FGR_BGR);
         stage.setScene(scene);
         CSSFX.start(stage);

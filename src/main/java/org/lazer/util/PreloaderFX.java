@@ -21,8 +21,8 @@ import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.lazer.GuiAppPreloader.APP_BUNDLE;
-import static org.lazer.GuiAppPreloader.APP_TITLE;
+import static org.lazer.GuiApp.APP_BUNDLE;
+import static org.lazer.GuiApp.APP_TITLE;
 import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 /**
