@@ -24,7 +24,10 @@ import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -144,9 +147,17 @@ public class GuiApp extends Application {
     }
 
     public static void configStaticValues(Config conf) {
-        if(conf.getString("application.locale")!=null) {
-            LOCALE = new Locale(conf.getString("application.locale"));
-            APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
+        if(conf!=null) {
+            String localeStr = conf.getString("application.locale");
+            if (localeStr != null) {
+                URL resource = GuiApp.class.getResource("/lazer_" + localeStr + ".properties");
+                if (resource == null) {
+                    logger.warn("el valor del parametro de pais/idioma '"+localeStr+"' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
+                } else {
+                    LOCALE = new Locale(localeStr);
+                    APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
+                }
+            }
         }
     }
 }
