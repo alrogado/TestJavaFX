@@ -1999,7 +1999,7 @@ public class Tile extends Control {
 
     /**
      * Returns true if setting the value of the gauge will be animated
-     * using the duration defined in animationDuration [ms].
+     * using the duration defined in ANIM_DURATION [ms].
      * Keep in mind that it only makes sense to animate the setting if
      * the data rate is low (more than 1 value per second). If you use real
      * live measured data you should set animated to false.
@@ -2009,7 +2009,7 @@ public class Tile extends Control {
     public boolean isAnimated() { return null == animated ? _animated : animated.get(); }
     /**
      * Defines if setting the value of the gauge should be animated using
-     * the duration defined in animationDuration [ms].
+     * the duration defined in ANIM_DURATION [ms].
      * Keep in mind that it only makes sense to animate the setting if
      * the data rate is low (more than 1 value per second). If you use real
      * live measured data you should set animated to false.

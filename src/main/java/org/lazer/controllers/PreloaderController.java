@@ -4,8 +4,11 @@ package org.lazer.controllers;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXProgressBar;
+import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.ViewController;
+import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
+import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Platform;
@@ -19,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +30,7 @@ import javax.annotation.PostConstruct;
 
 import java.util.Objects;
 
+import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
 import static org.lazer.util.EffectUtils.fadeOut;
 
@@ -74,7 +79,15 @@ public class PreloaderController {
                     fadeOut(dialog);
                     dialog.close(); //this throws an exception
                     try {
-                        configureContent(LazerMainController.class, drawer);
+                        ViewConfiguration viewConfiguration = new ViewConfiguration();
+                        viewConfiguration.setResources(APP_BUNDLE);
+                        Flow flow = new Flow(LazerMainController.class, viewConfiguration);
+                        FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
+                        context.register("ContentFlowHandler", handler);
+                        context.register("ContentFlow", flow);
+                        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
+                        context.register("ContentPane", drawer.getContent().get(0));
+                        //configureContent(LazerMainController.class, drawer);
                     } catch (Exception e) {
                         logger.error("",e);
                     }
