@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
+import java.util.Objects;
+
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.configureContent;
 import static org.lazer.GuiApp.flowContext;
@@ -35,7 +37,7 @@ public class LazerMainController {
     private static Logger logger = LoggerFactory.getLogger(LazerMainController.class);
 
     @FXMLViewFlowContext
-    private ViewFlowContext context = new ViewFlowContext();
+    private ViewFlowContext context;
 
     @FXML
     private StackPane root;
@@ -52,6 +54,7 @@ public class LazerMainController {
     @PostConstruct
     public void init() throws FlowException {
         // create the inner flow and content
+        Objects.requireNonNull(context, "context");
         configureContent(ContentLazerController.class, context, drawer);
 
         /*// side controller will add links to the content flow

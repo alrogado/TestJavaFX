@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
 import static org.lazer.util.EffectUtils.fadeIn;
@@ -92,7 +93,7 @@ public class ContentLazerController {
      */
     @PostConstruct
     public void init() {
-
+        Objects.requireNonNull(context, "context");
         root.getChildren().remove(dialog);
 
         configureButtonsPane();

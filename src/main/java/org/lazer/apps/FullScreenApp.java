@@ -14,7 +14,7 @@ public class FullScreenApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        createJFXDecorator(stage, confAndInitDataFlow(LazerMainController.class, stage));
+        createJFXDecorator(stage, confAndInitDataFlow(LazerMainController.class, stage), true);
         configureAndSetScene(stage,new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();

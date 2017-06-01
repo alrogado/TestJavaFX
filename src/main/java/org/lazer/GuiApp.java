@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -52,7 +50,7 @@ public class GuiApp extends Application {
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
         logger.debug("start");
-        createJFXDecorator(stage, confAndInitDataFlow(PreloaderController.class, stage));
+        createJFXDecorator(stage, confAndInitDataFlow(PreloaderController.class, stage), true);
         configureAndSetScene(stage, new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();
@@ -135,10 +133,10 @@ public class GuiApp extends Application {
         context.register("ContentPane", drawer.getContent().get(0));
     }
 
-    public static void createJFXDecorator(Stage stage, DefaultFlowContainer container) {
+    public static void createJFXDecorator(Stage stage, DefaultFlowContainer container, boolean maximized) {
         decorator = new JFXDecorator(stage, container.getView());
-        //no quitar el set maximized porque hace efecto de repetición y no hace bien el fade in fade out
-        decorator.setMaximized(true);
+        //no quitar el set maximized porque hace efecto extrañio de repeticion y no funciona bien el fade in fade out
+        decorator.setMaximized(maximized);
     }
 
     public static void main(String[] args) {

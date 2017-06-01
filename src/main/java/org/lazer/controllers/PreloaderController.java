@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
+import java.util.Objects;
+
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
 import static org.lazer.controllers.ContentLazerController.CONTENT_PANE;
@@ -66,7 +68,8 @@ public class PreloaderController {
      */
     @PostConstruct
     public void init() throws FlowException {
-        context = new ViewFlowContext();
+        //context = new ViewFlowContext();
+        Objects.requireNonNull(context, "context");
         dialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
         dialog.show(root);
 
