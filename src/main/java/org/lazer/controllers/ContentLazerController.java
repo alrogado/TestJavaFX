@@ -227,6 +227,14 @@ public class ContentLazerController {
         personalTile.setAutoReferenceValue(true);
         personalTile.setTooltipText("Aloha");
 
+        Tile worldTile = TileBuilder.create()
+                //.prefSize(300, TILE_HEIGHT)
+                .skinType(Tile.SkinType.WORLDMAP)
+                .title("WorldMap Tile")
+                .text("Whatever text")
+                .textVisible(false)
+                .build();
+
 
         Tile sliderTile = TileBuilder.create()
                 .skinType(Tile.SkinType.SLIDER)
@@ -239,7 +247,7 @@ public class ContentLazerController {
                 .roundedCorners(false)
                 .build();
 
-        flowGridPaneInternal.add(personalTile,0,0);
+        flowGridPaneInternal.add(worldTile,0,0);
         flowGridPaneInternal.add(sliderTile,1,0);
         //flowGridPaneInternal.add(clockTile,0,1);
 
