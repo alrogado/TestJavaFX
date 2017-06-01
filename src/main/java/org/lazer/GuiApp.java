@@ -1,6 +1,7 @@
 package org.lazer;
 
 import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXDrawer;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -14,8 +15,10 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.lazer.controllers.PreloaderController;
+import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 public class GuiApp extends Application {
@@ -40,9 +44,8 @@ public class GuiApp extends Application {
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
         logger.debug("start");
-        createJFXDecorator(stage, configureDataFlow(PreloaderController.class, stage));
-        Scene scene = new Scene(decorator);
-        configureAndSetScene(stage, scene);
+        createJFXDecorator(stage, confAndInitDataFlow(PreloaderController.class, stage));
+        configureAndSetScene(stage, new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();
     }
@@ -62,10 +65,13 @@ public class GuiApp extends Application {
     public static void configureFullScreenStage(Stage stage) {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreen(true);
-        stage.setAlwaysOnTop(true);
         stage.setFullScreenExitHint("");
         stage.setFullScreen(true);
         stage.setAlwaysOnTop(true);
+        stage.setMinHeight(HEIGHT);
+        stage.setMinWidth(WIDTH);
+        stage.setHeight(HEIGHT);
+        stage.setWidth(WIDTH);
         stage.setTitle(APP_TITLE);
         stage.setFullScreenExitHint("");
     }
@@ -91,7 +97,7 @@ public class GuiApp extends Application {
     public static ViewConfiguration viewConfiguration ;
 
 
-    public static DefaultFlowContainer configureDataFlow(Class startViewControllerClass, Stage stage) {
+    public static DefaultFlowContainer confAndInitDataFlow(Class startViewControllerClass, Stage stage) {
         viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(APP_BUNDLE);
 
@@ -110,9 +116,20 @@ public class GuiApp extends Application {
         return container;
     }
 
+    public static void configureContent(Class controllerClass, ViewFlowContext context, JFXDrawer drawer) throws FlowException {
+        // set the content Lazer controller
+        Flow flow = new Flow(controllerClass, viewConfiguration);
+        FlowHandler handler = new FlowHandler(flow, flowContext, viewConfiguration);
+        context.register("ContentFlowHandler", handler);
+        context.register("ContentFlow", flow);
+        final Duration containerAnimationDuration = Duration.millis(320);
+        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        context.register("ContentPane", drawer.getContent().get(0));
+    }
+
     public static void createJFXDecorator(Stage stage, DefaultFlowContainer container) {
         decorator = new JFXDecorator(stage, container.getView());
-        //decorator.setMaximized(true);
+        decorator.setMaximized(true);
     }
 
     public static void main(String[] args) {

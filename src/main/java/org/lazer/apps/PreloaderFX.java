@@ -1,4 +1,4 @@
-package org.lazer.util;
+package org.lazer.apps;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXProgressBar;

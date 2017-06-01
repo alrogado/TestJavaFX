@@ -10,8 +10,13 @@ import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
@@ -20,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
+import static org.lazer.GuiApp.configureContent;
 import static org.lazer.GuiApp.flowContext;
 import static org.lazer.GuiApp.viewConfiguration;
 
@@ -46,7 +52,7 @@ public class LazerMainController {
     @PostConstruct
     public void init() throws FlowException {
         // create the inner flow and content
-        configureContent(ContentLazerController.class);
+        configureContent(ContentLazerController.class, context, drawer);
 
         /*// side controller will add links to the content flow
         Flow sideMenuFlow = new Flow(SideMenuController.class);
@@ -56,20 +62,4 @@ public class LazerMainController {
 
     }
 
-    public void configureContent(Class controllerClass){
-        // set the content Lazer controller
-        Flow flow = new Flow(controllerClass, viewConfiguration);
-        FlowHandler flowHandler = new FlowHandler(flow, flowContext, viewConfiguration);
-        DefaultFlowContainer container = new DefaultFlowContainer();
-
-        context.register("ContentFlowHandler", flowHandler);
-        context.register("ContentFlow", flow);
-        final Duration containerAnimationDuration = Duration.millis(320);
-        try {
-            drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
-        } catch (FlowException e) {
-            logger.error("",e);
-        }
-        context.register("ContentPane", drawer.getContent().get(0));
-    }
 }
