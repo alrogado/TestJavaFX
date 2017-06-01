@@ -45,12 +45,10 @@ public class GuiApp extends Application {
     private static Locale LOCALE = new Locale("es");
     public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
 
-    private ViewFlowContext context;
-
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
         logger.debug("start");
-        createJFXDecorator(stage, confAndInitDataFlow(PreloaderController.class, stage), true);
+        createJFXDecorator(stage, initFlowConf(PreloaderController.class, stage), true);
         configureAndSetScene(stage, new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();
@@ -99,20 +97,20 @@ public class GuiApp extends Application {
     }
 
     public static FlowHandler handler;
-    public static ViewFlowContext flowContext;
+    public static ViewFlowContext context;
     public static ViewConfiguration viewConfiguration ;
 
 
-    public static DefaultFlowContainer confAndInitDataFlow(Class startViewControllerClass, Stage stage) {
+    public static DefaultFlowContainer initFlowConf(Class startViewControllerClass, Stage stage) {
         viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(APP_BUNDLE);
 
         Flow flow = new Flow(startViewControllerClass, viewConfiguration);
-        flowContext = new ViewFlowContext();
-        flowContext.register("Stage", stage);
+        context = new ViewFlowContext();
+        context.register("Stage", stage);
 
         DefaultFlowContainer container = new DefaultFlowContainer();
-        handler = new FlowHandler(flow, flowContext, viewConfiguration);
+        handler = new FlowHandler(flow, context, viewConfiguration);
 
         try {
             handler.start(container);
@@ -122,24 +120,25 @@ public class GuiApp extends Application {
         return container;
     }
 
-    public static void configureContent(Class controllerClass, ViewFlowContext context, JFXDrawer drawer) throws FlowException {
+    static Duration animationDuration = Duration.millis(320);
+
+    public static void configureContent(Class controllerClass, JFXDrawer drawer) throws FlowException {
         // set the content Lazer controller
         Flow flow = new Flow(controllerClass, viewConfiguration);
-        FlowHandler handler = new FlowHandler(flow, flowContext, viewConfiguration);
+        FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
         context.register("ContentFlowHandler", handler);
         context.register("ContentFlow", flow);
-        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
+        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(animationDuration, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
     }
 
-    public static void configureSidePane(Class controllerClass, ViewFlowContext context, JFXDrawer drawer) throws FlowException {
+    public static void configureSidePane(Class controllerClass, JFXDrawer drawer) throws FlowException {
         // set the content Lazer controller
         Flow flow = new Flow(controllerClass, viewConfiguration);
-        FlowHandler handler = new FlowHandler(flow, flowContext, viewConfiguration);
+        FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
         context.register("ContentFlowHandler", handler);
         context.register("ContentFlow", flow);
-        final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setSidePane(handler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        drawer.setSidePane(handler.start(new ExtendedAnimatedFlowContainer(animationDuration, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
     }
 

@@ -5,26 +5,20 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXProgressBar;
 import io.datafx.controller.ViewController;
-import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
-import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
-import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +26,7 @@ import javax.annotation.PostConstruct;
 
 import java.util.Objects;
 
-import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
-import static org.lazer.controllers.ContentLazerController.CONTENT_PANE;
 import static org.lazer.util.EffectUtils.fadeOut;
 
 @ViewController(value = "/org/lazer/fxml/ui/preloader.fxml", title = "Lazer Application")
@@ -82,7 +74,7 @@ public class PreloaderController {
                     fadeOut(dialog);
                     dialog.close(); //this throws an exception
                     try {
-                        configureContent(LazerMainController.class, context, drawer);
+                        configureContent(LazerMainController.class, drawer);
                     } catch (Exception e) {
                         logger.error("",e);
                     }

@@ -12,6 +12,7 @@ import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import org.lazer.GuiApp;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -98,10 +99,10 @@ public class SideMenuController {
             }
         });
         Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
-        bindNodeToController(button, PreloaderController.class, contentFlow, contentFlowHandler);
+        bindNodeToController(button, PreloaderController.class, contentFlow);
     }
 
-    private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
+    private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow) {
         flow.withGlobalLink(node.getId(), controllerClass);
     }
 

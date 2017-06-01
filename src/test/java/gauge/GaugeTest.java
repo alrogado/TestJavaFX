@@ -34,9 +34,9 @@ public class GaugeTest extends Application {
 
         /*Flow flow = new Flow(MainController.class);
         DefaultFlowContainer container = new DefaultFlowContainer();
-        flowContext = new ViewFlowContext();
-        flowContext.register("Stage", stage);
-        flow.createHandler(flowContext).start(container);
+        context = new ViewFlowContext();
+        context.register("Stage", stage);
+        flow.createHandler(context).start(container);
 
         JFXDecorator decorator = new JFXDecorator(stage, container.getView());
         decorator.setCustomMaximize(true);*/
