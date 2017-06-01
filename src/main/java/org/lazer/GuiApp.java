@@ -128,8 +128,18 @@ public class GuiApp extends Application {
         FlowHandler handler = new FlowHandler(flow, flowContext, viewConfiguration);
         context.register("ContentFlowHandler", handler);
         context.register("ContentFlow", flow);
+        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
+        context.register("ContentPane", drawer.getContent().get(0));
+    }
+
+    public static void configureSidePane(Class controllerClass, ViewFlowContext context, JFXDrawer drawer) throws FlowException {
+        // set the content Lazer controller
+        Flow flow = new Flow(controllerClass, viewConfiguration);
+        FlowHandler handler = new FlowHandler(flow, flowContext, viewConfiguration);
+        context.register("ContentFlowHandler", handler);
+        context.register("ContentFlow", flow);
         final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        drawer.setSidePane(handler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
     }
 
