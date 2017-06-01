@@ -12,6 +12,7 @@ import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.concurrent.Task;
@@ -41,7 +42,6 @@ public class PreloaderController {
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
-
     @FXML
     private StackPane root;
     @FXML
@@ -68,12 +68,18 @@ public class PreloaderController {
         dialog.setTransitionType(JFXDialog.DialogTransition.BOTTOM);
         dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
 
+        simulateTasks();
         Platform.runLater(()->{
             try {
-                Thread.sleep(3000);
-                dialog.close();
+                FadeTransition ft = new FadeTransition(Duration.millis(2000), dialog);
+                ft.setFromValue(1.0);
+                ft.setToValue(0);
+                //ft.setCycleCount(4);
+                //ft.setAutoReverse(true);
+                ft.play();
                 Thread.sleep(400);
                 configureContent(LazerMainController.class);
+                dialog.close();
             } catch (FlowException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -108,12 +114,12 @@ public class PreloaderController {
                     Thread.sleep(300);
                     logger.debug("loadSplashAndInitTask " + i);
                     // Send progress to preloader
-                    //progressProperty().handleProgressNotification(new Preloader.ProgressNotification(((double) i)/max)); //this moves the progress bar of the preloader
+                    loadProgress.setProgress(((double) i)/max); //this moves the progress bar of the preloader
                 }
                 ///Alwways close the dialog because the main can't be closed
                 //preloaderFX.stop();
                 //dejar sleep pq si no no se ve como desaparece el dialog
-                Thread.sleep(400);
+                //Thread.sleep(400);
                 //ready.setValue(Boolean.TRUE);
                 //preloaderFX.handleStateChangeNotification(new Preloader.StateChangeNotification(Preloader.StateChangeNotification.Type.BEFORE_START));
                 return null;

@@ -56,7 +56,7 @@ public class LazerMainController {
 
     }
 
-    public void configureContent(Class controllerClass) throws FlowException {
+    public void configureContent(Class controllerClass){
         // set the content Lazer controller
         Flow flow = new Flow(controllerClass, viewConfiguration);
         FlowHandler flowHandler = new FlowHandler(flow, flowContext, viewConfiguration);
@@ -65,7 +65,11 @@ public class LazerMainController {
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", flow);
         final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        try {
+            drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        } catch (FlowException e) {
+            logger.error("",e);
+        }
         context.register("ContentPane", drawer.getContent().get(0));
     }
 }
