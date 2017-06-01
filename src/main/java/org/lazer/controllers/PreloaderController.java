@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -32,6 +33,7 @@ import javax.annotation.PostConstruct;
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
 import static org.lazer.controllers.ContentLazerController.CONTENT_PANE;
+import static org.lazer.util.EffectUtils.fadeOut;
 
 @ViewController(value = "/org/lazer/fxml/ui/preloader.fxml", title = "Lazer Application")
 public class PreloaderController {
@@ -65,22 +67,17 @@ public class PreloaderController {
     @PostConstruct
     public void init() throws FlowException {
         context = new ViewFlowContext();
-        dialog.setPrefWidth(100);
-        dialog.setStyle("-fx-width: 100px;");
-        dialog.setTransitionType(JFXDialog.DialogTransition.BOTTOM);
-        dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
+        dialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        dialog.show(root);
 
         simulateTasks();
 
         ready.addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean readyValue) -> {
             if (Boolean.TRUE.equals(readyValue)) {
                 Platform.runLater(() -> {
-                    logger.debug("Init Task  completed. Now executes configureAndSetScene");
-                    FadeTransition ft = new FadeTransition(Duration.millis(2000), dialog);
-                    ft.setFromValue(1.0);
-                    ft.setToValue(0);
-                    ft.play();
-                    //dialog.close(); //this throws an exception
+                    logger.debug("Tasks  completed. Now executes configureAndSetScene");
+                    fadeOut(dialog);
+                    dialog.close(); //this throws an exception
                     try {
                         configureContent(LazerMainController.class, context, drawer);
                     } catch (Exception e) {
@@ -97,12 +94,16 @@ public class PreloaderController {
                 SWIPE_LEFT)));*/
     }
 
+
+
     private void simulateTasks() {
         //simulate long init in background
         String[] textProGressValues = new String[]{
                 "menu.title.close",
                 "menu.title.save.as",
-                "menu.title.revert"
+                "menu.title.revert",
+                "menu.title.new",
+                "menu.title.open"
         };
         int max = textProGressValues.length;
         new Thread(new Task<Void>() {
@@ -116,13 +117,10 @@ public class PreloaderController {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
                         progressText.setText(APP_BUNDLE.getString(textProGressValues[finalI]));
                     });
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 }
-                ///Alwways close the dialog because the main can't be closed
-                //preloaderFX.stop();
-                //dejar sleep pq si no no se ve como desaparece el dialog
-                //Thread.sleep(400);
                 ready.setValue(Boolean.TRUE);
+                Thread.sleep(400);
                 //preloaderFX.handleStateChangeNotification(new Preloader.StateChangeNotification(Preloader.StateChangeNotification.Type.BEFORE_START));
                 return null;
             }

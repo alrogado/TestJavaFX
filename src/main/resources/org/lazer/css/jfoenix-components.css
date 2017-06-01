@@ -72,7 +72,7 @@
 }
 
 .jfx-progress-bar > .bar {
-    -fx-min-width: 500;
+    -fx-min-width: 200;
 }
 
 .jfx-progress-bar {

@@ -15,6 +15,7 @@ public class PreloaderNotFullScreenApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, confAndInitDataFlow(PreloaderController.class, stage));
+        //decorator.setMaximized(false);
         configureAndSetScene(stage,new Scene(decorator, WIDTH, HEIGHT));
         configureNotFullScreenStage(stage);
         stage.show();

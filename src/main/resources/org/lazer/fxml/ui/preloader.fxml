@@ -7,17 +7,17 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-    <JFXDialog fx:id="dialog" style="-fx-width: 100px;">
+    <JFXDialog fx:id="dialog" >
         <Pane fx:id="splashLayout">
-            <VBox fx:id="vBox" style="-fx-border-width:5;-fx-background-color: white;-fx-border-width:5;-fx-width: 100px;">
+            <VBox fx:id="vBox" >
                 <ImageView fx:id="splash" fitWidth="275">
                     <Image url="/images/logov.png" requestedWidth="275" requestedHeight="183" preserveRatio="false"
                            smooth="false">
                     </Image>
                 </ImageView>
-                <JFXProgressBar fx:id="loadProgress" prefWidth="273" maxWidth="273">
+                <JFXProgressBar fx:id="loadProgress" prefWidth="273" maxWidth="273" style="-fx-padding: 4;">
                 </JFXProgressBar>
-                <Label fx:id="progressText" text="%menu.title.cut" alignment="CENTER">
+                <Label fx:id="progressText" text="%menu.title.cut" alignment="CENTER" style="-fx-padding: 5;">
                 </Label>
             </VBox>
         </Pane>

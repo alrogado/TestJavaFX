@@ -17,6 +17,7 @@ import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -38,6 +39,7 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Random;
 
+import static org.lazer.util.EffectUtils.fadeIn;
 import static org.lazer.util.GuiColors.*;
 
 @ViewController(value = "/org/lazer/fxml/ui/content_lazer.fxml", title = "Material Design Example")
@@ -111,10 +113,7 @@ public class ContentLazerController {
         //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
         //root.getChildren().add(pane);
         this.value = new SimpleDoubleProperty(0);
-        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(2000), root);
-        ft.setFromValue(0.0);
-        ft.setToValue(1.0);
-        ft.play();
+        fadeIn(root);
     }
 
     private Tile createGaugeTile() {

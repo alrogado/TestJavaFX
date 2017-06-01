@@ -129,6 +129,7 @@ public class GuiApp extends Application {
 
     public static void createJFXDecorator(Stage stage, DefaultFlowContainer container) {
         decorator = new JFXDecorator(stage, container.getView());
+        //no quitar el set maximized porque hace efecto de repetición y no hace bien el fade in fade out
         decorator.setMaximized(true);
     }
 
