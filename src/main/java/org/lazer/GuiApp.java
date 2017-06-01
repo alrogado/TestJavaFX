@@ -2,6 +2,8 @@ package org.lazer;
 
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXDrawer;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -36,7 +38,8 @@ public class GuiApp extends Application {
     private long epochSeconds;
 
     public static JFXDecorator decorator;
-    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", new Locale("fr"));
+    private static Locale LOCALE = new Locale("fr");
+    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
     public static String APP_TITLE = "LAZER App";
 
     private ViewFlowContext context;
@@ -134,6 +137,13 @@ public class GuiApp extends Application {
     }
 
     public static void main(String[] args) {
+        configStaticValues(ConfigFactory.defaultApplication());
         Application.launch(args);
+    }
+
+    private static void configStaticValues(Config conf) {
+        if(conf.getString("application.locale")!=null) {
+            LOCALE = new Locale(conf.getString("application.locale"));
+        }
     }
 }
