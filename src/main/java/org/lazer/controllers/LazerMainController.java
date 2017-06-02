@@ -66,16 +66,15 @@ public class LazerMainController {
         final FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
-        final Duration containerAnimationDuration = Duration.millis(320);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
         //configureContent(ContentLazerController.class, drawer);
 
         // side controller will add links to the content flow
-        Flow sideMenuFlow = new Flow(SideMenuController.class, viewConfiguration);
+       /* Flow sideMenuFlow = new Flow(SideMenuController.class, viewConfiguration);
         final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320),SWIPE_LEFT)));
-
+        */
 
         /*// init the title hamburger icon
         drawer.setOnDrawerOpening(e -> {

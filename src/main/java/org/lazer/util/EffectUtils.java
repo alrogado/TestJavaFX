@@ -9,7 +9,7 @@ import javafx.util.Duration;
  */
 public class EffectUtils {
 
-    static int fadeTransitionsDuration = 2000;
+    static int fadeTransitionsDuration = 1500;
     public static void fadeOut(Node node) {
         FadeTransition ft = new FadeTransition(Duration.millis(fadeTransitionsDuration), node);
         ft.setFromValue(1.0);

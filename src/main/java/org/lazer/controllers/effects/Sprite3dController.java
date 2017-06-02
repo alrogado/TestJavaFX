@@ -1,5 +1,6 @@
 package org.lazer.controllers.effects;
 
+import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -8,6 +9,7 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import org.lazer.util.DemoFxApp;
 
@@ -20,15 +22,20 @@ public class Sprite3dController extends AbstractEffectsController {
     private ViewFlowContext context;
     @FXML
     private StackPane root;
+    @FXML
+    FlowGridPane flowGridPane;
+    @FXML
+    VBox vbox;
 
     @PostConstruct
     public void init() throws FlowException {
         demoFX = new DemoFxApp().getDemoFX("sprite3d",
-                Screen.getPrimary().getBounds().getWidth(),
-                Screen.getPrimary().getBounds().getHeight()-180);
+                Screen.getPrimary().getBounds().getWidth()-20,
+                Screen.getPrimary().getBounds().getHeight()-100);
         BorderPane pane = (BorderPane) demoFX.getScene().getRoot();
         pane.setStyle("-fx-background-color:white;");
-        root.getChildren().add(pane.getCenter());
+        vbox.getChildren().addAll(pane.getCenter());
+        //root.add(pane.getCenter());
         demoFX.runDemo();
     }
 
