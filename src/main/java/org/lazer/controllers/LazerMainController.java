@@ -9,12 +9,13 @@ import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.lazer.controllers.effects.ReflectionController;
+import org.lazer.controllers.effects.Sprite3dController;
 import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class LazerMainController {
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320),SWIPE_LEFT)));
 
 
-        // init the title hamburger icon
+        /*// init the title hamburger icon
         drawer.setOnDrawerOpening(e -> {
             final Transition animation = titleBurger.getAnimation();
             animation.setRate(1);
@@ -84,7 +85,7 @@ public class LazerMainController {
             final Transition animation = titleBurger.getAnimation();
             animation.setRate(-1);
             animation.play();
-        });
+        });*/
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/lazer/fxml/ui/main_popup.fxml"));
         loader.setController(new InputController(this));
@@ -115,24 +116,33 @@ public class LazerMainController {
         // close application
         @FXML
         private void submit() {
-            if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
+            if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 2) {
                 Platform.exit();
+            }else if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
+                try {
+                    initController(ReflectionController.class);
+                } catch (FlowException e) {
+                    logger.error("",e);
+                }
             }else if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 0) {
                 try {
                     //configureContent(ContentLazerController.class, lazerMainController.drawer);
                     //esto hace lo mismo y no hace el swipe en el content del drawer como sí lo hace el menu de la izq
-                    Flow innerFlow = new Flow(Sprite3dController.class);
-                    final FlowHandler flowHandler = innerFlow.createHandler(lazerMainController.context);
-                    lazerMainController.context.register("ContentFlowHandler", flowHandler);
-                    lazerMainController.context.register("ContentFlow", innerFlow);
-                    final Duration containerAnimationDuration = Duration.millis(320);
-                    lazerMainController.drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
-                    lazerMainController.context.register("ContentPane", lazerMainController.drawer.getContent().get(0));
-
+                    initController(Sprite3dController.class);
                 } catch (FlowException e) {
                     logger.error("",e);
                 }
             }
+        }
+
+        private void initController(Class controllerClass) throws FlowException {
+            Flow innerFlow = new Flow(controllerClass);
+            final FlowHandler flowHandler = innerFlow.createHandler(lazerMainController.context);
+            lazerMainController.context.register("ContentFlowHandler", flowHandler);
+            lazerMainController.context.register("ContentFlow", innerFlow);
+            final Duration containerAnimationDuration = Duration.millis(320);
+            lazerMainController.drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+            lazerMainController.context.register("ContentPane", lazerMainController.drawer.getContent().get(0));
         }
     }
 }
