@@ -77,6 +77,9 @@ public class ContentLazerController {
     private FlowGridPane flowGridPaneInternal;
 
     @FXML
+    private FlowGridPane flowGridPaneButtons;
+
+    @FXML
     private JFXDialog dialog;
 
     static {

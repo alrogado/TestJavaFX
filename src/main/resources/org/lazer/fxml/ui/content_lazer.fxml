@@ -12,7 +12,6 @@
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1">
     <FlowGridPane fx:id="flowGridPane">
         <children>
-            <!--<VBox alignment="CENTER" maxHeight="300" maxWidth="400" spacing="20">-->
             <VBox alignment="CENTER" spacing="20">
                 <JFXButton fx:id="centerButton" styleClass="dialog-trigger">CENTER
                 </JFXButton>

@@ -86,14 +86,6 @@ public class LazerMainController {
             animation.play();
         });
 
-        /*titleBurgerContainer.setOnMouseClicked(e -> {
-            if (drawer.isHidden() ){//|| drawer.isHiding()) {
-                drawer.open();
-            } else {
-                drawer.close();
-            }
-        });*/
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/lazer/fxml/ui/main_popup.fxml"));
         loader.setController(new InputController(this));
         loader.setResources(APP_BUNDLE);
