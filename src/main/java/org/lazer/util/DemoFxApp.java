@@ -2,7 +2,6 @@ package org.lazer.util;
 
 import com.chrisnewland.demofx.DemoConfig;
 import com.chrisnewland.demofx.DemoFX;
-import com.chrisnewland.demofx.DemoFXApplication;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -12,11 +11,11 @@ import javafx.stage.WindowEvent;
 /**
  * Created by alrogado on 6/2/17.
  */
-public class Srpite3dDemo extends Application
+public class DemoFxApp extends Application
 {
     private static String[] args;
 
-    public Srpite3dDemo() {
+    public DemoFxApp() {
     }
 
     public static void main(String[] args)
@@ -92,7 +91,7 @@ public class Srpite3dDemo extends Application
                            vumeter
                            wordsearch*/
 
-        Srpite3dDemo.args = args;
+        DemoFxApp.args = args;
         Application.launch(args);
     }
 
@@ -119,8 +118,12 @@ public class Srpite3dDemo extends Application
         demoFX.runDemo();
     }
 
+    public DemoFX getDemoFX(String effect, double width, double height) {
+        args = new String[]{"-e",effect,"-w",Double.toString(width),"-h",Double.toString(height)};
+        return getDemoFX();
+    }
+
     public DemoFX getDemoFX() {
-        args = new String[]{"-e","sprite3d"};
         DemoConfig config = DemoConfig.buildConfig(args);
 
         if (config == null)
