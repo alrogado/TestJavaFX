@@ -121,7 +121,7 @@ public class LazerMainController {
                 try {
                     //configureContent(ContentLazerController.class, lazerMainController.drawer);
                     //esto hace lo mismo y no hace el swipe en el content del drawer como sí lo hace el menu de la izq
-                    Flow innerFlow = new Flow(ContentLazerController.class);
+                    Flow innerFlow = new Flow(Sprite3dController.class);
                     final FlowHandler flowHandler = innerFlow.createHandler(lazerMainController.context);
                     lazerMainController.context.register("ContentFlowHandler", flowHandler);
                     lazerMainController.context.register("ContentFlow", innerFlow);
