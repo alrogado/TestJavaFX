@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.lazer.controllers.effects.AbstractEffectsController;
+import org.lazer.controllers.effects.EffectRunnable;
 import org.lazer.controllers.effects.ReflectionController;
 import org.lazer.controllers.effects.Sprite3dController;
 import org.lazer.util.ExtendedAnimatedFlowContainer;
@@ -120,7 +122,7 @@ public class LazerMainController {
                 Platform.exit();
             }else if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
                 try {
-                    initController(ReflectionController.class);
+                    initController(Sprite3dController.class);
                 } catch (FlowException e) {
                     logger.error("",e);
                 }
@@ -128,7 +130,7 @@ public class LazerMainController {
                 try {
                     //configureContent(ContentLazerController.class, lazerMainController.drawer);
                     //esto hace lo mismo y no hace el swipe en el content del drawer como sí lo hace el menu de la izq
-                    initController(Sprite3dController.class);
+                    initController(ContentLazerController.class);
                 } catch (FlowException e) {
                     logger.error("",e);
                 }
@@ -138,6 +140,9 @@ public class LazerMainController {
         private void initController(Class controllerClass) throws FlowException {
             Flow innerFlow = new Flow(controllerClass);
             final FlowHandler flowHandler = innerFlow.createHandler(lazerMainController.context);
+            if(((FlowHandler)lazerMainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController() instanceof EffectRunnable){
+                ((AbstractEffectsController)((FlowHandler)lazerMainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController()).stopEffects();
+            }
             lazerMainController.context.register("ContentFlowHandler", flowHandler);
             lazerMainController.context.register("ContentFlow", innerFlow);
             final Duration containerAnimationDuration = Duration.millis(320);
