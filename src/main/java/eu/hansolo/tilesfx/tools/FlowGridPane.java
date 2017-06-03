@@ -116,16 +116,8 @@ public class FlowGridPane extends GridPane {
     }
 
     private int coordsToOffset(final int COL, final int ROW) { return ROW * noOfCols.get() + COL; }
-    private int offsetToCol(final int OFFSET) {
-        if (noOfCols.get() != 0)
-            return OFFSET / noOfCols.get();
-        else return 0;
-    }
-    private int offsetToRow(final int OFFSET) {
-        if(noOfCols.get()!=0)
-            return OFFSET / noOfCols.get();
-        else return 0;
-    }
+    private int offsetToCol(final int OFFSET) { if(noOfCols.get()!=0)return OFFSET % noOfCols.get();else return 0;}
+    private int offsetToRow(final int OFFSET) { if(noOfCols.get()!=0)return OFFSET / noOfCols.get();else return 0; }
 
     private void checkAspectRatio() {
         internalCall = true;

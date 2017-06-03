@@ -9,14 +9,18 @@ import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.FlowHandler;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
+import io.datafx.controller.util.VetoException;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.lazer.controllers.effects.AbstractEffectsController;
 import org.lazer.controllers.effects.EffectRunnable;
-import org.lazer.controllers.effects.ReflectionController;
 import org.lazer.controllers.effects.Sprite3dController;
 import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
@@ -51,6 +55,10 @@ public class LazerMainController {
     private JFXDrawer drawer;
 
     private JFXPopup toolbarPopup;
+    @FXML
+    private Label labelChecks;
+    @FXML
+    private Label labelMain;
 
     /**
      * init fxml when loaded.
@@ -63,7 +71,7 @@ public class LazerMainController {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(APP_BUNDLE);
         Flow innerFlow = new Flow(ContentLazerController.class, viewConfiguration);
-        final FlowHandler flowHandler = innerFlow.createHandler(context);
+        FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
@@ -102,6 +110,44 @@ public class LazerMainController {
                 JFXPopup.PopupHPosition.RIGHT,
                 -12,
                 15));
+
+
+        bindNodeToController(labelChecks, CheckboxController.class, innerFlow, flowHandler);
+        bindNodeToController(labelMain, ContentLazerController.class, innerFlow, flowHandler);
+        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks));
+        labelMain.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMain));
+
+    }
+
+    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler, Node node) {
+        if (event.getClickCount() == 1) {
+            try {
+                flowHandler.handle(node.getId());
+            } catch (FlowException e) {
+                e.printStackTrace();
+            } catch (VetoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*@FXML
+    private void handleMousePress(MouseEvent event) {
+        // code in this method is executed when the mouse is pressed
+        // on a node with onMousePressed="#handleMousePress"
+        //FlowHandler flowHandler = innerFlow.createHandler(context);
+        try {
+            flowHandler.handle(labelChecks.getId());
+        } catch (VetoException e) {
+            e.printStackTrace();
+        } catch (FlowException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
+        //flowHandler.getFlowContext().getCurrentViewContext().getConfiguration().getBuilderFactory().getBuilder()
+        flow.withGlobalLink(node.getId(), controllerClass);
     }
 
     public static final class InputController {
