@@ -3,7 +3,7 @@ package org.lazer.apps;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.lazer.controllers.LazerMainController;
+import org.lazer.controllers.MainController;
 
 import static org.lazer.GuiApp.*;
 
@@ -14,7 +14,7 @@ public class NotFullScreenApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        createJFXDecorator(stage, initFlowConf(LazerMainController.class, stage), false);
+        createJFXDecorator(stage, initFlowConf(MainController.class, stage), false);
         configureAndSetScene(stage, new Scene(decorator, WIDTH, HEIGHT));
         configureNotFullScreenStage(stage);
         stage.show();

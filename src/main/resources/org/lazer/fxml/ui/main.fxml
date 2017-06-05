@@ -27,7 +27,7 @@
                             <Label fx:id="labelChecks" text="%menu.title.about"></Label>
                         </JFXRippler>
                         <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
-                            <Label fx:id="labelMain" text="%menu.title.new"></Label>
+                            <Label fx:id="labelMainContent" text="%menu.title.new"></Label>
                         </JFXRippler>
                         <!--<JFXRippler fx:id="optionsRippler" maskType="CIRCLE"
                                     style="-fx-ripple-color:WHITE;">

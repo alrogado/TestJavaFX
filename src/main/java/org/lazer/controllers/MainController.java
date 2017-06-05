@@ -12,7 +12,6 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -27,16 +26,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.lazer.GuiApp.*;
 
-@ViewController(value = "/org/lazer/fxml/ui/lazer_main.fxml", title = "Lazer Application")
-public class LazerMainController {
+@ViewController(value = "/org/lazer/fxml/ui/main.fxml", title = "Lazer Application")
+public class MainController {
 
-    private static Logger logger = LoggerFactory.getLogger(LazerMainController.class);
+    private static Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -57,7 +55,7 @@ public class LazerMainController {
     @FXML
     private Label labelChecks;
     @FXML
-    private Label labelMain;
+    private Label labelMainContent;
 
     /**
      * init fxml when loaded.
@@ -112,9 +110,9 @@ public class LazerMainController {
 
 
         bindNodeToController(labelChecks, CheckboxController.class, innerFlow, flowHandler);
-        bindNodeToController(labelMain, MainContentController.class, innerFlow, flowHandler);
+        bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);
         labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks));
-        labelMain.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMain));
+        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMainContent));
 
     }
 
@@ -153,10 +151,10 @@ public class LazerMainController {
         @FXML
         private JFXListView<?> toolbarPopupList;
 
-        LazerMainController lazerMainController;
+        MainController mainController;
 
-        public InputController(LazerMainController lazerMainController) {
-            this.lazerMainController=lazerMainController;
+        public InputController(MainController mainController) {
+            this.mainController = mainController;
         }
 
         // close application
@@ -172,7 +170,7 @@ public class LazerMainController {
                 }
             }else if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 0) {
                 try {
-                    //configureContent(MainContentController.class, lazerMainController.drawer);
+                    //configureContent(MainContentController.class, mainController.drawer);
                     //esto hace lo mismo y no hace el swipe en el content del drawer como sí lo hace el menu de la izq
                     initController(MainContentController.class);
                 } catch (FlowException e) {
@@ -183,15 +181,15 @@ public class LazerMainController {
 
         private void initController(Class controllerClass) throws FlowException {
             Flow innerFlow = new Flow(controllerClass);
-            final FlowHandler flowHandler = innerFlow.createHandler(lazerMainController.context);
-            if(((FlowHandler)lazerMainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController() instanceof EffectRunnable){
-                ((AbstractEffectsController)((FlowHandler)lazerMainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController()).stopEffects();
+            final FlowHandler flowHandler = innerFlow.createHandler(mainController.context);
+            if(((FlowHandler) mainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController() instanceof EffectRunnable){
+                ((AbstractEffectsController)((FlowHandler) mainController.context.getRegisteredObject("ContentFlowHandler")).getCurrentViewContext().getController()).stopEffects();
             }
-            lazerMainController.context.register("ContentFlowHandler", flowHandler);
-            lazerMainController.context.register("ContentFlow", innerFlow);
+            mainController.context.register("ContentFlowHandler", flowHandler);
+            mainController.context.register("ContentFlow", innerFlow);
             final Duration containerAnimationDuration = Duration.millis(320);
-            lazerMainController.drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
-            lazerMainController.context.register("ContentPane", lazerMainController.drawer.getContent().get(0));
+            mainController.drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
+            mainController.context.register("ContentPane", mainController.drawer.getContent().get(0));
         }
     }
 }
