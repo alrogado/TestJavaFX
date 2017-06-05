@@ -41,8 +41,8 @@ import java.util.Random;
 import static org.lazer.util.EffectUtils.fadeIn;
 import static org.lazer.util.GuiColors.*;
 
-@ViewController(value = "/org/lazer/fxml/ui/content_lazer.fxml", title = "Material Design Example")
-public class ContentLazerController {
+@ViewController(value = "/org/lazer/fxml/ui/main_content.fxml", title = "Material Design Example")
+public class MainContentController {
 
     public static final String CONTENT_PANE = "ContentPane";
 
@@ -81,7 +81,7 @@ public class ContentLazerController {
     private JFXDialog dialog;
 
     static {
-        InputStream devicons = ContentLazerController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
+        InputStream devicons = MainContentController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
         GlyphFontRegistry.register("devicons", devicons, 16);
     }
 

@@ -29,13 +29,13 @@
                         <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
                             <Label fx:id="labelMain" text="%menu.title.new"></Label>
                         </JFXRippler>
-                        <JFXRippler fx:id="optionsRippler" maskType="CIRCLE"
+                        <!--<JFXRippler fx:id="optionsRippler" maskType="CIRCLE"
                                     style="-fx-ripple-color:WHITE;">
                             <StackPane fx:id="optionsBurger">
                                 <JFXHamburger styleClass="jfx-options-burger">
                                 </JFXHamburger>
                             </StackPane>
-                        </JFXRippler>
+                        </JFXRippler>-->
                     </rightItems>
                 </JFXToolbar>
             </VBox>

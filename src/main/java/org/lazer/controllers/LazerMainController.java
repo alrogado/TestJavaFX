@@ -11,7 +11,6 @@ import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -70,13 +69,13 @@ public class LazerMainController {
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(APP_BUNDLE);
-        Flow innerFlow = new Flow(ContentLazerController.class, viewConfiguration);
+        Flow innerFlow = new Flow(MainContentController.class, viewConfiguration);
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
-        //configureContent(ContentLazerController.class, drawer);
+        //configureContent(MainContentController.class, drawer);
 
         // side controller will add links to the content flow
        /* Flow sideMenuFlow = new Flow(SideMenuController.class, viewConfiguration);
@@ -96,7 +95,7 @@ public class LazerMainController {
             animation.play();
         });*/
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/lazer/fxml/ui/main_popup.fxml"));
+        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/lazer/fxml/ui/main_popup.fxml"));
         loader.setController(new InputController(this));
         loader.setResources(APP_BUNDLE);
         try {
@@ -109,11 +108,11 @@ public class LazerMainController {
                 JFXPopup.PopupVPosition.TOP,
                 JFXPopup.PopupHPosition.RIGHT,
                 -12,
-                15));
+                15));*/
 
 
         bindNodeToController(labelChecks, CheckboxController.class, innerFlow, flowHandler);
-        bindNodeToController(labelMain, ContentLazerController.class, innerFlow, flowHandler);
+        bindNodeToController(labelMain, MainContentController.class, innerFlow, flowHandler);
         labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks));
         labelMain.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMain));
 
@@ -173,9 +172,9 @@ public class LazerMainController {
                 }
             }else if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 0) {
                 try {
-                    //configureContent(ContentLazerController.class, lazerMainController.drawer);
+                    //configureContent(MainContentController.class, lazerMainController.drawer);
                     //esto hace lo mismo y no hace el swipe en el content del drawer como sí lo hace el menu de la izq
-                    initController(ContentLazerController.class);
+                    initController(MainContentController.class);
                 } catch (FlowException e) {
                     logger.error("",e);
                 }
