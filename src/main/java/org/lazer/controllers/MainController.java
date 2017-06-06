@@ -109,7 +109,7 @@ public class MainController {
                 15));*/
 
 
-        bindNodeToController(labelChecks, CheckboxController.class, innerFlow, flowHandler);
+        bindNodeToController(labelChecks, MainContentTilesController.class, innerFlow, flowHandler);
         bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);
         labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks));
         labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMainContent));

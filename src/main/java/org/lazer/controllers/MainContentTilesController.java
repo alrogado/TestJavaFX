@@ -40,29 +40,15 @@ import java.util.Random;
 
 import static org.lazer.util.EffectUtils.fadeIn;
 import static org.lazer.util.GuiColors.*;
-import static org.lazer.util.IkonUtils.customizeIkon;
 
-@ViewController(value = "/org/lazer/fxml/ui/main_content.fxml", title = "Material Design Example")
-public class MainContentController {
+@ViewController(value = "/org/lazer/fxml/ui/main_content_buttons.fxml", title = "Material Design Example")
+public class MainContentTilesController {
 
     public static final String CONTENT_PANE = "ContentPane";
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
-    @FXML
-    private JFXButton centerButton;
-    @FXML
-    private JFXButton topButton;
-    @FXML
-    private JFXButton rightButton;
-    @FXML
-    private JFXButton bottomButton;
-    @FXML
-    private JFXButton leftButton;
-    @FXML
-    private JFXButton acceptDialogButton;
-    @FXML
-    private JFXButton customButton;
+
     @FXML
     private Label time;
 
@@ -75,14 +61,8 @@ public class MainContentController {
     @FXML
     private FlowGridPane flowGridPaneInternal;
 
-    @FXML
-    private FlowGridPane flowGridPaneButtons;
-
-    @FXML
-    private JFXDialog dialog;
-
     static {
-        InputStream devicons = MainContentController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
+        InputStream devicons = MainContentTilesController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
         GlyphFontRegistry.register("devicons", devicons, 16);
     }
 
@@ -90,32 +70,24 @@ public class MainContentController {
 
     Tile personalTile;
 
+    @FXML
+    Tile buttonsTile;
+
     /**
      * init fxml when loaded.
      */
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
-        root.getChildren().remove(dialog);
-
-        configureButtonsPane();
-
-        bindingProps();
-
-        configureFlowGridPaneInternal();
-
-        flowGridPane.setHgap(5);
-        flowGridPane.setVgap(5);
-        flowGridPane.setAlignment(Pos.CENTER);
-        flowGridPane.setCenterShape(true);
-        flowGridPane.setPadding(new Insets(5));
-        flowGridPane.setNoOfColsAndNoOfRows(2,2);
-        //flowGridPane.add(flowGridPaneInternal,0,1);
-        flowGridPane.add(createGaugeTile(),1,0);
-        flowGridPane.add(createTimeTile(),1,0);
-        //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
-        //root.getChildren().add(pane);
-        this.value = new SimpleDoubleProperty(0);
+        buttonsTile.setMinValue(0);
+        buttonsTile.setMaxValue(30);
+        //buttonsTile.setTitle("Personal");
+        buttonsTile.setTitleAlignment(TextAlignment.RIGHT);
+        buttonsTile.setText("Sin nada");
+        buttonsTile.setTextVisible(false);
+        buttonsTile.setAveragingPeriod(48);
+        buttonsTile.setAutoReferenceValue(true);
+        buttonsTile.setTooltipText("Aloha");
         fadeIn(root);
     }
 
@@ -256,75 +228,10 @@ public class MainContentController {
 
     }
 
-    private void configureButtonsPane() {
-        customButton.setGraphic(customizeIkon(Fontelico.EMO_BEER));
-
-        centerButton.setTextFill(FRGCOL_FILL);
-        centerButton.setGraphic(customizeIkon(Fontelico.EMO_SHOOT));
-        rightButton.setGraphic(customizeIkon(Fontelico.EMO_COFFEE));
-        leftButton.setGraphic(customizeIkon(Typicons.CHEVRON_LEFT));
-
-        leftButton.setGraphic(customizeIkon(Fontelico.EMO_DEVIL));
-        topButton.setGraphic(customizeIkon(Typicons.BOOK));
-        //topButton.setText("fuentes con gradiente");
-        topButton.setTextFill(ICON_GRAD_FGR_BGR);
-        //topButton.setRipplerFill(ICON_GRAD_FGR_BGR);
-
-        StringProperty timestamp = new SimpleStringProperty();
-        SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-        ///eventos para el reloj
-        EventStreams.ticks(Duration.ofMillis(1000)).subscribe(tick -> timestamp.setValue(sdf.format(System.currentTimeMillis())));
-
-        time.textProperty().bind(timestamp);
-        //dt.format(new Date(timestamp.get()))::toString));
-
-        //root.getChildren().add(e1);
-
-        centerButton.setOnMouseClicked((e) -> {
-            dialog.setTransitionType(DialogTransition.CENTER);
-            dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
-        });
-
-        topButton.setOnMouseClicked((e) -> {
-            dialog.setTransitionType(DialogTransition.TOP);
-            dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
-        });
-
-        rightButton.setOnMouseClicked((e) -> {
-            dialog.setTransitionType(DialogTransition.RIGHT);
-            dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
-        });
-
-        bottomButton.setOnMouseClicked((e) -> {
-            dialog.setTransitionType(DialogTransition.BOTTOM);
-            dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
-        });
-
-        leftButton.setOnMouseClicked((e) -> {
-            dialog.setTransitionType(DialogTransition.LEFT);
-            dialog.show((StackPane) context.getRegisteredObject(CONTENT_PANE));
-        });
-
-        acceptDialogButton.setOnMouseClicked((e) -> dialog.close());
-    }
-
-
 
     private static final Random RND = new Random();
     private long            lastTimerCall;
     private AnimationTimer  timer;
     private DoubleProperty  value;
-
-    private void bindingProps() {
-        //binding properties
-        IntegerProperty ip1= new SimpleIntegerProperty(3);
-        IntegerProperty ip2= new SimpleIntegerProperty();
-        ip2.bind(ip1.multiply(10));
-
-        //También se pueden haver bind de valores de propiedades
-        TextField txtF = new TextField("init val");
-        Label lblF = new Label();
-        lblF.textProperty().bind(txtF.textProperty());
-    }
 
 }
