@@ -10,11 +10,20 @@ import javafx.scene.paint.Stop;
  */
 public class GuiColors {
 
-    public static Color FRGCOL = Color.web("#0091DC");
+    public static Color FRG = Color.web("#0091DC");
+    public static Color FRG_1 = Color.web("#006DE5");
+    public static Color FRG_2 = Color.web("#0048EE");
+    public static Color FRG_3 = Color.web("#001EDC");
+    public static Color FRG_4 = Color.web("#001CC5");
 
-    public static Color BKGCOL = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.85);
-    public static Color FRGCOL_FILL = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.85);
+    public static Color BKG = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.85);
+    public static Color BKG_5 = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.50);
 
-    public static Stop[] STOPS = new Stop[] { new Stop(0, FRGCOL), new Stop(1, BKGCOL)};
-    public static LinearGradient ICON_GRAD_FGR_BGR = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, STOPS);
+    public static Color FRG_FILL = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.85);
+
+    public static Stop[] STOPS_BGR_FGR = new Stop[]{new Stop(0, FRG), new Stop(1, BKG)};
+    public static Stop[] STOPS_FGR_BGR = new Stop[]{new Stop(0, BKG), new Stop(1, FRG)};
+
+    public static LinearGradient GRAD_FGR_BGR = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, STOPS_BGR_FGR);
+    public static LinearGradient GRAD_BGR_FRG = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, STOPS_FGR_BGR);
 }

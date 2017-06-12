@@ -11,16 +11,14 @@ import javafx.stage.WindowEvent;
 /**
  * Created by alrogado on 6/2/17.
  */
-public class DemoFxApp extends Application
-{
+public class DemoFxApp extends Application {
     private static String[] args;
 
     public DemoFxApp() {
     }
 
-    public static void main(String[] args)
-    {
-		/*				   blur
+    public static void main(String[] args) {
+        /*				   blur
                            bobs
                            bounce+
                            burst+
@@ -96,8 +94,7 @@ public class DemoFxApp extends Application
     }
 
 
-    public void start(final Stage stage) throws Exception
-    {
+    public void start(final Stage stage) throws Exception {
         DemoFX demoFX = getDemoFX();
 
         Scene scene = demoFX.getScene();
@@ -119,15 +116,14 @@ public class DemoFxApp extends Application
     }
 
     public DemoFX getDemoFX(String effect, double width, double height) {
-        args = new String[]{"-e",effect,"-w",Double.toString(width),"-h",Double.toString(height)};
+        args = new String[]{"-e", effect, "-w", Double.toString(width), "-h", Double.toString(height)};
         return getDemoFX();
     }
 
     public DemoFX getDemoFX() {
         DemoConfig config = DemoConfig.buildConfig(args);
 
-        if (config == null)
-        {
+        if (config == null) {
             System.err.print(DemoConfig.getUsageError());
             System.exit(-1);
         }

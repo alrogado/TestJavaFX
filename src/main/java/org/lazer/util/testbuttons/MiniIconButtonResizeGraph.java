@@ -1,6 +1,8 @@
-package org.lazer.util;
+package org.lazer.util.testbuttons;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -9,13 +11,12 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import static org.lazer.util.IkonUtils.customizeIkon;
+import org.lazer.GuiApp;
 
 /**
  * Created by alvaro.lopez on 09/06/2017.
  */
-public class ButtonResizeGraph extends Application {
+public class MiniIconButtonResizeGraph extends Application {
 
     private final int MIN_BUTTON_SIZE = 10;
 
@@ -40,10 +41,10 @@ public class ButtonResizeGraph extends Application {
                 "M56.615,56.844c-1.935,2.727-5.101,5.805-9.763,5.805c-4.486,0-7.212-3.166-7.212-7.738c0-6.422,5.013-12.754,12.049-12.754" +
                 "c3.958,0,6.245,2.551,7.124,4.486L56.615,56.844z");
 
-        Button buttonWithGraphics = new Button();
-
         FontIcon fontIcon = new FontIcon(Fontelico.EMO_SHOOT);
-        buttonWithGraphics.setGraphic(fontIcon);
+        Button buttonWithGraphics = new JFXButton("", fontIcon);
+
+        //buttonWithGraphics.setGraphic(fontIcon);
 
         // Bind the Image scale property to the buttons size
         svg.scaleXProperty().bind(buttonWithGraphics.widthProperty().divide(100));
@@ -63,6 +64,8 @@ public class ButtonResizeGraph extends Application {
         );
 
         Scene scene = new Scene(root);
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }

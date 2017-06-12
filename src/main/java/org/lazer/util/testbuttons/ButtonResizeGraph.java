@@ -1,4 +1,4 @@
-package org.lazer.util;
+package org.lazer.util.testbuttons;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -10,10 +10,12 @@ import javafx.stage.Stage;
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import static org.lazer.util.IkonUtils.customizeIkon;
+
 /**
  * Created by alvaro.lopez on 09/06/2017.
  */
-public class MiniIconButtonResizeGraph extends Application {
+public class ButtonResizeGraph extends Application {
 
     private final int MIN_BUTTON_SIZE = 10;
 

@@ -59,8 +59,8 @@ import java.util.concurrent.*;
 import static eu.hansolo.tilesfx.Tile.TileColor.TILEFRGCOL;
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
-import static org.lazer.util.GuiColors.BKGCOL;
-import static org.lazer.util.GuiColors.FRGCOL;
+import static org.lazer.util.GuiColors.BKG;
+import static org.lazer.util.GuiColors.FRG;
 
 
 /**
@@ -95,7 +95,7 @@ public class Tile extends Control {
         }
     }
     public enum TileColor {
-        TILEFRGCOL(Color.rgb(new Double(FRGCOL.getRed()).intValue(),new Double(FRGCOL.getGreen()).intValue(),new Double(FRGCOL.getBlue()).intValue()),"foregourd"),
+        TILEFRGCOL(Color.rgb(new Double(FRG.getRed()).intValue(),new Double(FRG.getGreen()).intValue(),new Double(FRG.getBlue()).intValue()),"foregourd"),
         GRAY(Color.rgb(139,144,146), "gray"),
         RED(Color.rgb(229, 80, 76), "red"),
         LIGHT_RED(Color.rgb(255, 84, 56), "light-red"),
@@ -131,8 +131,8 @@ public class Tile extends Control {
         }
     }
 
-    public  static final Color       BACKGROUND            = BKGCOL;
-    public  static final Color       FOREGROUND            = FRGCOL;
+    public  static final Color       BACKGROUND            = BKG;
+    public  static final Color       FOREGROUND            = FRG;
     public  static final Color       GRAY                  = TileColor.GRAY.color;
     public  static final Color       RED                   = TileColor.RED.color;
     public  static final Color       LIGHT_RED             = TileColor.LIGHT_RED.color;

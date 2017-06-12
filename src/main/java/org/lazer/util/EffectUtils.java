@@ -2,12 +2,7 @@ package org.lazer.util;
 
 import javafx.animation.FadeTransition;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.javafx.FontIcon;
-
-import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 
 /**
  * Created by alvaro.lopez on 01/06/2017.
@@ -15,6 +10,7 @@ import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
 public class EffectUtils {
 
     static int fadeTransitionsDuration = 1000;
+
     public static void fadeOut(Node node) {
         FadeTransition ft = new FadeTransition(Duration.millis(fadeTransitionsDuration), node);
         ft.setFromValue(1.0);
@@ -28,8 +24,6 @@ public class EffectUtils {
         ft.setToValue(1.0);
         ft.play();
     }
-
-
 
 
 }

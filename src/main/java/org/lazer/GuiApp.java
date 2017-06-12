@@ -1,7 +1,6 @@
 package org.lazer;
 
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXDrawer;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.datafx.controller.ViewConfiguration;
@@ -20,7 +19,6 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.lazer.controllers.PreloaderController;
-import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +27,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.lazer.util.GuiColors.ICON_GRAD_FGR_BGR;
+import static org.lazer.util.GuiColors.GRAD_FGR_BGR;
 
 public class GuiApp extends Application {
 
@@ -61,7 +58,7 @@ public class GuiApp extends Application {
                 GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
                 GuiApp.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm(),
                 GuiApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
-        scene.setFill(ICON_GRAD_FGR_BGR);
+        scene.setFill(GRAD_FGR_BGR);
         stage.setScene(scene);
         CSSFX.start(stage);
     }

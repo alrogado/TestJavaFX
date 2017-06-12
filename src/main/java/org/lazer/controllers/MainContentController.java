@@ -23,9 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.fontelico.Fontelico;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.reactfx.EventStreams;
 
@@ -202,7 +200,7 @@ public class MainContentController {
         flowGridPaneInternal.setPadding(new Insets(5));
 
         flowGridPaneInternal.setCenterShape(true);
-        flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRGCOL, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        flowGridPaneInternal.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         Background whiteBckgr = new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY));
         flowGridPaneInternal.setBackground(whiteBckgr);
         flowGridPaneInternal.backgroundProperty().setValue(Background.EMPTY);
@@ -262,8 +260,7 @@ public class MainContentController {
 
     private void configureButtonsPane() {
         customButton.setGraphic(customizeIkon(Fontelico.EMO_BEER));
-
-        centerButton.setTextFill(FRGCOL_FILL);
+        centerButton.setTextFill(FRG_FILL);
         centerButton.setGraphic(customizeIkon(Fontelico.EMO_SHOOT));
         rightButton.setGraphic(customizeIkon(Fontelico.EMO_COFFEE));
         leftButton.setGraphic(customizeIkon(Typicons.CHEVRON_LEFT));
@@ -271,8 +268,8 @@ public class MainContentController {
         leftButton.setGraphic(customizeIkon(Fontelico.EMO_DEVIL));
         topButton.setGraphic(customizeIkon(Typicons.BOOK));
         //topButton.setText("fuentes con gradiente");
-        topButton.setTextFill(ICON_GRAD_FGR_BGR);
-        //topButton.setRipplerFill(ICON_GRAD_FGR_BGR);
+        topButton.setTextFill(GRAD_FGR_BGR);
+        //topButton.setRipplerFill(GRAD_FGR_BGR);
 
         StringProperty timestamp = new SimpleStringProperty();
         SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
