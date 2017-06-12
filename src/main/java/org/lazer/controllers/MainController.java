@@ -57,6 +57,10 @@ public class MainController {
     @FXML
     private Label labelMainContent;
 
+    public MainController() {
+        this.labelMainContent=this.labelMainContent;
+    }
+
     /**
      * init fxml when loaded.
      */
@@ -71,7 +75,7 @@ public class MainController {
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(Duration.millis(320), SWIPE_LEFT)));
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
         //configureContent(MainContentController.class, drawer);
 
@@ -109,17 +113,26 @@ public class MainController {
                 15));*/
 
 
-        bindNodeToController(labelChecks, MainContentTilesController.class, innerFlow, flowHandler);
-        bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);
-        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks));
-        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelMainContent));
+        /*bindNodeToController(labelChecks, MainContentTilesController.class, innerFlow, flowHandler);
+        bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);*/
+        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, MainContentTilesController.class));
+        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            try {
+                flowHandler.navigateToHistoryIndex(0);
+            } catch (VetoException e) {
+                e.printStackTrace();
+            } catch (FlowException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
-    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler, Node node) {
+    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler, Node node, Class controllerClass) {
         if (event.getClickCount() == 1) {
             try {
-                flowHandler.handle(node.getId());
+                //flowHandler.handle(node.getId());
+                flowHandler.navigateTo(controllerClass);
             } catch (FlowException e) {
                 e.printStackTrace();
             } catch (VetoException e) {
@@ -144,6 +157,7 @@ public class MainController {
 
     private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
         //flowHandler.getFlowContext().getCurrentViewContext().getConfiguration().getBuilderFactory().getBuilder()
+        flow.withGlobalLink(node.getId(), controllerClass);
         flow.withGlobalLink(node.getId(), controllerClass);
     }
 

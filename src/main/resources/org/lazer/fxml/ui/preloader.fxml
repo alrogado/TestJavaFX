@@ -11,7 +11,7 @@
         <Pane fx:id="splashLayout">
             <VBox fx:id="vBox" >
                 <ImageView fx:id="splash" fitWidth="275">
-                    <Image url="/images/logov.png" requestedWidth="275" requestedHeight="183" preserveRatio="false"
+                    <Image url="/images/logo.png" requestedWidth="275" requestedHeight="183" preserveRatio="false"
                            smooth="false">
                     </Image>
                 </ImageView>

@@ -90,6 +90,10 @@ public class MainContentController {
 
     Tile personalTile;
 
+    public MainContentController() {
+        this.personalTile=this.personalTile;
+    }
+
     /**
      * init fxml when loaded.
      */
