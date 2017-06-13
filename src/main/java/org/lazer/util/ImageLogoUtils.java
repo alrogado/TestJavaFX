@@ -108,7 +108,7 @@ public class ImageLogoUtils {
     public void startAnimation(){
         timeline = new Timeline();
         createTimelineContent();
-        backgroundColor = backgroundColor == BKG ?FRG:BKG_5;
+        backgroundColor = backgroundColor == BKG_5 ?FRG:BKG_5;
         foregroundColor = foregroundColor == FRG ?BKG_5:FRG;
         backgroundColorP.set(backgroundColor);
         foregroundColorP.set(foregroundColor);
@@ -125,8 +125,8 @@ public class ImageLogoUtils {
                 new KeyFrame(new Duration(0),
                         new KeyValue(backgroundColorP, backgroundColor),
                         new KeyValue(foregroundColorP, foregroundColor));
-        backgroundColor = backgroundColor == BKG ?FRG:BKG;
-        foregroundColor = foregroundColor == FRG ?BKG:FRG;
+        backgroundColor = backgroundColor == BKG_5 ?FRG:BKG_5;
+        foregroundColor = foregroundColor == FRG ?BKG_5:FRG;
         KeyFrame kf2 =
                 new KeyFrame(new Duration(duration),
                         new KeyValue(backgroundColorP, backgroundColor),
