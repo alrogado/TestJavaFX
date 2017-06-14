@@ -64,7 +64,7 @@ public class GuiApp extends Application {
     }
 
     public static void configureFullScreenStage(Stage stage) {
-        stage.initStyle(StageStyle.UNDECORATED);
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
         stage.setFullScreen(true);
@@ -89,7 +89,7 @@ public class GuiApp extends Application {
         stage.setHeight(HEIGHT);
         stage.setWidth(WIDTH);
         stage.setTitle(APP_TITLE);
-        stage.initStyle(StageStyle.UNDECORATED);
+        //stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
     }
 

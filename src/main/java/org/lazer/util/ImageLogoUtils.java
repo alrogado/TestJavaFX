@@ -54,9 +54,7 @@ public class ImageLogoUtils {
 
     public Button createButton() {
         Button button = new Button();
-        button.setBorder(Border.EMPTY);
         button.setGraphic(createSVG());
-        button.setMouseTransparent(true);
         button.getGraphic().scaleXProperty().bind(button.widthProperty().divide(100));
         button.getGraphic().scaleYProperty().bind(button.heightProperty().divide(100));
         return button;
@@ -65,19 +63,21 @@ public class ImageLogoUtils {
 
     public Button createButtonGrad() {
         Button button = new Button();
-        button.setBorder(Border.EMPTY);
         button.setGraphic(createSVG());
-        button.setMouseTransparent(true);
         button.getGraphic().scaleXProperty().bind(button.widthProperty().divide(100));
         button.getGraphic().scaleYProperty().bind(button.heightProperty().divide(100));
-        setBackground((SVGPath) button.getGraphic());
-        foregroundColorP.addListener((obs, oldColor, newColor) -> {
-            setBackground((SVGPath) button.getGraphic());
-        });
+        applyGrad(button);
         return button;
     }
 
-    private void setBackground(SVGPath node) {
+    private void applyGrad(Button button) {
+        setFill((SVGPath) button.getGraphic());
+        foregroundColorP.addListener((obs, oldColor, newColor) -> {
+            setFill((SVGPath) button.getGraphic());
+        });
+    }
+
+    private void setFill(SVGPath node) {
         BackgroundFill backgroundFill = new BackgroundFill(
                 new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
                         new Stop[]{
@@ -91,10 +91,7 @@ public class ImageLogoUtils {
                 new CornerRadii(0),
                 new Insets(0, 0, 0, 0)
         );
-        //Background bg = new Background(backgroundFill0);
-        //node.setFill(backgroundColor == BKG ?backgroundFill0.getFill():backgroundFill1.getFill());
         node.setFill(backgroundFill.getFill());
-        //foregroundColorP = BKG;
     }
 
 
