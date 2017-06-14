@@ -7,26 +7,24 @@
 }
 
 .closebutton .button {
-  -fx-background-color: white, white;
-  -fx-background-radius: 16.4, 15;
-  -fx-background-insets: -1.4, 0;
-  -fx-border-radius: 15;
-  -fx-border-width: 2;
+  -fx-background-color: transparent;
   -fx-padding: 0;
   -fx-font-size: 0;
 }
 
 .closebutton .button:focused {
-  -fx-background-color: -fx-focus-color, white;
+  -fx-background-color: transparent;
 }
 
 .closebutton .closetext {
+  -fx-background-color: transparent;
   -fx-font-size: 20;
   -fx-translate-y: -1;
 }
 
 .closebutton .closeicon {
   /*-fill: #57d7f7;*/
+  -fx-background-color: transparent;
   -fx-color: yellow;
   -fx-stroke-width: 0.08466667;
   -fx-stroke-width: 2;

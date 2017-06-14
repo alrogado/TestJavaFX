@@ -52,7 +52,7 @@
             <artifactId>lombok</artifactId>
             <version>1.16.8</version>
         </dependency>
-
+ºº
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx-fontawesome</artifactId>
