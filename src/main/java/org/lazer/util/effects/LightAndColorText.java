@@ -1,16 +1,14 @@
-package org.lazer.components;
+package org.lazer.util.effects;
 
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -18,12 +16,10 @@ import javafx.stage.Stage;
 import org.lazer.GuiApp;
 import org.lazer.util.GuiColors;
 
-import static javafx.geometry.VPos.*;
-
 /**
  * Created by alvaro.lopez on 12/06/2017.
  */
-public class SaphireColor  extends Application {
+public class LightAndColorText extends Application {
     Stage stage;
     Scene scene;
 
@@ -61,7 +57,8 @@ public class SaphireColor  extends Application {
 
         Text t = new Text(text);
         t.setFill(GuiColors.FRG);
-        t.setStyle("-fx-font-family: 'Roboto'");
+        t.getStyleClass().add("root");
+        //t.setStyle("-fx-font-family: 'Roboto'");
         t.setFont(Font.font("Roboto", FontWeight.BOLD, 80));
         /*t.setX(10.0f);
         t.setY(10.0f);

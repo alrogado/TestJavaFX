@@ -44,11 +44,7 @@ public class MainContentTilesController {
     Tile personalTile;
 
     @FXML
-    Tile buttonsTile;
-
-    public MainContentTilesController() {
-        this.personalTile=this.personalTile;
-    }
+    Tile personalTile2;
 
     /**
      * init fxml when loaded.

@@ -1,4 +1,4 @@
-package org.lazer.controllers;
+package org.lazer.controllers.components;
 
 import io.datafx.controller.ViewController;
 

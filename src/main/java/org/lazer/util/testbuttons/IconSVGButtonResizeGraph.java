@@ -39,19 +39,23 @@ public class IconSVGButtonResizeGraph extends Application {
 
         Region icon = new Region();
         icon.getStyleClass().add("icon");
+
         btn.setGraphic(icon);
 
-        hBox.getChildren().addAll(btn);
+        IconButton iconButton = new IconButton();
+        hBox.getChildren().addAll(btn, iconButton);
         hBox.layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
                     double size = Math.max(MIN_BUTTON_SIZE, Math.min(newBounds.getWidth(), newBounds.getHeight()));
                     btn.setPrefSize(size, size);
+                    //iconButton.setPrefSize(size, size);
                 }
         );
 
-        Scene scene = new Scene(hBox);
+        Scene scene = new Scene(hBox,400,300);
         scene.getStylesheets().addAll(GuiApp.class.getResource("/org/lazer/css/button-icon.css").toExternalForm());
 
         stage.setScene(scene);
+
         stage.show();
 
         CSSFX.start(stage);

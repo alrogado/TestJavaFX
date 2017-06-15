@@ -12,7 +12,7 @@ import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.lazer.GuiApp;
+import org.lazer.controllers.components.CheckboxController;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;

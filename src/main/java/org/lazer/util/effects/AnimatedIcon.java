@@ -1,4 +1,4 @@
-package org.lazer.util.animatedgradients;
+package org.lazer.util.effects;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
