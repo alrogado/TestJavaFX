@@ -1,4 +1,4 @@
-package org.lazer.controllers.effects;
+package org.lazer.controllers.components.effects;
 
 /**
  * Created by alrogado on 6/2/17.

@@ -15,7 +15,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.lazer.controllers.PreloaderController;
@@ -37,10 +36,9 @@ public class GuiApp extends Application {
 
     public static JFXDecorator decorator;
 
-    public static String APP_TITLE = "LAZER App";
-
-    private static Locale LOCALE = new Locale("es");
-    public static ResourceBundle APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
+    public static String APPTITLE = "LAZER App";
+    public static Locale LOCALE = new Locale("es");
+    public static ResourceBundle APPBUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
 
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
@@ -73,7 +71,7 @@ public class GuiApp extends Application {
         stage.setMinWidth(WIDTH);
         stage.setHeight(HEIGHT);
         stage.setWidth(WIDTH);
-        stage.setTitle(APP_TITLE);
+        stage.setTitle(APPTITLE);
         stage.setFullScreenExitHint("");
     }
 
@@ -88,14 +86,14 @@ public class GuiApp extends Application {
         stage.setMinWidth(WIDTH);
         stage.setHeight(HEIGHT);
         stage.setWidth(WIDTH);
-        stage.setTitle(APP_TITLE);
+        stage.setTitle(APPTITLE);
         //stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
     }
 
     public static DefaultFlowContainer initFlowConf(Class startViewControllerClass, Stage stage) {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(APP_BUNDLE);
+        viewConfiguration.setResources(APPBUNDLE);
 
         Flow flow = new Flow(startViewControllerClass, viewConfiguration);
         ViewFlowContext context = new ViewFlowContext();
@@ -133,7 +131,7 @@ public class GuiApp extends Application {
                     logger.warn("el valor del parametro de pais/idioma '"+localeStr+"' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
                 } else {
                     LOCALE = new Locale(localeStr);
-                    APP_BUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
+                    APPBUNDLE = ResourceBundle.getBundle("lazer", LOCALE);
                 }
             }
         }

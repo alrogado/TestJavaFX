@@ -1,4 +1,4 @@
-package org.lazer.controllers;
+package org.lazer.controllers.components;
 
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
@@ -31,7 +31,7 @@ import static org.lazer.util.EffectUtils.fadeIn;
 import static org.lazer.util.GuiColors.*;
 
 @ViewController(value = "/org/lazer/fxml/ui/main_content_tiles.fxml", title = "Material Design Example")
-public class MainContentTilesController {
+public class TwoTilesTilesController {
 
 
     @FXMLViewFlowContext

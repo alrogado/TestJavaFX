@@ -9,7 +9,7 @@
         <String fx:value="side-menu"/>
     </styleClass>
     <JFXListView fx:id="sideList" minWidth="100">
-        <Label fx:id="button" text="label.text.master"></Label>
+        <Label fx:id="button" text="#label.text.master"></Label>
         <Label fx:id="checkbox">Check Box</Label>
     </JFXListView>
 </StackPane>

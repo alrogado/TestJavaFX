@@ -17,9 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import org.lazer.controllers.effects.AbstractEffectsController;
-import org.lazer.controllers.effects.EffectRunnable;
-import org.lazer.controllers.effects.Sprite3dController;
+import org.lazer.controllers.components.TwoTilesTilesController;
+import org.lazer.controllers.components.effects.AbstractEffectsController;
+import org.lazer.controllers.components.effects.EffectRunnable;
+import org.lazer.controllers.components.effects.Sprite3dController;
 import org.lazer.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class MainController {
         Objects.requireNonNull(context, "context");
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(APP_BUNDLE);
+        viewConfiguration.setResources(APPBUNDLE);
         Flow innerFlow = new Flow(MainContentController.class, viewConfiguration);
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
@@ -99,7 +100,7 @@ public class MainController {
 
         /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/lazer/fxml/ui/main_popup.fxml"));
         loader.setController(new InputController(this));
-        loader.setResources(APP_BUNDLE);
+        loader.setResources(APPBUNDLE);
         try {
             toolbarPopup = new JFXPopup(loader.load());
         } catch (IOException e) {
@@ -113,9 +114,9 @@ public class MainController {
                 15));*/
 
 
-        /*bindNodeToController(labelChecks, MainContentTilesController.class, innerFlow, flowHandler);
+        /*bindNodeToController(labelChecks, TwoTilesTilesController.class, innerFlow, flowHandler);
         bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);*/
-        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, MainContentTilesController.class));
+        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, TwoTilesTilesController.class));
         labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             try {
                 flowHandler.navigateToHistoryIndex(0);

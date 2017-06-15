@@ -1,4 +1,4 @@
-package org.lazer.controllers.effects;
+package org.lazer.controllers.components.effects;
 
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;

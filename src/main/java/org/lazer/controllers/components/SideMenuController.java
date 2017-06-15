@@ -1,4 +1,4 @@
-package org.lazer.controllers;
+package org.lazer.controllers.components;
 
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;

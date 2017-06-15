@@ -1,4 +1,4 @@
-package org.lazer.controllers.effects;
+package org.lazer.controllers.components.effects;
 
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.FlowException;

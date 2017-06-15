@@ -1,10 +1,9 @@
-package org.lazer.apps;
+package org.lazer.util.apps;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.lazer.controllers.effects.ReflectionController;
-import org.lazer.controllers.effects.Sprite3dController;
+import org.lazer.controllers.components.effects.ReflectionController;
 
 import static org.lazer.GuiApp.*;
 

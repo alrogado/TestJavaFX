@@ -80,7 +80,7 @@ public class PreloaderController {
                     dialog.close(); //this throws an exception
                     try {
                         ViewConfiguration viewConfiguration = new ViewConfiguration();
-                        viewConfiguration.setResources(APP_BUNDLE);
+                        viewConfiguration.setResources(APPBUNDLE);
                         Flow flow = new Flow(MainController.class, viewConfiguration);
                         FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
                         context.register("ContentFlowHandler", handler);
@@ -123,7 +123,7 @@ public class PreloaderController {
                     int finalI = i;
                     Platform.runLater(() -> {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
-                        progressText.setText(APP_BUNDLE.getString(textProGressValues[finalI]));
+                        progressText.setText(APPBUNDLE.getString(textProGressValues[finalI]));
                     });
                     Thread.sleep(500);
                 }
