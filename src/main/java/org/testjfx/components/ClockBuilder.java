@@ -17,16 +17,17 @@ public class ClockBuilder {
         return eu.hansolo.medusa.ClockBuilder.create()
                 .skinType(Clock.ClockSkinType.TEXT)
                 .locale(GuiApp.LOCALE)
+                .lcdFont(LcdFont.DIGITAL)
                 .shadowsEnabled(true)
                 .running(true)
-                //.backgroundPaint(Color.web("#1f1e23"))
-                //.hourColor(Color.web("#dad9db"))
-                .lcdFont(LcdFont.DIGITAL)
+                //.backgroundPaint(Color.BLUE)
                 .secondsVisible(true)
-                /*.minuteColor(Color.web("#dad9db"))
-                .secondColor(Color.web("#d1222b"))
-                .hourTickMarkColor(Color.web("#9f9fa1"))
-                .minuteTickMarkColor(Color.web("#9f9fa1"))*/
+                .hourColor(Color.BLUE)
+                .titleColor(Color.BLUE)
+                .minuteColor(Color.BLUE)
+                .secondColor(Color.BLUE)
+                .hourTickMarkColor(Color.BLUE)
+                .minuteTickMarkColor(Color.BLUE)
                 .build();
     }
 

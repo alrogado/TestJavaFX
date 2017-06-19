@@ -81,10 +81,10 @@ public class GuiApp extends Application {
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - HEIGHT / 2);
-        /*stage.setMinHeight(HEIGHT);
+        stage.setMinHeight(HEIGHT);
         stage.setMinWidth(WIDTH);
         stage.setHeight(HEIGHT);
-        stage.setWidth(WIDTH);*/
+        stage.setWidth(WIDTH);
         stage.setTitle(APPTITLE);
         //stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");

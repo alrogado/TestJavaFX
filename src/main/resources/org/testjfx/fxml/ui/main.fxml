@@ -5,13 +5,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/2.2">
     <!-- Header -->
     <BorderPane>
         <top>
             <VBox spacing="20">
-                <JFXToolbar>
+                <JFXToolbar fx:id="toolbar">
                     <leftItems>
                         <!--<JFXRippler maskType="CIRCLE" style="-fx-ripple-color:WHITE;">
                             <StackPane fx:id="titleBurgerContainer">
@@ -24,15 +25,18 @@
                     </leftItems>
 
                     <rightItems>
-                        <JFXRippler fx:id="settingsRippler" maskType="CIRCLE"
-                                    style="-fx-ripple-color:WHITE;">
+                        <JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="settingsRippler">
                         </JFXRippler>
-                        <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
+
+                        <JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="houseRippler">
+                        </JFXRippler>
+
+                        <!--<JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
                             <Label fx:id="labelChecks" text="%menu.title.about"></Label>
                         </JFXRippler>
                         <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
                             <Label fx:id="labelMainContent" text="%menu.title.new"></Label>
-                        </JFXRippler>
+                        </JFXRippler>-->
                         <!--<JFXRippler fx:id="optionsRippler" maskType="CIRCLE"
                                     style="-fx-ripple-color:WHITE;">
                             <StackPane fx:id="optionsBurger">

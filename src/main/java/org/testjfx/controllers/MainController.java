@@ -12,9 +12,15 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import org.kordamp.ikonli.fontelico.Fontelico;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.typicons.Typicons;
+import org.testjfx.components.ClockBuilder;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.controllers.components.TwoTilesTilesController;
@@ -28,6 +34,7 @@ import java.util.Objects;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 import static org.testjfx.GuiApp.*;
+import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Lazer Application")
 public class MainController {
@@ -47,6 +54,11 @@ public class MainController {
     @FXML
     private JFXRippler settingsRippler;
     @FXML
+    private JFXRippler houseRippler;
+    @FXML
+    private JFXToolbar toolbar;
+
+    @FXML
     private JFXDrawer drawer;
 
     private JFXPopup toolbarPopup;
@@ -54,6 +66,8 @@ public class MainController {
     private Label labelChecks;
     @FXML
     private Label labelMainContent;
+
+
 
     public MainController() {
         this.labelMainContent=this.labelMainContent;
@@ -113,9 +127,16 @@ public class MainController {
 
         /*bindNodeToController(labelChecks, TwoTilesTilesController.class, innerFlow, flowHandler);
         bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);*/
-        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
-        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, RegulatorsController.class));
+
+        settingsRippler.setControl(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT ));
         settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
+        houseRippler.setControl(customizeIkon(Typicons.HOME_OUTLINE));
+        houseRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, RegulatorsController.class));
+        toolbar.setCenter(ClockBuilder.createClock());
+
+        /*labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
+        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, RegulatorsController.class));*/
+
 
     }
 

@@ -11,7 +11,7 @@
     <BorderPane>
         <top>
             <VBox spacing="20">
-                <JFXToolbar>
+                <JFXToolbar >
                     <leftItems>
                         <JFXRippler maskType="CIRCLE" style="-fx-ripple-color:WHITE;">
                             <StackPane fx:id="titleBurgerContainer">

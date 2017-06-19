@@ -89,8 +89,8 @@ public class RegulatorsController {
 
         MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");
-        tempPane.add(depositTempTile, "w 50sp,h 50sp");
-        tempPane.add(tipTempTile, "w 50sp,h 50sp");
+        tempPane.add(depositTempTile, "w 45sp,h 45sp");
+        tempPane.add(tipTempTile, "w 45sp,h 45sp");
         /*HBox tempPane = new HBox(depositTempTile, tipTempTile);
         tempPane.setSpacing(20);
         tempPane.setPadding(new Insets(10));*/
