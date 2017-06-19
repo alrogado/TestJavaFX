@@ -45,7 +45,7 @@ public class MainController {
     @FXML
     private StackPane optionsBurger;
     @FXML
-    private JFXRippler optionsRippler;
+    private JFXRippler settingsRippler;
     @FXML
     private JFXDrawer drawer;
 
@@ -115,6 +115,7 @@ public class MainController {
         bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);*/
         labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
         labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, RegulatorsController.class));
+        settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
 
     }
 

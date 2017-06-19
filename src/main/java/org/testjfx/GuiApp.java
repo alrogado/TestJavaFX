@@ -65,7 +65,6 @@ public class GuiApp extends Application {
         //stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
-        stage.setFullScreen(true);
         stage.setAlwaysOnTop(true);
         stage.setMinHeight(HEIGHT);
         stage.setMinWidth(WIDTH);

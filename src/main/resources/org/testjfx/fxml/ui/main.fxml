@@ -20,9 +20,13 @@
                                 </JFXHamburger>
                             </StackPane>
                         </JFXRippler>-->
-                            <Label text="%menu.title.new"></Label>
+                            <Label text="%menu.title.app"></Label>
                     </leftItems>
+
                     <rightItems>
+                        <JFXRippler fx:id="settingsRippler" maskType="CIRCLE"
+                                    style="-fx-ripple-color:WHITE;">
+                        </JFXRippler>
                         <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
                             <Label fx:id="labelChecks" text="%menu.title.about"></Label>
                         </JFXRippler>
@@ -48,8 +52,8 @@
                 </styleClass>
             </JFXDrawer>
         </center>
-        <bottom>
+        <!--<bottom>
             <fx:include source="bottom.fxml"/>
-        </bottom>
+        </bottom>-->
     </BorderPane>
 </StackPane>

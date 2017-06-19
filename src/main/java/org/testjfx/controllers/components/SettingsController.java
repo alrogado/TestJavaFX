@@ -24,7 +24,6 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml", title = "Material Design Example")
 public class SettingsController {
 
-
     @FXMLViewFlowContext
     private ViewFlowContext context;
 
@@ -56,7 +55,6 @@ public class SettingsController {
         bottomPane.setPadding(new Insets(10));*/
 
         rootMP.add(regulatorsPane,"alignx center, wrap");
-        rootMP.add(ClockBuilder.createClock() ,"alignx center");
         root.getChildren().addAll(rootMP);
         fadeIn(root);
     }

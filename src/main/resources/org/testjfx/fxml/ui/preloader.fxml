@@ -17,14 +17,14 @@
                 </ImageView>
                 <JFXProgressBar fx:id="loadProgress" prefWidth="273" maxWidth="273" style="-fx-padding: 4;">
                 </JFXProgressBar>
-                <HBox maxHeight="400" spacing="10" alignment="TOP_CENTER">
+                <HBox maxHeight="20" spacing="10" alignment="TOP_CENTER">
                     <JFXSpinner styleClass="blue-spinner" startingAngle="0"/>
                     <JFXSpinner styleClass="red-spinner" startingAngle="0"/>
                     <JFXSpinner styleClass="yellow-spinner" startingAngle="0"/>
                     <JFXSpinner styleClass="green-spinner" startingAngle="0"/>
                     <JFXSpinner startingAngle="0"/>
                 </HBox>
-                <StackPane>
+                <!--<StackPane>
                     <JFXSpinner styleClass="materialDesign-purple, first-spinner" startingAngle="-40"/>
                     <JFXSpinner styleClass="materialDesign-blue, second-spinner" startingAngle="-90"/>
                     <JFXSpinner styleClass="materialDesign-cyan, third-spinner" startingAngle="-120"/>
@@ -32,7 +32,7 @@
                     <JFXSpinner styleClass="materialDesign-yellow, fifth-spinner" startingAngle="-180"/>
                     <JFXSpinner styleClass="materialDesign-orange, sixth-spinner" startingAngle="-210"/>
                     <JFXSpinner styleClass="materialDesign-red, seventh-spinner" startingAngle="-240"/>
-                </StackPane>
+                </StackPane>-->
                 <Label fx:id="progressText" text="%menu.title.cut" alignment="CENTER" style="-fx-padding: 5;">
                 </Label>
             </VBox>
