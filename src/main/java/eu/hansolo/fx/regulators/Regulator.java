@@ -250,7 +250,7 @@ public class Regulator extends Region implements RegulatorControl {
         text.setFill(Color.WHITE);
         text.setTextOrigin(VPos.CENTER);
 
-        titleText = new Text("BLA");
+        titleText = new Text();
         titleText.setFill(Color.WHITE);
         titleText.setTextOrigin(VPos.CENTER);
 
@@ -459,7 +459,7 @@ public class Regulator extends Region implements RegulatorControl {
             text.relocate((size - text.getLayoutBounds().getWidth()) * 0.5, size * 0.33);
 
             titleText.setFont(Fonts.robotoMedium(size * 0.05));
-            titleText.relocate((size - titleText.getLayoutBounds().getWidth()) * 0.5, size * 0.23);
+            titleText.relocate((size - titleText.getLayoutBounds().getWidth()) * 0.5, size * 0.28);
 
             indicatorGlow.setRadius(size * 0.02);
             indicatorInnerShadow.setRadius(size * 0.008);
