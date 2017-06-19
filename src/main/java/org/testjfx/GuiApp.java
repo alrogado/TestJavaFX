@@ -75,8 +75,8 @@ public class GuiApp extends Application {
         stage.setFullScreenExitHint("");
     }
 
-    public static int WIDTH = 800;
-    public static int HEIGHT = 850;
+    public static int WIDTH = 1100;
+    public static int HEIGHT = 800;
 
     public static void configureNotFullScreenStage(Stage stage) {
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
@@ -126,7 +126,7 @@ public class GuiApp extends Application {
         if(conf!=null) {
             String localeStr = conf.getString("application.locale");
             if (localeStr != null) {
-                URL resource = GuiApp.class.getResource("/lazer_" + localeStr + ".properties");
+                URL resource = GuiApp.class.getResource("/testjfx_" + localeStr + ".properties");
                 if (resource == null) {
                     logger.warn("el valor del parametro de pais/idioma '"+localeStr+"' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
                 } else {

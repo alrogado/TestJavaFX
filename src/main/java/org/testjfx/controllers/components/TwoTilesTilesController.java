@@ -1,6 +1,7 @@
 package org.testjfx.controllers.components;
 
 import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
@@ -34,6 +35,7 @@ public class TwoTilesTilesController {
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
+
         fadeIn(root);
     }
 }

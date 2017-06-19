@@ -15,6 +15,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import org.testjfx.controllers.components.RegulatorsController;
+import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.controllers.components.TwoTilesTilesController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
@@ -67,7 +69,7 @@ public class MainController {
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(APPBUNDLE);
-        Flow innerFlow = new Flow(MainContentController.class, viewConfiguration);
+        Flow innerFlow = new Flow(RegulatorsController.class, viewConfiguration);
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
@@ -111,16 +113,8 @@ public class MainController {
 
         /*bindNodeToController(labelChecks, TwoTilesTilesController.class, innerFlow, flowHandler);
         bindNodeToController(labelMainContent, MainContentController.class, innerFlow, flowHandler);*/
-        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, TwoTilesTilesController.class));
-        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            try {
-                flowHandler.navigateToHistoryIndex(0);
-            } catch (VetoException e) {
-                e.printStackTrace();
-            } catch (FlowException e) {
-                e.printStackTrace();
-            }
-        });
+        labelChecks.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, SettingsController.class));
+        labelMainContent.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, labelChecks, RegulatorsController.class));
 
     }
 

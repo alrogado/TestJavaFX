@@ -104,7 +104,7 @@ public class SearchIconsApp extends Application {
         });
 
         Scene scene = new Scene(tabPane);
-        scene.getStylesheets().add("org/lazer/css/searchIcons.css");
+        scene.getStylesheets().add("org/testjfx/css/searchIcons.css");
 
         primaryStage.setTitle("Ikonli Sampler");
         primaryStage.setScene(scene);
