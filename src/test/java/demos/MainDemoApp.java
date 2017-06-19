@@ -46,7 +46,7 @@ public class MainDemoApp extends Application {
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(MainDemoApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
                            MainDemoApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                           MainDemoApp.class.getResource("/org/lazer/css/jfoenix-main-demo.css").toExternalForm());
+                           MainDemoApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
         stage.setMinWidth(700);
         stage.setMinHeight(800);
         stage.setScene(scene);

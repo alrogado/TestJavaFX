@@ -16,6 +16,7 @@
 
 package eu.hansolo.tilesfx;
 
+import eu.hansolo.tilesfx.chart.ChartData;
 import eu.hansolo.tilesfx.events.*;
 import eu.hansolo.tilesfx.events.TileEvent.EventType;
 import eu.hansolo.tilesfx.events.TimeEvent.TimeEventType;
@@ -59,8 +60,8 @@ import java.util.concurrent.*;
 import static eu.hansolo.tilesfx.Tile.TileColor.TILEFRGCOL;
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
-import static org.lazer.util.GuiColors.BKG;
-import static org.lazer.util.GuiColors.FRG;
+import static org.testjfx.util.GuiColors.BKG;
+import static org.testjfx.util.GuiColors.FRG;
 
 
 /**

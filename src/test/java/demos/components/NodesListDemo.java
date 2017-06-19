@@ -127,7 +127,7 @@ public class NodesListDemo extends Application {
         main.getChildren().add(nodesList);
 
         Scene scene = new Scene(main, 600, 600);
-        scene.getStylesheets().add(NodesListDemo.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(NodesListDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
