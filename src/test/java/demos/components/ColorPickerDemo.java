@@ -32,7 +32,7 @@ public class ColorPickerDemo extends Application {
         pane.setStyle("-fx-background-color:WHITE");
 
         final Scene scene = new Scene(pane, 800, 200);
-        //      scene.getStylesheets().add(ButtonDemo.class.getResource("/css/jfoenix-components.css").toExternalForm());
+        //      scene.getStylesheets().add(ButtonDemo.class.getResource("/css/jfoenix-effects.css").toExternalForm());
         stage.setTitle("JFX Button Demo");
         stage.setScene(scene);
         stage.show();

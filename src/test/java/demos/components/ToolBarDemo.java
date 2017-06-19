@@ -19,7 +19,7 @@ public class ToolBarDemo extends Application {
         main.getChildren().add(jfxToolbar);
 
         Scene scene = new Scene(main, 600, 400);
-        scene.getStylesheets().add(ToolBarDemo.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(ToolBarDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

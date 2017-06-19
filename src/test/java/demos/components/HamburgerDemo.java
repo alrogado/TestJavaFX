@@ -68,7 +68,7 @@ public class HamburgerDemo extends Application {
         pane.setStyle("-fx-background-color:WHITE");
 
         final Scene scene = new Scene(pane, 400, 200);
-        scene.getStylesheets().add(HamburgerDemo.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(HamburgerDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX Burgers Demo :) ");
         stage.setScene(scene);
         stage.setResizable(false);

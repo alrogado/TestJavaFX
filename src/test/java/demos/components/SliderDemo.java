@@ -48,7 +48,7 @@ public class SliderDemo extends Application {
 
         Scene scene = new Scene(new Group());
         ((Group) scene.getRoot()).getChildren().add(vbox);
-        scene.getStylesheets().add(SliderDemo.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(SliderDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
         stage.setScene(scene);
         stage.setWidth(900);
         stage.setHeight(900);

@@ -54,7 +54,7 @@ public class TextAreaDemo extends Application {
 
         final Scene scene = new Scene(pane, 800, 600);
         scene.getStylesheets()
-            .add(ButtonDemo.class.getResource("/org/lazer/css/jfoenix-components.css").toExternalForm());
+            .add(ButtonDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX Button Demo");
         stage.setScene(scene);
         stage.show();

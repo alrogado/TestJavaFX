@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.lens</groupId>
+    <groupId>org.testjfx</groupId>
     <artifactId>gui</artifactId>
     <version>0.0.1</version>
     <dependencies>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
-            <version>1.5.0</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>io.datafx</groupId>
@@ -52,7 +52,7 @@
             <artifactId>lombok</artifactId>
             <version>1.16.8</version>
         </dependency>
-ºº
+
         <dependency>
             <groupId>de.jensd</groupId>
             <artifactId>fontawesomefx-fontawesome</artifactId>
@@ -275,11 +275,21 @@
             <artifactId>Medusa</artifactId>
             <version>7.9</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/eu.hansolo/tilesfx -->
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>regulators</artifactId>
+            <version>1.6.2</version>
+        </dependency>
         <dependency>
             <groupId>eu.hansolo</groupId>
             <artifactId>tilesfx</artifactId>
-            <version>1.4.2</version>
+            <version>1.4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-javafx</artifactId>
+            <version>5.0</version>
         </dependency>
 
         <dependency>
@@ -323,7 +333,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <main.class>org.lazer.GuiApp</main.class>
+        <main.class>org.testjfx.GuiApp</main.class>
         <tornadofx.version>1.7.0</tornadofx.version>
         <kotlin.version>1.1.0</kotlin.version>
     </properties>
