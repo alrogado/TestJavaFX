@@ -1,12 +1,15 @@
 package org.testjfx.components;
 
 import eu.hansolo.fx.regulators.*;
+import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
-import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.testjfx.util.GuiColors;
+
+import static org.testjfx.util.GuiColors.FRG;
 
 /**
  * Created by alrogado on 6/15/17.
@@ -20,7 +23,7 @@ public class RegulatorBuilder {
                 //.textColor(Color.YELLOW)
                 //.color(Color.PURPLE)
                 .brightness(1)
-                .color(GuiColors.FRG)
+                .color(FRG)
                 .onButtonOnPressed(e -> System.out.println("Light ON"))
                 .onButtonOffPressed(e -> System.out.println("Light OFF"))
                 .build();
@@ -41,12 +44,37 @@ public class RegulatorBuilder {
                 .icon(ikon!=null?ikon: Ikonli.NONE)
                 .iconColor(Color.WHITE)
                 //.textColor(Color.MAGENTA)
-                .color(GuiColors.FRG)
+                .color(FRG)
                 /*.onTargetSet(e -> System.out.println("New target set to " + feedbackRegulator.getTargetValue()))
                 .onAdjusted(e -> System.out.println("Battery charge is " + feedbackRegulator.getCurrentValue() + "%"))*/
                 .build();
     }
 
+    public static Tile createSparkRegulator(String title){
+        return TileBuilder.create()
+                .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
+                .prefSize(400, 400)
+                .title(title)
+                .animated(true)
+                .textVisible(true)
+                .averagingPeriod(25)
+                .autoReferenceValue(true)
+                .barColor(FRG)
+                .barBackgroundColor(Color.rgb(255, 255, 255, 0.1))
+                .sections(new eu.hansolo.tilesfx.Section(0, 33, Tile.LIGHT_GREEN),
+                        new eu.hansolo.tilesfx.Section(33, 67, Tile.YELLOW),
+                        new eu.hansolo.tilesfx.Section(67, 100, Tile.LIGHT_RED))
+                .sectionsVisible(true)
+                .highlightSections(true)
+                .strokeWithGradient(true)
+                .gradientStops(new Stop(0.0, Tile.LIGHT_GREEN),
+                        new Stop(0.33, Tile.LIGHT_GREEN),
+                        new Stop(0.33,Tile.YELLOW),
+                        new Stop(0.67, Tile.YELLOW),
+                        new Stop(0.67, Tile.LIGHT_RED),
+                        new Stop(1.0, Tile.LIGHT_RED))
+                .build();
+    }
     public static Regulator createRegulator(String title, String unit, Ikon ikon,Double value, Double minVal, Double maxVal){
         final Regulator regulator = eu.hansolo.fx.regulators.RegulatorBuilder.create()
                 .prefSize(400, 400)
@@ -59,8 +87,8 @@ public class RegulatorBuilder {
                 /*.textColor(Color.YELLOW)
                 .symbolColor(Color.MAGENTA)*/
                 .icon(ikon!=null?ikon: Ikonli.NONE)
-                .iconColor(GuiColors.FRG)
-                .color(GuiColors.FRG)
+                .iconColor(FRG)
+                .color(FRG)
                 .build();
         regulator.setOnTargetSet(e -> System.out.println("New target set to " + regulator.getTargetValue()));
         return regulator;

@@ -4,6 +4,7 @@ import eu.hansolo.medusa.Clock;
 import eu.hansolo.medusa.LcdFont;
 import javafx.scene.paint.Color;
 import org.testjfx.GuiApp;
+import org.testjfx.util.GuiColors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,9 @@ public class ClockBuilder {
                 .lcdFont(LcdFont.DIGITAL)
                 .shadowsEnabled(true)
                 .running(true)
-                //.backgroundPaint(Color.BLUE)
                 .secondsVisible(true)
-                .hourColor(Color.BLUE)
-                .titleColor(Color.BLUE)
-                .minuteColor(Color.BLUE)
-                .secondColor(Color.BLUE)
-                .hourTickMarkColor(Color.BLUE)
-                .minuteTickMarkColor(Color.BLUE)
+                .textColor(Color.WHITE)
+                .dateColor(Color.WHITE)
                 .build();
     }
 

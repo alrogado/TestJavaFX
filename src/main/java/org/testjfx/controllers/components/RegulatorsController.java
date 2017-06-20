@@ -8,6 +8,7 @@ import eu.hansolo.tilesfx.TileBuilder;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
@@ -20,6 +21,7 @@ import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
+import java.util.Random;
 
 import static org.testjfx.util.EffectUtils.fadeIn;
 
@@ -33,6 +35,9 @@ public class RegulatorsController {
     @FXML
     StackPane root;
 
+    Tile depositTempTile;
+    Tile tipTempTile;
+
     /**
      * init fxml when loaded.
      */
@@ -43,11 +48,25 @@ public class RegulatorsController {
         //use Reactfx to manipulate bindings and values from communications
         //frequency.minValueProperty()
 
-        rootMP.add(createTempGauage(), "alignx center, wrap");
+        rootMP.add(createTileGauage(), "alignx center, wrap");
+        //rootMP.add(createTempGauage(), "alignx center, wrap");
         //rootMP.add(createTempRegulator(), "alignx center, wrap");
         rootMP.add(createFreqFluBox(), "alignx center, wrap");
 
         root.getChildren().addAll(rootMP);
+
+        final long[] lastTimerCall = {System.nanoTime()};
+        Random RND = new Random();
+        AnimationTimer timer = new AnimationTimer() {
+            @Override public void handle(long now) {
+                if (now > lastTimerCall[0] + 3_500_000_000L) {
+                    depositTempTile.setValue(RND.nextDouble() * 100);
+                    tipTempTile.setValue(RND.nextDouble() * 100);
+                    lastTimerCall[0] = now;
+                }
+            }
+        };
+        timer.start();
         fadeIn(root);
     }
 
@@ -69,6 +88,22 @@ public class RegulatorsController {
         tempPane.setPadding(new Insets(10));
         return tempPane;
     }
+
+    private MigPane createTileGauage() {
+        depositTempTile = RegulatorBuilder.createSparkRegulator("Deposit Temperature");
+        tipTempTile = RegulatorBuilder.createSparkRegulator("Tip Temperature");
+
+
+        MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");
+        tempPane.add(depositTempTile, "w 45sp,h 45sp");
+        tempPane.add(tipTempTile, "w 45sp,h 45sp");
+        /*HBox tempPane = new HBox(depositTempTile, tipTempTile);
+        tempPane.setSpacing(20);
+        tempPane.setPadding(new Insets(10));*/
+        return tempPane;
+    }
+
     private MigPane createTempGauage() {
         Tile depositTempTile = TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE)
@@ -96,4 +131,7 @@ public class RegulatorsController {
         tempPane.setPadding(new Insets(10));*/
         return tempPane;
     }
+
+
+
 }

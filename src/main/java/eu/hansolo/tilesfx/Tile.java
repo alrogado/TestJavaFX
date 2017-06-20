@@ -16,13 +16,26 @@
 
 package eu.hansolo.tilesfx;
 
-import eu.hansolo.tilesfx.chart.ChartData;
-import eu.hansolo.tilesfx.events.*;
+import eu.hansolo.tilesfx.chart.RadarChart;
+import eu.hansolo.tilesfx.chart.RadarChart.Mode;
+import eu.hansolo.tilesfx.events.AlarmEvent;
+import eu.hansolo.tilesfx.events.AlarmEventListener;
+import eu.hansolo.tilesfx.events.SwitchEvent;
+import eu.hansolo.tilesfx.events.TileEvent;
 import eu.hansolo.tilesfx.events.TileEvent.EventType;
+import eu.hansolo.tilesfx.events.TileEventListener;
+import eu.hansolo.tilesfx.events.TimeEvent;
 import eu.hansolo.tilesfx.events.TimeEvent.TimeEventType;
+import eu.hansolo.tilesfx.events.TimeEventListener;
 import eu.hansolo.tilesfx.fonts.Fonts;
 import eu.hansolo.tilesfx.skins.*;
-import eu.hansolo.tilesfx.tools.*;
+import eu.hansolo.tilesfx.chart.ChartData;
+import eu.hansolo.tilesfx.tools.TimeData;
+import eu.hansolo.tilesfx.tools.Helper;
+import eu.hansolo.tilesfx.tools.Location;
+import eu.hansolo.tilesfx.tools.MovingAverage;
+import eu.hansolo.tilesfx.tools.SectionComparator;
+import eu.hansolo.tilesfx.tools.TimeSectionComparator;
 import eu.hansolo.tilesfx.weather.DarkSky;
 import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
@@ -38,9 +51,13 @@ import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
@@ -54,10 +71,22 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
-import static eu.hansolo.tilesfx.Tile.TileColor.TILEFRGCOL;
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
 import static org.testjfx.util.GuiColors.BKG;
@@ -69,16 +98,18 @@ import static org.testjfx.util.GuiColors.FRG;
  */
 public class Tile extends Control {
     public enum SkinType { AREA_CHART("AreaChartTileSkin"), BAR_CHART("BarChartTileSkin"),
-                           LINE_CHART("LineChartTileSkin"), CLOCK("ClockTileSkin"), GAUGE("GaugeTileSkin"),
-                           HIGH_LOW("HighLowTileSkin)"), PERCENTAGE("PercentageTileSkin"),
-                           PLUS_MINUS("PlusMinusTileSkin"), SLIDER("SliderTileSkin"),
-                           SPARK_LINE("SparkLineTileSkin"), SWITCH("SwitchTileSkin"),
-                           WORLDMAP("WorldMapTileSkin"), TIMER_CONTROL("TimerControlTileSkin"),
-                           NUMBER("NumberTileSkin"), TEXT("TextTileSkin"),
-                           WEATHER("WeatherTileSkin"), TIME("TimeTileSkin"),
-                           CUSTOM("CustomTileSkin"), LEADER_BOARD("LeaderBoardTileSkin"),
-                           MAP("MapTileSkin"), RADIAL_CHART("RadialChart"), DONUT_CHART("DonutChart"),
-                           CIRCULAR_PROGRESS("CircularProgress"), STOCK("Stock");
+        LINE_CHART("LineChartTileSkin"), CLOCK("ClockTileSkin"), GAUGE("GaugeTileSkin"),
+        HIGH_LOW("HighLowTileSkin)"), PERCENTAGE("PercentageTileSkin"),
+        PLUS_MINUS("PlusMinusTileSkin"), SLIDER("SliderTileSkin"),
+        SPARK_LINE("SparkLineTileSkin"), SWITCH("SwitchTileSkin"),
+        WORLDMAP("WorldMapTileSkin"), TIMER_CONTROL("TimerControlTileSkin"),
+        NUMBER("NumberTileSkin"), TEXT("TextTileSkin"),
+        WEATHER("WeatherTileSkin"), TIME("TimeTileSkin"),
+        CUSTOM("CustomTileSkin"), LEADER_BOARD("LeaderBoardTileSkin"),
+        MAP("MapTileSkin"), RADIAL_CHART("RadialChart"), DONUT_CHART("DonutChart"),
+        CIRCULAR_PROGRESS("CircularProgress"), STOCK("Stock"),
+        GAUGE_SPARK_LINE("GaugeSparkLine"), SMOOTH_AREA_CHART("SmoothAreaChartTileSkin"),
+        RADAR_CHART("RadarChart"), COUNTRY("Country");
 
         public final String CLASS_NAME;
         SkinType(final String CLASS_NAME) {
@@ -97,17 +128,17 @@ public class Tile extends Control {
     }
     public enum TileColor {
         TILEFRGCOL(Color.rgb(new Double(FRG.getRed()).intValue(),new Double(FRG.getGreen()).intValue(),new Double(FRG.getBlue()).intValue()),"foregourd"),
-        GRAY(Color.rgb(139,144,146), "gray"),
-        RED(Color.rgb(229, 80, 76), "red"),
-        LIGHT_RED(Color.rgb(255, 84, 56), "light-red"),
-        GREEN(Color.rgb(143, 198, 94), "green"),
-        LIGHT_GREEN(Color.rgb(132, 228, 50), "light-green"),
-        BLUE(Color.rgb(55, 179, 252), "blue"),
-        DARK_BLUE(Color.rgb(55, 94, 252), "dark-blue"),
-        ORANGE(Color.rgb(237, 162, 57), "orange"),
-        YELLOW_ORANGE(Color.rgb(229, 198, 76), "yellow-orange"),
-        YELLOW(Color.rgb(229, 229, 76), "yellow"),
-        MAGENTA(Color.rgb(198, 75, 232), "magenta");
+        GRAY(Color.rgb(139,144,146), "GRAY"),
+        RED(Color.rgb(229, 80, 76), "RED"),
+        LIGHT_RED(Color.rgb(255, 84, 56), "LIGHT_RED"),
+        GREEN(Color.rgb(143, 198, 94), "GREEN"),
+        LIGHT_GREEN(Color.rgb(132, 228, 50), "LIGHT_GREEN"),
+        BLUE(Color.rgb(55, 179, 252), "BLUE"),
+        DARK_BLUE(Color.rgb(55, 94, 252), "DARK_BLUE"),
+        ORANGE(Color.rgb(237, 162, 57), "ORANGE"),
+        YELLOW_ORANGE(Color.rgb(229, 198, 76), "YELLOW_ORANGE"),
+        YELLOW(Color.rgb(229, 229, 76), "YELLOW"),
+        MAGENTA(Color.rgb(198, 75, 232), "MAGENTA");
 
         public final Color  color;
         public final String styleName;
@@ -149,7 +180,7 @@ public class Tile extends Control {
     public  static final int         LONG_INTERVAL         = 1000;
     private static final int         MAX_NO_OF_DECIMALS    = 3;
     private static final String      COUNTRY_PROPERTIES    = "eu/hansolo/tilesfx/lowres.properties";
-                    
+
     private        final TileEvent   EXCEEDED_EVENT        = new TileEvent(EventType.THRESHOLD_EXCEEDED);
     private        final TileEvent   UNDERRUN_EVENT        = new TileEvent(EventType.THRESHOLD_UNDERRUN);
     private        final TileEvent   RECALC_EVENT          = new TileEvent(EventType.RECALC);
@@ -167,8 +198,7 @@ public class Tile extends Control {
     private        final TileEvent   LOCATION_EVENT        = new TileEvent(EventType.LOCATION);
     private        final TileEvent   TRACK_EVENT           = new TileEvent(EventType.TRACK);
     private        final TileEvent   MAP_PROVIDER_EVENT    = new TileEvent(EventType.MAP_PROVIDER);
-    private        final TileEvent   TOOLTIP_TEXT_EVENT    = new TileEvent(EventType.TOOLTIP_TEXT);
-    
+
     // Tile events
     private List<TileEventListener>  listenerList          = new CopyOnWriteArrayList<>();
     private List<AlarmEventListener> alarmListenerList     = new CopyOnWriteArrayList<>();
@@ -343,7 +373,6 @@ public class Tile extends Control {
     private              StringProperty                         alertMessage;
     private              boolean                                _smoothing;
     private              BooleanProperty                        smoothing;
-    // others
     private              double                                 increment;
     private              double                                 originalMinValue;
     private              double                                 originalMaxValue;
@@ -396,6 +425,17 @@ public class Tile extends Control {
     private              DarkSky                                darkSky;
     private              String                                 _tooltipText;
     private              StringProperty                         tooltipText;
+    private              Tooltip                                tooltip;
+    private              Axis                                   _xAxis;
+    private              ObjectProperty<Axis>                   xAxis;
+    private              Axis                                   _yAxis;
+    private              ObjectProperty<Axis>                   yAxis;
+    private              RadarChart.Mode                        _radarChartMode;
+    private              ObjectProperty<RadarChart.Mode>        radarChartMode;
+    private              Color                                  _chartGridColor;
+    private              ObjectProperty<Color>                  chartGridColor;
+    private              Country                                _country;
+    private              ObjectProperty<Country>                country;
 
     private volatile     ScheduledFuture<?>                     periodicTickTask;
     private static       ScheduledExecutorService               periodicTickExecutorService;
@@ -486,7 +526,7 @@ public class Tile extends Control {
                     long animationDuration = getAnimationDuration();
                     timeline.stop();
                     final KeyValue KEY_VALUE = new KeyValue(currentTime, TIME.toEpochSecond());
-                    final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(animationDuration), KEY_VALUE);
+                    final KeyFrame KEY_FRAME = new KeyFrame(javafx.util.Duration.millis(animationDuration), KEY_VALUE);
                     timeline.getKeyFrames().setAll(KEY_FRAME);
                     timeline.setOnFinished(e -> fireTileEvent(FINISHED_EVENT));
                     timeline.play();
@@ -526,7 +566,7 @@ public class Tile extends Control {
         alarmsToRemove                      = new ArrayList<>();
         barChartItems                       = FXCollections.observableArrayList();
         track                               = new ArrayList<>();
-        _trackColor                         = TILEFRGCOL;
+        _trackColor                         = TileColor.BLUE;
         _mapProvider                        = MapProvider.BW;
         leaderBoardItems                    = new ArrayList<>();
         gradientStops                       = new ArrayList<>(4);
@@ -602,6 +642,13 @@ public class Tile extends Control {
         _minuteTickMarksVisible             = true;
         _alarmsEnabled                      = false;
         _alarmsVisible                      = false;
+        _strokeWithGradient                 = false;
+        tooltip                             = new Tooltip(null);
+        _xAxis                              = new CategoryAxis();
+        _yAxis                              = new NumberAxis();
+        _radarChartMode                     = Mode.POLYGON;
+        _chartGridColor                     = Tile.GRAY;
+        _country                            = Country.DE;
         updateInterval                      = LONG_INTERVAL;
         increment                           = 1;
         originalMinValue                    = -Double.MAX_VALUE;
@@ -1045,6 +1092,7 @@ public class Tile extends Control {
         if (null == unit) {
             _unit = UNIT;
             fireTileEvent(VISIBILITY_EVENT);
+            fireTileEvent(REDRAW_EVENT);
         } else {
             unit.set(UNIT);
         }
@@ -1360,7 +1408,10 @@ public class Tile extends Control {
     public ObjectProperty<Node> graphicProperty() {
         if (null == graphic) {
             graphic = new ObjectPropertyBase<Node>() {
-                @Override protected void invalidated() { fireTileEvent(GRAPHIC_EVENT); }
+                @Override protected void invalidated() {
+                    fireTileEvent(GRAPHIC_EVENT);
+                    fireTileEvent(RESIZE_EVENT);
+                }
                 @Override public Object getBean() { return Tile.this; }
                 @Override public String getName() { return "graphic"; }
             };
@@ -1471,13 +1522,13 @@ public class Tile extends Control {
         return mapProvider;
     }
 
-    public ObservableList<ChartData> getRadialChartData() { return chartDataList; }
-    public void addRadialChartData(final ChartData... DATA) { chartDataList.addAll(DATA); }
-    public void addRadialChartData(final List<ChartData> DATA) { chartDataList.addAll(DATA); }
-    public void setRadialChartData(final ChartData... DATA) { chartDataList.setAll(DATA); }
-    public void setRadialChartData(final List<ChartData> DATA) { chartDataList.setAll(DATA); }
-    public void removeRadialChartData(final ChartData DATA) { chartDataList.remove(DATA); }
-    public void clearRadialChartData() { chartDataList.clear(); }
+    public ObservableList<ChartData> getChartData() { return chartDataList; }
+    public void addChartData(final ChartData... DATA) { chartDataList.addAll(DATA); }
+    public void addChartData(final List<ChartData> DATA) { chartDataList.addAll(DATA); }
+    public void setChartData(final ChartData... DATA) { chartDataList.setAll(DATA); }
+    public void setChartData(final List<ChartData> DATA) { chartDataList.setAll(DATA); }
+    public void removeChartData(final ChartData DATA) { chartDataList.remove(DATA); }
+    public void clearChartData() { chartDataList.clear(); }
 
     /**
      * A convenient method to set the color of foreground elements like
@@ -1842,7 +1893,7 @@ public class Tile extends Control {
         }
         return foregroundColor;
     }
-    
+
     /**
      * Returns the Paint object that will be used to fill the gauge background.
      * This is usally a Color object.
@@ -2000,7 +2051,7 @@ public class Tile extends Control {
 
     /**
      * Returns true if setting the value of the gauge will be animated
-     * using the duration defined in ANIM_DURATION [ms].
+     * using the duration defined in animationDuration [ms].
      * Keep in mind that it only makes sense to animate the setting if
      * the data rate is low (more than 1 value per second). If you use real
      * live measured data you should set animated to false.
@@ -2010,7 +2061,7 @@ public class Tile extends Control {
     public boolean isAnimated() { return null == animated ? _animated : animated.get(); }
     /**
      * Defines if setting the value of the gauge should be animated using
-     * the duration defined in ANIM_DURATION [ms].
+     * the duration defined in animationDuration [ms].
      * Keep in mind that it only makes sense to animate the setting if
      * the data rate is low (more than 1 value per second). If you use real
      * live measured data you should set animated to false.
@@ -2250,7 +2301,7 @@ public class Tile extends Control {
         }
         return shadowsEnabled;
     }
-    
+
     public Locale getLocale() { return null == locale ? _locale : locale.get(); }
     public void setLocale(final Locale LOCALE) {
         if (null == locale) {
@@ -2386,7 +2437,7 @@ public class Tile extends Control {
         }
         return tickLabelDecimals;
     }
-    
+
     /**
      * Returns the color that will be used to colorize the needle of
      * the radial gauges.
@@ -2675,7 +2726,7 @@ public class Tile extends Control {
         if (null == checkSectionsForValue) { checkSectionsForValue = new SimpleBooleanProperty(Tile.this, "checkSectionsForValue", _checkSectionsForValue); }
         return checkSectionsForValue;
     }
-    
+
     /**
      * Returns true if the value of the gauge should be checked against
      * the threshold. If a value crosses the threshold it will fire an
@@ -2952,7 +3003,7 @@ public class Tile extends Control {
         }
         return highlightSections;
     }
-    
+
     /**
      * Returns the orientation of the control. This feature
      * will only be used in the BulletChartSkin and LinearSkin.
@@ -2987,7 +3038,7 @@ public class Tile extends Control {
         }
         return orientation;
     }
-    
+
     /**
      * Returns true if the control should keep it's aspect. This is
      * in principle only needed if the control has different width and
@@ -3149,7 +3200,7 @@ public class Tile extends Control {
 
     public ZoneId getZoneId() { return zoneId; }
 
-    
+
     /**
      * Returns the text that was defined for the clock.
      * This text could be used for additional information.
@@ -3273,7 +3324,7 @@ public class Tile extends Control {
         sections.clear();
         fireTileEvent(SECTION_EVENT);
     }
-    
+
     /**
      * Returns true if the second hand of the clock should move
      * in discrete steps of 1 second. Otherwise it will move continuously like
@@ -3875,27 +3926,177 @@ public class Tile extends Control {
      */
     public String getTooltipText() { return null == tooltipText ? _tooltipText : tooltipText.get(); }
     /**
-     * Defines the text that will shown in the Tile tooltip
+     * Defines the text that will be shown in the Tile tooltip
      * @param TEXT
      */
     public void setTooltipText(final String TEXT) {
         if (null == tooltipText) {
-            _tooltipText = TEXT;
-            fireTileEvent(TOOLTIP_TEXT_EVENT);
+            tooltip.setText(TEXT);
+            if (null == TEXT || TEXT.isEmpty()) {
+                setTooltip(null);
+            } else {
+                setTooltip(tooltip);
+            }
         } else {
             tooltipText.set(TEXT);
         }
+
     }
     public StringProperty tooltipTextProperty() {
         if (null == tooltipText) {
-            tooltipText = new StringPropertyBase(_tooltipText) {
-                @Override protected void invalidated() { fireTileEvent(TOOLTIP_TEXT_EVENT); }
+            tooltipText = new StringPropertyBase() {
+                @Override protected void invalidated() {
+                    tooltip.setText(get());
+                    if (null == get() || get().isEmpty()) {
+                        setTooltip(null);
+                    } else {
+                        setTooltip(tooltip);
+                    }
+                }
                 @Override public Object getBean() { return Tile.this; }
                 @Override public String getName() { return "tooltipText"; }
             };
             _tooltipText = null;
         }
         return tooltipText;
+    }
+
+    public Axis getXAxis() { return null == xAxis ? _xAxis : xAxis.get(); }
+    public void setXAxis(final Axis AXIS) {
+        if (null == xAxis) {
+            _xAxis = AXIS;
+            fireTileEvent(RESIZE_EVENT);
+        } else {
+            xAxis.set(AXIS);
+        }
+    }
+    public ObjectProperty<Axis> xAxisProperty() {
+        if (null == xAxis) {
+            xAxis = new ObjectPropertyBase<Axis>(_xAxis) {
+                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
+                @Override public Object getBean() { return Tile.this; }
+                @Override public String getName() {
+                    return "xAxis";
+                }
+            };
+            _xAxis = null;
+        }
+        return xAxis;
+    }
+
+    public Axis getYAxis() { return null == yAxis ? _yAxis : yAxis.get(); }
+    public void setYAxis(final Axis AXIS) {
+        if (null == yAxis) {
+            _yAxis = AXIS;
+            fireTileEvent(RESIZE_EVENT);
+        } else {
+            yAxis.set(AXIS);
+        }
+    }
+    public ObjectProperty<Axis> yAxisProperty() {
+        if (null == yAxis) {
+            yAxis = new ObjectPropertyBase<Axis>(_yAxis) {
+                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
+                @Override public Object getBean() { return Tile.this; }
+                @Override public String getName() { return "yAxis"; }
+            };
+            _yAxis = null;
+        }
+        return yAxis;
+    }
+
+    /**
+     * Returns the mode of the RadarChartTileSkin.
+     * There are Mode.POLYGON and Mode.SECTOR.
+     * @return the mode of the RadarChartTileSkin
+     */
+    public RadarChart.Mode getRadarChartMode() { return null == radarChartMode ? _radarChartMode : radarChartMode.get(); }
+    /**
+     * Defines the mode that is used in the RadarChartTileSkin
+     * to visualize the data in the RadarChart.
+     * There are Mode.POLYGON and Mode.SECTOR.
+     * @param MODE
+     */
+    public void setRadarChartMode(final RadarChart.Mode MODE) {
+        if (null == radarChartMode) {
+            _radarChartMode = MODE;
+            fireTileEvent(RECALC_EVENT);
+        } else {
+            radarChartMode.set(MODE);
+        }
+    }
+    public ObjectProperty<RadarChart.Mode> radarChartModeProperty() {
+        if (null == radarChartMode) {
+            radarChartMode = new ObjectPropertyBase<Mode>(_radarChartMode) {
+                @Override protected void invalidated() { fireTileEvent(RECALC_EVENT); }
+                @Override public Object getBean() { return Tile.this; }
+                @Override public String getName() { return "radarChartMode"; }
+            };
+            _radarChartMode = null;
+        }
+        return radarChartMode;
+    }
+
+    /**
+     * Returns the color that will be used to colorize lines in
+     * charts e.g. the grid in the RadarChartTileSkin
+     * @return the color that will be used to colorize lines in charts
+     */
+    public Color getChartGridColor() { return null == chartGridColor ? _chartGridColor : chartGridColor.get(); }
+    /**
+     * Defines the color that will be used to colorize lines in
+     * charts e.g. the grid in the RadarChartTileSkin
+     * @param COLOR
+     */
+    public void setChartGridColor(final Color COLOR) {
+        if (null == chartGridColor) {
+            _chartGridColor = COLOR;
+            fireTileEvent(REDRAW_EVENT);
+        } else {
+            chartGridColor.set(COLOR);
+        }
+    }
+    public ObjectProperty<Color> chartGridColorProperty() {
+        if (null == chartGridColor) {
+            chartGridColor = new ObjectPropertyBase<Color>(_chartGridColor) {
+                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
+                @Override public Object getBean() { return Tile.this; }
+                @Override public String getName() { return "chartGridColor"; }
+            };
+            _chartGridColor = null;
+        }
+        return chartGridColor;
+    }
+
+    /**
+     * Returns the Locale that will be used to visualize the country
+     * in the CountryTileSkin
+     * @return the Locale that will be used to visualize the country in the CountryTileSkin
+     */
+    public Country getCountry() { return null == country ? _country : country.get(); }
+    /**
+     * Defines the Locale that will be used to visualize the country
+     * in the CountryTileSkin
+     * @param COUNTRY
+     */
+    public void setCountry(final Country COUNTRY) {
+        if (null == country) {
+            _country = COUNTRY;
+            fireTileEvent(RECALC_EVENT);
+        } else {
+            country.set(COUNTRY);
+        }
+    }
+    public ObjectProperty<Country> countryProperty() {
+        if (null == country) {
+            country = new ObjectPropertyBase<Country>(_country) {
+                @Override protected void invalidated() { fireTileEvent(RECALC_EVENT); }
+                @Override public Object getBean() { return Tile.this; }
+                @Override public String getName() { return "country"; }
+            };
+            _country = null;
+        }
+        return country;
     }
 
     public double getIncrement() { return increment; }
@@ -4061,8 +4262,8 @@ public class Tile extends Control {
                     break;
                 case HALF_HOURLY:
                     if ((ALARM_TIME.getMinute() == TIME.getMinute() ||
-                         ALARM_TIME.plusMinutes(30).getMinute() == TIME.getMinute()) &&
-                        ALARM_TIME.getSecond() == TIME.getSecond()) {
+                            ALARM_TIME.plusMinutes(30).getMinute() == TIME.getMinute()) &&
+                            ALARM_TIME.getSecond() == TIME.getSecond()) {
                         if (alarm.isArmed()) {
                             fireAlarmEvent(new AlarmEvent(alarm));
                             alarm.executeCommand();
@@ -4071,7 +4272,7 @@ public class Tile extends Control {
                     break;
                 case HOURLY:
                     if (ALARM_TIME.getMinute() == TIME.getMinute() &&
-                        ALARM_TIME.getSecond() == TIME.getSecond()) {
+                            ALARM_TIME.getSecond() == TIME.getSecond()) {
                         if (alarm.isArmed()) {
                             fireAlarmEvent(new AlarmEvent(alarm));
                             alarm.executeCommand();
@@ -4080,8 +4281,8 @@ public class Tile extends Control {
                     break;
                 case DAILY:
                     if (ALARM_TIME.getHour()   == TIME.getHour() &&
-                        ALARM_TIME.getMinute() == TIME.getMinute() &&
-                        ALARM_TIME.getSecond() == TIME.getSecond()) {
+                            ALARM_TIME.getMinute() == TIME.getMinute() &&
+                            ALARM_TIME.getSecond() == TIME.getSecond()) {
                         if (alarm.isArmed()) {
                             fireAlarmEvent(new AlarmEvent(alarm));
                             alarm.executeCommand();
@@ -4090,9 +4291,9 @@ public class Tile extends Control {
                     break;
                 case WEEKLY:
                     if (ALARM_TIME.getDayOfWeek() == TIME.getDayOfWeek() &&
-                        ALARM_TIME.getHour()      == TIME.getHour() &&
-                        ALARM_TIME.getMinute()    == TIME.getMinute() &&
-                        ALARM_TIME.getSecond()    == TIME.getSecond()) {
+                            ALARM_TIME.getHour()      == TIME.getHour() &&
+                            ALARM_TIME.getMinute()    == TIME.getMinute() &&
+                            ALARM_TIME.getSecond()    == TIME.getSecond()) {
                         if (alarm.isArmed()) {
                             fireAlarmEvent(new AlarmEvent(alarm));
                             alarm.executeCommand();
@@ -4124,7 +4325,7 @@ public class Tile extends Control {
         if (oldTime.getHour() != now.getHour()) fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.HOUR));
     }); }
 
-    
+
     // ******************** Scheduled tasks ***********************************
     private synchronized void enableTickExecutorService() {
         if (null == periodicTickExecutorService) {
@@ -4163,8 +4364,8 @@ public class Tile extends Control {
     }
 
     private void createShutdownHook() { Runtime.getRuntime().addShutdownHook(new Thread(() -> stop())); }
-    
-    
+
+
     // ******************** Event handling ************************************
     public void setOnTileEvent(final TileEventListener LISTENER) { addTileEventListener(LISTENER); }
     public void addTileEventListener(final TileEventListener LISTENER) { if (!listenerList.contains(LISTENER)) listenerList.add(LISTENER); }
@@ -4174,7 +4375,7 @@ public class Tile extends Control {
         for (TileEventListener listener : listenerList) { listener.onTileEvent(EVENT); }
     }
 
-    
+
     public void setOnAlarm(final AlarmEventListener LISTENER) { addAlarmEventListener(LISTENER); }
     public void addAlarmEventListener(final AlarmEventListener LISTENER) { if (!alarmListenerList.contains(LISTENER)) alarmListenerList.add(LISTENER); }
     public void removeAlarmEventListener(final AlarmEventListener LISTENER) { if (alarmListenerList.contains(LISTENER)) alarmListenerList.remove(LISTENER); }
@@ -4227,6 +4428,10 @@ public class Tile extends Control {
             case DONUT_CHART      : return new DonutChartTileSkin(Tile.this);
             case CIRCULAR_PROGRESS: return new CircularProgressTileSkin(Tile.this);
             case STOCK            : return new StockTileSkin(Tile.this);
+            case GAUGE_SPARK_LINE : return new GaugeSparkLineTileSkin(Tile.this);
+            case SMOOTH_AREA_CHART: return new SmoothAreaChartTileSkin(Tile.this);
+            case RADAR_CHART      : return new RadarChartTileSkin(Tile.this);
+            case COUNTRY          : return new CountryTileSkin(Tile.this);
             default               : return new TileSkin(Tile.this);
         }
     }
@@ -4316,6 +4521,16 @@ public class Tile extends Control {
                 setThresholdColor(GRAY);
                 setTextVisible(false);
                 break;
+            case GAUGE_SPARK_LINE:
+                setBarColor(Tile.BLUE);
+                setAngleRange(270);
+                break;
+            case SMOOTH_AREA_CHART:
+                break;
+            case RADAR_CHART:
+                break;
+            case COUNTRY:
+                break;
             default:
                 break;
         }
@@ -4348,6 +4563,10 @@ public class Tile extends Control {
             case DONUT_CHART      : setSkin(new DonutChartTileSkin(Tile.this)); break;
             case CIRCULAR_PROGRESS: setSkin(new CircularProgressTileSkin(Tile.this)); break;
             case STOCK            : setSkin(new StockTileSkin(Tile.this)); break;
+            case GAUGE_SPARK_LINE : setSkin(new GaugeSparkLineTileSkin(Tile.this)); break;
+            case SMOOTH_AREA_CHART: setSkin(new SmoothAreaChartTileSkin(Tile.this)); break;
+            case RADAR_CHART      : setSkin(new RadarChartTileSkin(Tile.this)); break;
+            case COUNTRY          : setSkin(new CountryTileSkin(Tile.this)); break;
             default               : setSkin(new TileSkin(Tile.this)); break;
         }
         fireTileEvent(RESIZE_EVENT);
