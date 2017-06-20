@@ -15,6 +15,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.testjfx.controllers.PreloaderController;
@@ -86,7 +87,7 @@ public class GuiApp extends Application {
         stage.setHeight(HEIGHT);
         stage.setWidth(WIDTH);
         stage.setTitle(APPTITLE);
-        //stage.initStyle(StageStyle.UNDECORATED);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
     }
 

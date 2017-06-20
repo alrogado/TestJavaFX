@@ -5,12 +5,14 @@ import eu.hansolo.fx.regulators.FeedbackRegulator;
 import eu.hansolo.fx.regulators.Regulator;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import net.miginfocom.layout.AC;
@@ -38,6 +40,8 @@ public class RegulatorsController {
     Tile depositTempTile;
     Tile tipTempTile;
 
+    FeedbackRegulator depositTemp;
+    ColorRegulator tipTemp;
     /**
      * init fxml when loaded.
      */
@@ -70,22 +74,30 @@ public class RegulatorsController {
         fadeIn(root);
     }
 
-    private HBox createFreqFluBox() {
+    private Node createFreqFluBox() {
         Regulator frequency = RegulatorBuilder.createRegulator("Frecuencia", "Hz", null, 50d, 30d, 200d);
         Regulator fluency = RegulatorBuilder.createRegulator("Fluencia", "J/cm", null, 96d, 20d, 130d);
-        HBox freqFluPane = new HBox(frequency, fluency);
-        freqFluPane.setSpacing(20);
-        freqFluPane.setPadding(new Insets(10));
-        return freqFluPane;
+        FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
+        regulatorsPane.setHgap(100);
+        regulatorsPane.setPadding(new Insets(10));
+        return regulatorsPane;
     }
 
-    private HBox createTempRegulator() {
-        FeedbackRegulator depositTemp = RegulatorBuilder.createFeedbackRegulator("Deposit", "Deposit", MaterialDesign.MDI_TEMPERATURE_CELSIUS, 50d, 30d, 200d);
-        ColorRegulator tipTemp = RegulatorBuilder.createColorRegulator("Punta", "Punta", MaterialDesign.MDI_OIL_TEMPERATURE, 96d, 20d, 130d);
+    private MigPane createTempRegulator() {
+        depositTemp = RegulatorBuilder.createFeedbackRegulator("Deposit", "Deposit", MaterialDesign.MDI_TEMPERATURE_CELSIUS, 50d, 30d, 200d);
+        tipTemp = RegulatorBuilder.createColorRegulator("Punta", "Punta", MaterialDesign.MDI_OIL_TEMPERATURE, 96d, 20d, 130d);
 
-        HBox tempPane = new HBox(depositTemp, tipTemp);
-        tempPane.setSpacing(20);
-        tempPane.setPadding(new Insets(10));
+        HBox hBox = new HBox(depositTemp);
+        hBox.setSpacing(20);
+        hBox.setPadding(new Insets(10));
+
+        HBox hBox2 = new HBox(tipTemp);
+        hBox2.setSpacing(20);
+        hBox2.setPadding(new Insets(10));
+
+        MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        tempPane.add(hBox, "w 45sp,h 45sp");
+        tempPane.add(hBox2, "w 45sp,h 45sp");
         return tempPane;
     }
 

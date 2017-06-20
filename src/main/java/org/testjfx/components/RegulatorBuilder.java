@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
+import org.testjfx.GuiApp;
 import org.testjfx.util.GuiColors;
 
 import static org.testjfx.util.GuiColors.FRG;
@@ -55,8 +56,10 @@ public class RegulatorBuilder {
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
                 .title(title)
+                .locale(GuiApp.LOCALE)
                 .animated(true)
                 .textVisible(true)
+                .sectionTextVisible(true)
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
                 .barColor(FRG)
@@ -65,7 +68,7 @@ public class RegulatorBuilder {
                         new eu.hansolo.tilesfx.Section(33, 67, Tile.YELLOW),
                         new eu.hansolo.tilesfx.Section(67, 100, Tile.LIGHT_RED))
                 .sectionsVisible(true)
-                .highlightSections(true)
+                .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)
                 .gradientStops(new Stop(0.0, Tile.LIGHT_GREEN),
                         new Stop(0.33, Tile.LIGHT_GREEN),

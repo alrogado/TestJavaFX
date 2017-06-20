@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.testjfx.util.extraapps;
+package org.testjfx.util.apps.extra;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;

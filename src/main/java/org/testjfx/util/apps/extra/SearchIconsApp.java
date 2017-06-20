@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testjfx.util.extraapps;
+package org.testjfx.util.apps.extra;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Application;
