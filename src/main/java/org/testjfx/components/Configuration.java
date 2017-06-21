@@ -4,7 +4,7 @@ package org.testjfx.components;
  * Created by alrogado on 6/20/17.
  */
 public class Configuration {
-    private static double pulseVolume;
+    private static double pulseVolume = 50;
     private static double screenVolume = 50;
 
     public static double getPulseVolume() {
