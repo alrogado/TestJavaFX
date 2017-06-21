@@ -7,7 +7,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 
 import static javafx.application.Application.launch;
 

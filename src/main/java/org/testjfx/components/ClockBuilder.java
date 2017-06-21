@@ -3,7 +3,7 @@ package org.testjfx.components;
 import eu.hansolo.medusa.Clock;
 import eu.hansolo.medusa.LcdFont;
 import javafx.scene.paint.Color;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;

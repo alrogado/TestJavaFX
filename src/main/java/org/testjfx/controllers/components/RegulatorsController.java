@@ -30,7 +30,7 @@ import javafx.scene.text.TextAlignment;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.LC;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.util.GuiColors;

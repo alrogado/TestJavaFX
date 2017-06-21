@@ -22,7 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

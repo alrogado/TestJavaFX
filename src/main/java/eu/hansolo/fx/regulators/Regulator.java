@@ -36,7 +36,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 
 import java.util.Locale;
 

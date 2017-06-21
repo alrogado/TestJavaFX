@@ -3,7 +3,7 @@ package org.testjfx.util.apps;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.MainController;
 
 import static org.testjfx.GuiApp.*;

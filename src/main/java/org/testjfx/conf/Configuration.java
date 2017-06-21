@@ -1,4 +1,4 @@
-package org.testjfx;
+package org.testjfx.conf;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -121,10 +121,10 @@ public class Configuration {
 
     private static double pulseVolume = 50;
     private static double screenVolume = 50;
-    private static double depositMinValue;
-    private static double depositMaxValue;
-    private static double tipMaxValue;
-    private static double tipMinValue;
+    private static double depositMinValue = 15;
+    private static double depositMaxValue = 36;
+    private static double tipMinValue = 15;
+    private static double tipMaxValue = 40;
 
     public static double getPulseVolume() {
         return pulseVolume;
@@ -168,5 +168,9 @@ public class Configuration {
 
     public static double getTipMinValue() {
         return tipMinValue;
+    }
+
+    public static void setTipMinValue(double tipMinValue) {
+        Configuration.tipMinValue = tipMinValue;
     }
 }

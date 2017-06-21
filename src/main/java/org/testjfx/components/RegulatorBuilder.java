@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 
 import static org.testjfx.util.GuiColors.FRG;
 

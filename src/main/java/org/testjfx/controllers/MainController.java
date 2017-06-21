@@ -17,7 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.typicons.Typicons;
-import org.testjfx.Configuration;
+import org.testjfx.conf.Configuration;
 import org.testjfx.components.ClockBuilder;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;

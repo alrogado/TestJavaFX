@@ -19,6 +19,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
 import org.testjfx.components.Audio;
+import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.PreloaderController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
