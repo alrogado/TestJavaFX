@@ -14,14 +14,7 @@
             <VBox spacing="20">
                 <JFXToolbar fx:id="toolbar">
                     <leftItems>
-                        <!--<JFXRippler maskType="CIRCLE" style="-fx-ripple-color:WHITE;">
-                            <StackPane fx:id="titleBurgerContainer">
-                                <JFXHamburger fx:id="titleBurger">
-                                    <HamburgerBackArrowBasicTransition/>
-                                </JFXHamburger>
-                            </StackPane>
-                        </JFXRippler>-->
-                            <Label text="%menu.title.app"></Label>
+                        <Label text="%menu.title.app"></Label>
                     </leftItems>
 
                     <rightItems>
@@ -31,19 +24,6 @@
                         <JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="houseRippler">
                         </JFXRippler>
 
-                        <!--<JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
-                            <Label fx:id="labelChecks" text="%menu.title.about"></Label>
-                        </JFXRippler>
-                        <JFXRippler maskType="RECT" style="-fx-ripple-color:WHITE;" >
-                            <Label fx:id="labelMainContent" text="%menu.title.new"></Label>
-                        </JFXRippler>-->
-                        <!--<JFXRippler fx:id="optionsRippler" maskType="CIRCLE"
-                                    style="-fx-ripple-color:WHITE;">
-                            <StackPane fx:id="optionsBurger">
-                                <JFXHamburger styleClass="jfx-options-burger">
-                                </JFXHamburger>
-                            </StackPane>
-                        </JFXRippler>-->
                     </rightItems>
                 </JFXToolbar>
             </VBox>
