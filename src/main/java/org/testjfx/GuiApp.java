@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
+import org.testjfx.components.Audio;
 import org.testjfx.controllers.PreloaderController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class GuiApp extends Application {
                 GuiApp.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm(),
                 GuiApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(GRAD_FGR_BGR);
+        Audio.addPlayersToScene(scene);
         stage.setScene(scene);
         CSSFX.start(stage);
     }

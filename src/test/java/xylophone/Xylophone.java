@@ -500,6 +500,7 @@ public class Xylophone extends Application {
 
 
     public static void main(String[] args) {
+        new AudioClip(Xylophone.class.getResource("/audio/Note1.wav").toString()).play();
         Application.launch(args);
     }
 }
