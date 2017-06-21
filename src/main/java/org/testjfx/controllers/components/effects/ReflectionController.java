@@ -12,7 +12,7 @@ import org.testjfx.util.DemoFxApp;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/org/testjfx/fxml/ui/sprite3d.fxml", title = "Material Design Example")
+@ViewController(value = "/org/testjfx/fxml/ui/sprite3d.fxml")
 public class ReflectionController extends AbstractEffectsController{
 
     @FXMLViewFlowContext

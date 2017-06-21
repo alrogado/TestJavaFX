@@ -40,7 +40,7 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 import static org.testjfx.util.GuiColors.*;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
-@ViewController(value = "/org/testjfx/fxml/ui/main_content.fxml", title = "Material Design Example")
+@ViewController(value = "/org/testjfx/fxml/ui/main_content.fxml")
 public class MainContentController {
 
     public static final String CONTENT_PANE = "ContentPane";
@@ -217,11 +217,7 @@ public class MainContentController {
                 .build();
 
 
-        personalTile= new Tile()/*{
-            protected Skin createDefaultSkin(){
-                return (personalSkin = new LazerTileSkin(personalTile));
-            }
-        }*/;
+        personalTile= new Tile();
         personalTile.setMinValue(0);
         personalTile.setMaxValue(30);
         personalTile.setTitle("Personal");

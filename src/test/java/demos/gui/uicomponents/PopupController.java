@@ -13,7 +13,7 @@ import javafx.scene.layout.StackPane;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 
-@ViewController(value = "/fxml/ui/Popup.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/Popup.fxml")
 public final class PopupController {
 
     @FXML

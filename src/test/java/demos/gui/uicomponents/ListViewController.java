@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/fxml/ui/ListView.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/ListView.fxml")
 public class ListViewController {
 
     @FXML

@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javax.annotation.PostConstruct;
 import java.util.Objects;
 
-@ViewController(value = "/fxml/SideMenu.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/SideMenu.fxml")
 public class SideMenuController {
 
     @FXMLViewFlowContext

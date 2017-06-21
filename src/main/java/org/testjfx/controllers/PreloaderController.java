@@ -22,6 +22,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.testjfx.Configuration;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT
 import static org.testjfx.GuiApp.*;
 import static org.testjfx.util.EffectUtils.fadeOut;
 
-@ViewController(value = "/org/testjfx/fxml/ui/preloader.fxml", title = "Lazer Application")
+@ViewController(value = "/org/testjfx/fxml/ui/preloader.fxml", title = "Application")
 public class PreloaderController {
 
     private static Logger logger = LoggerFactory.getLogger(PreloaderController.class);
@@ -80,7 +81,7 @@ public class PreloaderController {
                     dialog.close(); //this throws an exception
                     try {
                         ViewConfiguration viewConfiguration = new ViewConfiguration();
-                        viewConfiguration.setResources(APPBUNDLE);
+                        viewConfiguration.setResources(Configuration.APPBUNDLE);
                         Flow flow = new Flow(MainController.class, viewConfiguration);
                         FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
                         context.register("ContentFlowHandler", handler);
@@ -123,7 +124,7 @@ public class PreloaderController {
                     int finalI = i;
                     Platform.runLater(() -> {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
-                        progressText.setText(APPBUNDLE.getString(textProGressValues[finalI]));
+                        progressText.setText(Configuration.APPBUNDLE.getString(textProGressValues[finalI]));
                     });
                     Thread.sleep(500);
                 }

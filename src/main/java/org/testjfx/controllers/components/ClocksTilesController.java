@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import static org.testjfx.util.EffectUtils.fadeIn;
 
-@ViewController(value = "/org/testjfx/fxml/ui/main_content_clock.fxml", title = "Material Design Example")
+@ViewController(value = "/org/testjfx/fxml/ui/main_content_clock.fxml")
 public class ClocksTilesController {
 
 

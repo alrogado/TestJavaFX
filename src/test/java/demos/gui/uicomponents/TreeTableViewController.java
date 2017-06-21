@@ -25,7 +25,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 import java.util.function.Function;
 
-@ViewController(value = "/fxml/ui/TreeTableView.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/TreeTableView.fxml")
 public class TreeTableViewController {
 
     private static final String PREFIX = "( ";

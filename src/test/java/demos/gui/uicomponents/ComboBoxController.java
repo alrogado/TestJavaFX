@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/fxml/ui/Combobox.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/Combobox.fxml")
 public class ComboBoxController {
 
     @FXML

@@ -7,8 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
-import org.testjfx.GuiApp;
-import org.testjfx.util.GuiColors;
+import org.testjfx.Configuration;
 
 import static org.testjfx.util.GuiColors.FRG;
 
@@ -38,7 +37,8 @@ public class RegulatorBuilder {
                 .targetValue(80)
                 .currentValue(25)
                 .unit(unit)
-                .gradientStops(new Stop(0.0, Color.RED),
+                .gradientStops(
+                        new Stop(0.0, Color.RED),
                         new Stop(0.5, Color.YELLOW),
                         new Stop(1, Color.GREEN))
                 //.symbolColor(Color.CRIMSON)
@@ -51,12 +51,18 @@ public class RegulatorBuilder {
                 .build();
     }
 
-    public static Tile createSparkRegulator(String title){
+    static int MINVALUETEMP = -20;
+    static int MAXVALUETEMP = 60;
+
+    public static Tile createSparkRegulator(String title, double start, double stop){
+
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
                 .title(title)
-                .locale(GuiApp.LOCALE)
+                .minValue(MINVALUETEMP)
+                .maxValue(MAXVALUETEMP)
+                .locale(Configuration.LOCALE)
                 .animated(true)
                 .textVisible(true)
                 .sectionTextVisible(true)
@@ -64,13 +70,15 @@ public class RegulatorBuilder {
                 .autoReferenceValue(true)
                 .barColor(FRG)
                 .barBackgroundColor(Color.rgb(255, 255, 255, 0.1))
-                .sections(new eu.hansolo.tilesfx.Section(0, 33, Tile.LIGHT_GREEN),
-                        new eu.hansolo.tilesfx.Section(33, 67, Tile.YELLOW),
-                        new eu.hansolo.tilesfx.Section(67, 100, Tile.LIGHT_RED))
+                .sections(
+                        new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.LIGHT_GREEN),
+                        new eu.hansolo.tilesfx.Section(start, stop, Tile.YELLOW),
+                        new eu.hansolo.tilesfx.Section(stop, MAXVALUETEMP, Tile.LIGHT_RED))
                 .sectionsVisible(true)
                 .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)
-                .gradientStops(new Stop(0.0, Tile.LIGHT_GREEN),
+                .gradientStops(
+                        new Stop(0.0, Tile.LIGHT_GREEN),
                         new Stop(0.33, Tile.LIGHT_GREEN),
                         new Stop(0.33,Tile.YELLOW),
                         new Stop(0.67, Tile.YELLOW),
@@ -78,11 +86,12 @@ public class RegulatorBuilder {
                         new Stop(1.0, Tile.LIGHT_RED))
                 .build();
     }
-    public static Regulator createRegulator(String title, String unit, Ikon ikon,Double value, Double minVal, Double maxVal){
+    public static Regulator createRegulator(String title, String subtitle, String unit, Ikon ikon, Double value, Double minVal, Double maxVal){
         final Regulator regulator = eu.hansolo.fx.regulators.RegulatorBuilder.create()
                 .prefSize(400, 400)
                 //.barColor(Color.rgb(255, 222, 102))
                 .title(title)
+                .subtitle(subtitle)
                 .unit(unit)
                 .targetValue(value!=null?value:0)
                 .minValue(minVal!=null?minVal:0)

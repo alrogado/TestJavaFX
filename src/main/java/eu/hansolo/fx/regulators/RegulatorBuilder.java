@@ -249,6 +249,8 @@ public class RegulatorBuilder<B extends RegulatorBuilder<B>> {
                 CONTROL.setOnTargetSet(((ObjectProperty<EventHandler>) properties.get(key)).get());
             } else if ("title".equals(key)) {
                 CONTROL.setTitle(((StringProperty) properties.get(key)).get());
+            } else if ("subtitle".equals(key)) {
+                CONTROL.setSubtitle(((StringProperty) properties.get(key)).get());
             }
         }
         return CONTROL;
@@ -256,6 +258,11 @@ public class RegulatorBuilder<B extends RegulatorBuilder<B>> {
 
     public final B title(final  String TEXT) {
         properties.put("title", new SimpleStringProperty(TEXT));
+        return (B)this;
+    }
+
+    public final B subtitle(String TEXT) {
+        properties.put("subtitle", new SimpleStringProperty(TEXT));
         return (B)this;
     }
 }

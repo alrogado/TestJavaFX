@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import static javafx.animation.Interpolator.EASE_BOTH;
 
-@ViewController(value = "/fxml/ui/Masonry.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/Masonry.fxml")
 public class MasonryPaneController {
 
     @FXML

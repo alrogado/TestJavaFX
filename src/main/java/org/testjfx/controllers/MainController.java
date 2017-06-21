@@ -12,18 +12,15 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import org.kordamp.ikonli.fontelico.Fontelico;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.typicons.Typicons;
+import org.testjfx.Configuration;
 import org.testjfx.components.ClockBuilder;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
-import org.testjfx.controllers.components.TwoTilesTilesController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +33,7 @@ import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT
 import static org.testjfx.GuiApp.*;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
-@ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Lazer Application")
+@ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Application")
 public class MainController {
 
     private static Logger logger = LoggerFactory.getLogger(MainController.class);
@@ -82,7 +79,7 @@ public class MainController {
         Objects.requireNonNull(context, "context");
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(APPBUNDLE);
+        viewConfiguration.setResources(Configuration.APPBUNDLE);
         Flow innerFlow = new Flow(RegulatorsController.class, viewConfiguration);
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);

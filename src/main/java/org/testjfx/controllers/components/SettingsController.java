@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import static org.testjfx.util.EffectUtils.fadeIn;
 
-@ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml", title = "Material Design Example")
+@ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class SettingsController {
 
     @FXMLViewFlowContext
@@ -39,10 +39,10 @@ public class SettingsController {
     public void init() {
         Objects.requireNonNull(context, "context");
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        Regulator volumScreen = RegulatorBuilder.createRegulator("Pantalla", "%", Elusive.SCREEN_ALT, 50d, 0d, 100d);
+        Regulator volumScreen = RegulatorBuilder.createRegulator("Pantalla", "","%", Elusive.SCREEN_ALT, 50d, 0d, 100d);
         //use Reactfx to manipulate bindings and values from communications
         //volumScreen.minValueProperty()
-        Regulator volumPulse = RegulatorBuilder.createRegulator("Pulso", "%", Ionicons.ION_IOS_PULSE_STRONG, 50d, 0d, 100d);
+        Regulator volumPulse = RegulatorBuilder.createRegulator("Pulso", "","%", Ionicons.ION_IOS_PULSE_STRONG, 50d, 0d, 100d);
 
         FlowGridPane regulatorsPane = new FlowGridPane(2,1, volumPulse, volumScreen);
         regulatorsPane.setHgap(100);

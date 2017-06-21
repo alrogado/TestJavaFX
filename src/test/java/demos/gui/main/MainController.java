@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 
-@ViewController(value = "/fxml/Main.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/Main.fxml")
 public final class MainController {
 
     @FXMLViewFlowContext

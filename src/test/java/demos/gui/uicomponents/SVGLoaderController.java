@@ -29,7 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ViewController(value = "/fxml/ui/SVGLoader.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/SVGLoader.fxml")
 public class SVGLoaderController {
 
     private static final String FX_BACKGROUND_INSETS_0 = "-fx-background-insets: 0;";

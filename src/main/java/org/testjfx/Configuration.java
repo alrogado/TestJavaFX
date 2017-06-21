@@ -1,4 +1,7 @@
-package org.testjfx.components;
+package org.testjfx;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Created by alrogado on 6/20/17.
@@ -110,9 +113,18 @@ public class Configuration {
     static final String KEY_SIGNAL_ACTIVATION_LOW_COMPRESSION = "error.lowCompression.activation";
 
 
+    public static Locale LOCALE = new Locale("es");
+    public static ResourceBundle APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
+    public static int WIDTH = 1100;
+    public static int HEIGHT = 800;
+
 
     private static double pulseVolume = 50;
     private static double screenVolume = 50;
+    private static double depositMinValue;
+    private static double depositMaxValue;
+    private static double tipMaxValue;
+    private static double tipMinValue;
 
     public static double getPulseVolume() {
         return pulseVolume;
@@ -128,5 +140,33 @@ public class Configuration {
 
     public static void setScreenVolume(double screenVolume) {
         Configuration.screenVolume = screenVolume;
+    }
+
+    public static double getDepositMinValue() {
+        return depositMinValue;
+    }
+
+    public static void setDepositMinValue(double depositMinValue) {
+        Configuration.depositMinValue = depositMinValue;
+    }
+
+    public static double getDepositMaxValue() {
+        return depositMaxValue;
+    }
+
+    public static void setDepositMaxValue(double depositMaxValue) {
+        Configuration.depositMaxValue = depositMaxValue;
+    }
+
+    public static double getTipMaxValue() {
+        return tipMaxValue;
+    }
+
+    public static void setTipMaxValue(double tipMaxValue) {
+        Configuration.tipMaxValue = tipMaxValue;
+    }
+
+    public static double getTipMinValue() {
+        return tipMinValue;
     }
 }

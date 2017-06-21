@@ -11,7 +11,7 @@ import javafx.scene.layout.StackPane;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/fxml/ui/Dialog.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/Dialog.fxml")
 public class DialogController {
 
     public static final String CONTENT_PANE = "ContentPane";

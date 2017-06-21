@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/fxml/ui/Pickers.fxml", title = "Material Design Example")
+@ViewController(value = "/fxml/ui/Pickers.fxml")
 public class PickersController {
 
     @FXML

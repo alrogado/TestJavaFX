@@ -1,14 +1,13 @@
 package org.testjfx.components;
 
-import javafx.application.Application;
-import javafx.scene.Group;
+import com.jfoenix.controls.JFXDecorator;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testjfx.Configuration;
 
 import static javafx.application.Application.launch;
 
@@ -28,7 +27,7 @@ public class Audio {
     static MediaPlayer ERROR;
 
 
-    public static void addPlayersToScene(Scene scene){
+    public static void addPlayersToMainScene(Scene scene){
         PULSE = new MediaPlayer(new Media(Audio.class.getResource("/audio/pulse.wav").toString()));
         TOUCH = new MediaPlayer(new Media(Audio.class.getResource("/audio/touch.wav").toString()));
         MESSAGE = new MediaPlayer(new Media(Audio.class.getResource("/audio/message.wav").toString()));
@@ -36,13 +35,13 @@ public class Audio {
         WARN = new MediaPlayer(new Media(Audio.class.getResource("/audio/warn.wav").toString()));
         WAIT = new MediaPlayer(new Media(Audio.class.getResource("/audio/wait.wav").toString()));
         ERROR = new MediaPlayer(new Media(Audio.class.getResource("/audio/error.wav").toString()));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(PULSE));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(TOUCH));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(MESSAGE));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(INFO));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(WARN));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(WAIT));
-        ((Group)scene.getRoot()).getChildren().add(new MediaView(ERROR));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(PULSE));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(TOUCH));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(MESSAGE));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(INFO));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(WARN));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(WAIT));
+        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(ERROR));
 
     }
 
@@ -54,7 +53,7 @@ public class Audio {
             PULSE.setVolume(Configuration.getPulseVolume());
             PULSE.play();
         } catch (Exception e) {
-            logger.error("playing soung", e);
+            logger.error("playing soung pulse", e);
         }
     }
 
@@ -66,7 +65,7 @@ public class Audio {
             TOUCH.setVolume(Configuration.getScreenVolume());
             TOUCH.play();
         } catch (Exception e) {
-            logger.error("playing soung ", e);
+            logger.error("playing soung keypress", e);
         }
     }
 

@@ -38,9 +38,7 @@ public class GuiApp extends Application {
 
     public static JFXDecorator decorator;
 
-    public static String APPTITLE = "LAZER App";
-    public static Locale LOCALE = new Locale("es");
-    public static ResourceBundle APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
+    public static String APPTITLE = "Gui Appplication";
 
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
@@ -59,8 +57,9 @@ public class GuiApp extends Application {
                 GuiApp.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm(),
                 GuiApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(GRAD_FGR_BGR);
-        Audio.addPlayersToScene(scene);
         stage.setScene(scene);
+        Audio.addPlayersToMainScene(scene);
+        //todo cssfx control should be configured by profile
         CSSFX.start(stage);
     }
 
@@ -69,25 +68,22 @@ public class GuiApp extends Application {
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
         stage.setAlwaysOnTop(true);
-        stage.setMinHeight(HEIGHT);
-        stage.setMinWidth(WIDTH);
-        stage.setHeight(HEIGHT);
-        stage.setWidth(WIDTH);
+        stage.setMinHeight(Configuration.HEIGHT);
+        stage.setMinWidth(Configuration.WIDTH);
+        stage.setHeight(Configuration.HEIGHT);
+        stage.setWidth(Configuration.WIDTH);
         stage.setTitle(APPTITLE);
         stage.setFullScreenExitHint("");
     }
 
-    public static int WIDTH = 1100;
-    public static int HEIGHT = 800;
-
     public static void configureNotFullScreenStage(Stage stage) {
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - WIDTH / 2);
-        stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - HEIGHT / 2);
-        stage.setMinHeight(HEIGHT);
-        stage.setMinWidth(WIDTH);
-        stage.setHeight(HEIGHT);
-        stage.setWidth(WIDTH);
+        stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - Configuration.WIDTH / 2);
+        stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - Configuration.HEIGHT / 2);
+        stage.setMinHeight(Configuration.HEIGHT);
+        stage.setMinWidth(Configuration.WIDTH);
+        stage.setHeight(Configuration.HEIGHT);
+        stage.setWidth(Configuration.WIDTH);
         stage.setTitle(APPTITLE);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
@@ -95,7 +91,7 @@ public class GuiApp extends Application {
 
     public static DefaultFlowContainer initFlowConf(Class startViewControllerClass, Stage stage) {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(APPBUNDLE);
+        viewConfiguration.setResources(Configuration.APPBUNDLE);
 
         Flow flow = new Flow(startViewControllerClass, viewConfiguration);
         ViewFlowContext context = new ViewFlowContext();
@@ -132,8 +128,8 @@ public class GuiApp extends Application {
                 if (resource == null) {
                     logger.warn("el valor del parametro de pais/idioma '"+localeStr+"' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
                 } else {
-                    LOCALE = new Locale(localeStr);
-                    APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
+                    Configuration.LOCALE = new Locale(localeStr);
+                    Configuration.APPBUNDLE = ResourceBundle.getBundle("testjfx", Configuration.LOCALE);
                 }
             }
         }

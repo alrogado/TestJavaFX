@@ -36,6 +36,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.testjfx.Configuration;
 
 import java.util.Locale;
 
@@ -57,6 +58,7 @@ public class Regulator extends Region implements RegulatorControl {
     private Circle                      mainCircle;
     private Text                        text;
     private Text                        titleText;
+    private Text                        subtitleText;
     private Circle                      indicator;
     private Region                      symbol;
     private StackPane                   iconPane;
@@ -76,6 +78,7 @@ public class Regulator extends Region implements RegulatorControl {
     private IntegerProperty             decimals;
     private StringProperty              unit;
     private StringProperty              title;
+    private StringProperty              subtitle;
     private ObjectProperty<Color>       symbolColor;
     private ObjectProperty<Color>       iconColor;
     private ObjectProperty<Color>       textColor;
@@ -137,6 +140,14 @@ public class Regulator extends Region implements RegulatorControl {
             }
             @Override public Object getBean() { return Regulator.this; }
             @Override public String getName() { return "title"; }
+        };
+        subtitle         = new StringPropertyBase("") {
+            @Override public void set(final String VALUE) {
+                super.set(VALUE);
+                redraw();
+            }
+            @Override public Object getBean() { return Regulator.this; }
+            @Override public String getName() { return "subtitle"; }
         };
         symbolColor  = new ObjectPropertyBase<Color>(Color.TRANSPARENT) {
             @Override protected void invalidated() {
@@ -254,6 +265,10 @@ public class Regulator extends Region implements RegulatorControl {
         titleText.setFill(Color.WHITE);
         titleText.setTextOrigin(VPos.CENTER);
 
+        subtitleText = new Text();
+        subtitleText.setFill(Color.WHITE);
+        subtitleText.setTextOrigin(VPos.CENTER);
+
         indicatorRotate = new Rotate(-ANGLE_RANGE *  0.5, center, center);
 
         indicatorGlow        = new DropShadow(BlurType.TWO_PASS_BOX, getIndicatorColor(), PREFERRED_WIDTH * 0.02, 0.0, 0, 0);
@@ -279,7 +294,7 @@ public class Regulator extends Region implements RegulatorControl {
 
         iconPane = new StackPane(symbol, icon);
 
-        pane = new Pane(barArc, ring, mainCircle, text, titleText, indicatorGroup, iconPane);
+        pane = new Pane(barArc, ring, mainCircle, text, titleText, subtitleText, indicatorGroup, iconPane);
         pane.setPrefSize(PREFERRED_HEIGHT, PREFERRED_HEIGHT);
         pane.setBackground(new Background(new BackgroundFill(color.get().darker(), new CornerRadii(1024), Insets.EMPTY)));
         pane.setEffect(highlight);
@@ -404,13 +419,17 @@ public class Regulator extends Region implements RegulatorControl {
     private void rotate(final double VALUE) {
         drawBar(VALUE);
         indicatorRotate.setAngle((VALUE - minValue.get()) * angleStep - ANGLE_RANGE * 0.5);
-        text.setText(String.format(Locale.US, formatString, VALUE));
+        text.setText(String.format(Configuration.LOCALE, formatString, VALUE));
         adjustTextSize(text, size * 0.48, size * 0.216);
         text.setLayoutX((size - text.getLayoutBounds().getWidth()) * 0.5);
 
         titleText.setText(getTitle());
         adjustTextSize(titleText, size * 0.48, size * 0.1);
         titleText.setLayoutX((size - titleText.getLayoutBounds().getWidth()) * 0.5);
+
+        subtitleText.setText(getSubtitle());
+        adjustTextSize(subtitleText, size * 0.48, size * 0.3);
+        subtitleText.setLayoutX((size - subtitleText.getLayoutBounds().getWidth()) * 0.5);
     }
 
     private void drawBar(final double VALUE) {
@@ -458,8 +477,11 @@ public class Regulator extends Region implements RegulatorControl {
             text.setFont(Fonts.robotoMedium(size * 0.216));
             text.relocate((size - text.getLayoutBounds().getWidth()) * 0.5, size * 0.33);
 
-            titleText.setFont(Fonts.robotoMedium(size * 0.05));
-            titleText.relocate((size - titleText.getLayoutBounds().getWidth()) * 0.5, size * 0.28);
+            titleText.setFont(Fonts.robotoMedium(size * 0.06));
+            titleText.relocate((size - titleText.getLayoutBounds().getWidth()) * 0.5, size * 0.26);
+
+            subtitleText.setFont(Fonts.robotoMedium(size * 0.10));
+            subtitleText.relocate((size - titleText.getLayoutBounds().getWidth()) * 0.5, size * 0.58);
 
             indicatorGlow.setRadius(size * 0.02);
             indicatorInnerShadow.setRadius(size * 0.008);
@@ -493,6 +515,7 @@ public class Regulator extends Region implements RegulatorControl {
         icon.setFill(iconColor.get());
         text.setFill(textColor.get());
         titleText.setFill(textColor.get());
+        subtitleText.setFill(textColor.get());
         barArc.setStroke(barColor.get());
         rotate(targetValue.get());
     }
@@ -506,4 +529,8 @@ public class Regulator extends Region implements RegulatorControl {
     public String getTitle()  { return title.get(); }
     public void setTitle(final String TITLE) { title.set(TITLE); }
     public StringProperty titleProperty() { return title; }
+
+    public String getSubtitle()  { return subtitle.get(); }
+    public void setSubtitle(final String SUBTITLE) { subtitle.set(SUBTITLE); }
+    public StringProperty subtitleProperty() { return subtitle; }
 }
