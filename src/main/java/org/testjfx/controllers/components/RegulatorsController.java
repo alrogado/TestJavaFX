@@ -64,6 +64,12 @@ public class RegulatorsController {
     Regulator frequency;
     Regulator fluency;
 
+
+    //String migLayoutConstraints = "w 45sp,h 45sp";
+    String migLayoutConstraints = "w 50%,h 40%";
+    int horizontalGap = 5;
+    Insets padding = new Insets(5);
+
     /**
      * init fxml when loaded.
      */
@@ -75,7 +81,8 @@ public class RegulatorsController {
         //frequency.minValueProperty()
 
         rootMP.add(createWorkModesNodeList(), "alignx center, wrap");
-        rootMP.add(createTileGauage(), "alignx center, wrap");
+        rootMP.add(createTempSparkGauage(), "alignx center, wrap");
+        rootMP.add(createStartButton(), "alignx center, wrap");
         //rootMP.add(createTempGauage(), "alignx center, wrap");
         //rootMP.add(createTempRegulator(), "alignx center, wrap");
         rootMP.add(createFreqFluBox(), "alignx center, wrap");
@@ -97,6 +104,17 @@ public class RegulatorsController {
         };
         timer.start();
         fadeIn(root);
+    }
+
+    private MigPane createStartButton() {
+        MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        JFXButton button = new JFXButton("Start");
+        button.setTooltip(new Tooltip(""));
+        button.setButtonType(JFXButton.ButtonType.RAISED);
+        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
+        button.setPrefSize(20,20);
+        rootMP.add(button, "alignx center");
+        return rootMP;
     }
 
     private Node createLabelsPanel(){
@@ -169,7 +187,7 @@ public class RegulatorsController {
 
         String[] modeNames = new String[]{"FPD", "15 ms", "30 ms", "100 ms", "400 ms"};
         for(String modeName:modeNames ){
-            nodesList.addAnimatedNode(createButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
+            nodesList.addAnimatedNode(createWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
         }
         //angulo en el que van a salir los modos
         nodesList.setRotate(270);
@@ -186,12 +204,12 @@ public class RegulatorsController {
 
         String[] modeNames = new String[]{"FPD", "15 ms", "30 ms", "100 ms", "400 ms"};
         for(String modeName:modeNames ){
-            nodesList.getChildren().add(createButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
+            nodesList.getChildren().add(createWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
         }
         return nodesList;
     }
 
-    private JFXButton createButton(String title, String tooltipKey) {
+    private JFXButton createWorkModeButton(String title, String tooltipKey) {
         JFXButton button = new JFXButton(title);
         button.setTooltip(new Tooltip(Configuration.APPBUNDLE.getString(tooltipKey)));
         button.setButtonType(JFXButton.ButtonType.RAISED);
@@ -204,8 +222,8 @@ public class RegulatorsController {
         frequency = RegulatorBuilder.createRegulator(Configuration.APPBUNDLE.getString("frecuency.label"), "Hz", "",null, 50d, 30d, 200d);
         fluency = RegulatorBuilder.createRegulator(Configuration.APPBUNDLE.getString("fluencia.label"), "J/cm",  "",null, 96d, 20d, 130d);
         FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
-        regulatorsPane.setHgap(100);
-        regulatorsPane.setPadding(new Insets(10));
+        regulatorsPane.setHgap(horizontalGap);
+        regulatorsPane.setPadding(padding);
         return regulatorsPane;
     }
 
@@ -218,31 +236,34 @@ public class RegulatorsController {
 
         HBox hBox = new HBox(depositTemp);
         hBox.setSpacing(20);
-        hBox.setPadding(new Insets(10));
+        hBox.setPadding(padding);
 
         HBox hBox2 = new HBox(tipTemp);
         hBox2.setSpacing(20);
-        hBox2.setPadding(new Insets(10));
+        hBox2.setPadding(padding);
 
         MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        tempPane.add(hBox, "w 45sp,h 45sp");
-        tempPane.add(hBox2, "w 45sp,h 45sp");
+        tempPane.add(hBox, migLayoutConstraints);
+        tempPane.add(hBox2, migLayoutConstraints);
         return tempPane;
     }
 
-    private MigPane createTileGauage() {
-        depositTempTile = RegulatorBuilder.createSparkRegulator(Configuration.APPBUNDLE.getString("deposit.label"), Configuration.getDepositMinValue(), Configuration.getDepositMaxValue());
-        tipTempTile = RegulatorBuilder.createSparkRegulator(Configuration.APPBUNDLE.getString("tip.label"), Configuration.getTipMinValue(), Configuration.getTipMaxValue());
+    private Node createTempSparkGauage() {
+        depositTempTile = RegulatorBuilder.createTempSparkRegulator(Configuration.APPBUNDLE.getString("deposit.label"), Configuration.getDepositMinValue(), Configuration.getDepositMaxValue());
+        tipTempTile = RegulatorBuilder.createTempSparkRegulator(Configuration.APPBUNDLE.getString("tip.label"), Configuration.getTipMinValue(), Configuration.getTipMaxValue());
 
-
-        MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+       /* MigPane pane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");
-        tempPane.add(depositTempTile, "w 45sp,h 45sp");
-        tempPane.add(tipTempTile, "w 45sp,h 45sp");
+        pane.add(depositTempTile, migLayoutConstraints);
+        pane.add(tipTempTile, migLayoutConstraints);*/
+
+        FlowGridPane pane = new FlowGridPane(2,1, depositTempTile, tipTempTile);
+        pane.setHgap(horizontalGap);
+        pane.setPadding(padding);
         /*HBox tempPane = new HBox(depositTempTile, tipTempTile);
         tempPane.setSpacing(20);
         tempPane.setPadding(new Insets(10));*/
-        return tempPane;
+        return pane;
     }
 
     private MigPane createTempGauage() {
@@ -265,8 +286,8 @@ public class RegulatorsController {
 
         MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");
-        tempPane.add(depositTempTile, "w 45sp,h 45sp");
-        tempPane.add(tipTempTile, "w 45sp,h 45sp");
+        tempPane.add(depositTempTile, migLayoutConstraints);
+        tempPane.add(tipTempTile, migLayoutConstraints);
         /*HBox tempPane = new HBox(depositTempTile, tipTempTile);
         tempPane.setSpacing(20);
         tempPane.setPadding(new Insets(10));*/

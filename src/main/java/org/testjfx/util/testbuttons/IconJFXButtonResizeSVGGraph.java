@@ -14,7 +14,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 /**
  * Created by alvaro.lopez on 09/06/2017.
  */
-public class MiniIconButtonResizeGraph extends Application {
+public class IconJFXButtonResizeSVGGraph extends Application {
 
     private final int MIN_BUTTON_SIZE = 10;
 
@@ -61,7 +61,7 @@ public class MiniIconButtonResizeGraph extends Application {
                 }
         );
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,MIN_BUTTON_SIZE*10, MIN_BUTTON_SIZE*10);
 
 
         primaryStage.setScene(scene);

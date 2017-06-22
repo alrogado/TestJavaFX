@@ -3,6 +3,7 @@ package org.testjfx.components;
 import eu.hansolo.fx.regulators.*;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.RadarChart;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
@@ -54,12 +55,16 @@ public class RegulatorBuilder {
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
 
-    public static Tile createSparkRegulator(String title, double start, double stop){
+    public static Tile createTempSparkRegulator(String title, double start, double stop){
 
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
                 .title(title)
+                //.text("lerele")
+                .textVisible(true)
+                .unit("ºC")
+                .averageVisible(true)
                 .minValue(MINVALUETEMP)
                 .maxValue(MAXVALUETEMP)
                 .locale(Configuration.LOCALE)
@@ -69,7 +74,7 @@ public class RegulatorBuilder {
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
                 .barColor(FRG)
-                .barBackgroundColor(Color.rgb(255, 255, 255, 0.1))
+                .barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
                         new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.LIGHT_GREEN),
                         new eu.hansolo.tilesfx.Section(start, stop, Tile.YELLOW),
@@ -77,6 +82,7 @@ public class RegulatorBuilder {
                 .sectionsVisible(true)
                 .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)
+
                 .gradientStops(
                         new Stop(0.0, Tile.LIGHT_GREEN),
                         new Stop(0.33, Tile.LIGHT_GREEN),

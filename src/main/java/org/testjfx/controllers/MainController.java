@@ -74,7 +74,7 @@ public class MainController {
         houseRippler.setControl(customizeIkon(Typicons.HOME_OUTLINE));
         houseRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, startViewControllerClass));
 
-        settingsRippler.setControl(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT ));
+        settingsRippler.setControl(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
         settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));
 
         toolbar.setCenter(ClockBuilder.createClock());

@@ -28,8 +28,8 @@ public class IconSVGButtonResizeGraph extends Application {
         hBox.setAlignment(Pos.CENTER);
 
         Button btn = new Button();
-        btn.getStyleClass().add("icon-button");
-        btn.setPickOnBounds(true);
+        btn.getStyleClass().add("icon-button-logo");
+        //btn.setPickOnBounds(true);
 
         Region icon = new Region();
         icon.getStyleClass().add("icon");
@@ -37,6 +37,7 @@ public class IconSVGButtonResizeGraph extends Application {
         btn.setGraphic(icon);
 
         IconButton iconButton = new IconButton();
+
         hBox.getChildren().addAll(btn, iconButton);
         hBox.layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
                     double size = Math.max(MIN_BUTTON_SIZE, Math.min(newBounds.getWidth(), newBounds.getHeight()));
