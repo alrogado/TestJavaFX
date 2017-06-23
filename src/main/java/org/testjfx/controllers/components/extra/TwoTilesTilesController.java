@@ -1,4 +1,4 @@
-package org.testjfx.controllers.components;
+package org.testjfx.controllers.components.extra;
 
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;

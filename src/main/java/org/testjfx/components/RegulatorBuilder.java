@@ -9,7 +9,9 @@ import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
 import org.testjfx.conf.Configuration;
+import org.testjfx.util.GuiColors;
 
+import static javafx.scene.text.TextAlignment.CENTER;
 import static org.testjfx.util.GuiColors.FRG;
 
 /**
@@ -56,15 +58,21 @@ public class RegulatorBuilder {
     static int MAXVALUETEMP = 60;
 
     public static Tile createTempSparkRegulator(String title, double start, double stop){
-
+        int decimals = 0;
+        String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
+        String startFormated = String.format(Configuration.LOCALE, format, start);
+        String stopFormated = String.format(Configuration.LOCALE, format, stop );
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
+                .backgroundColor(GuiColors.BKG)
                 .title(title)
-                //.text("lerele")
+                .titleAlignment(CENTER)
+                .decimals(decimals)
+                .text(" Start: "+startFormated+" - Stop: "+stopFormated)
                 .textVisible(true)
                 .unit("ºC")
-                .averageVisible(true)
+                //.averageVisible(true)
                 .minValue(MINVALUETEMP)
                 .maxValue(MAXVALUETEMP)
                 .locale(Configuration.LOCALE)
@@ -73,7 +81,7 @@ public class RegulatorBuilder {
                 .sectionTextVisible(true)
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
-                .barColor(FRG)
+                //.barColor(FRG)
                 .barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
                         new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.LIGHT_GREEN),

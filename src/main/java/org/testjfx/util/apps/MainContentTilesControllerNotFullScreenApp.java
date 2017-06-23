@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.testjfx.conf.Configuration;
-import org.testjfx.controllers.components.TwoTilesTilesController;
+import org.testjfx.controllers.components.extra.TwoTilesTilesController;
 
 import static org.testjfx.GuiApp.*;
 

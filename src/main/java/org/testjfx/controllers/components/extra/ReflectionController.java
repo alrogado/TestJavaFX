@@ -1,4 +1,4 @@
-package org.testjfx.controllers.components.effects;
+package org.testjfx.controllers.components.extra;
 
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.FlowException;

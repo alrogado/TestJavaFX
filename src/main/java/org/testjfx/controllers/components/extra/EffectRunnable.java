@@ -1,4 +1,4 @@
-package org.testjfx.controllers.components.effects;
+package org.testjfx.controllers.components.extra;
 
 /**
  * Created by alrogado on 6/2/17.

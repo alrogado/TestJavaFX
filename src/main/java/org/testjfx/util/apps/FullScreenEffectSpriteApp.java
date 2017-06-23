@@ -3,7 +3,7 @@ package org.testjfx.util.apps;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.testjfx.controllers.components.effects.Sprite3dController;
+import org.testjfx.controllers.components.extra.Sprite3dController;
 
 import static org.testjfx.GuiApp.*;
 

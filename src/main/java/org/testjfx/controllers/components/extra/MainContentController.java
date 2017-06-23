@@ -1,4 +1,4 @@
-package org.testjfx.controllers;
+package org.testjfx.controllers.components.extra;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;

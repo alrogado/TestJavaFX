@@ -51,7 +51,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
     private static final int               DAY           = 86_400;
     private static final int               HOUR          = 3_600;
     private static final int               MINUTE        = 60;
-    private              DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private              DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     private Text                 titleText;
     private Text                 valueText;
     private Text                 unitText;
@@ -104,7 +104,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         averagingListener        = o -> handleEvents("AVERAGING_PERIOD");
         highlightSectionListener = o -> handleEvents("HIGHLIGHT_SECTIONS");
 
-        timeFormatter = DateTimeFormatter.ofPattern("HH:mm", tile.getLocale());
+        timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", tile.getLocale());
 
         if (tile.isAutoScale()) tile.calcAutoScale();
 
@@ -749,9 +749,9 @@ public class GaugeSparkLineTileSkin extends TileSkin {
 
         if (tile.isTextVisible()) {
             String format = "";
-            if(movingAverage.getWindow().poll()!=null) {
+            /*if(movingAverage.getWindow().poll()!=null) {
                 format = timeFormatter.format(movingAverage.getWindow().poll().getTimestampAsDateTime(tile.getZoneId()));
-            }
+            }*/
             text.setText(tile.getText()+ " " + format);
         } else if (!tile.isTextVisible() && null != movingAverage.getTimeSpan()) {
             timeSpanText.setText(createTimeSpanText());

@@ -1,4 +1,4 @@
-package org.testjfx.controllers.components.effects;
+package org.testjfx.controllers.components.extra;
 
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;

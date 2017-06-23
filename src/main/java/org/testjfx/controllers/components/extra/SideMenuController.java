@@ -1,4 +1,4 @@
-package org.testjfx.controllers.components;
+package org.testjfx.controllers.components.extra;
 
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
@@ -12,6 +12,7 @@ import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import org.testjfx.controllers.components.PasswordController;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
