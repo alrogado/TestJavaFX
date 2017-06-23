@@ -48,7 +48,7 @@ public class RegulatorsController {
 
 
     private static final String FX_TEXT_FILL_WHITE = "-fx-text-fill:WHITE; -fx-background-color:#D63333";
-    private static final String ANIMATED_OPTION_BUTTON = "animated-option-button";
+    public static final String ANIMATED_OPTION_BUTTON = "animated-option-button";
     private static final String ANIMATED_OPTION_SUB_BUTTON = "animated-option-sub-button";
     private static final String ANIMATED_OPTION_SUB_BUTTON2 = "animated-option-sub-button2";
 

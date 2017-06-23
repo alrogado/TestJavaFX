@@ -14,8 +14,9 @@ public class IkonUtils {
     public static FontIcon customizeIkon(Ikon ikon) {
         FontIcon fontIcon = new FontIcon(ikon);
         fontIcon.setIconSize(48);
-        fontIcon.setIconColor(Color.BLUE);
-        fontIcon.setFill(GRAD_FGR_BGR);
+        fontIcon.setIconColor(GuiColors.FRG);
+        //fontIcon.setFill(GRAD_FGR_BGR);
         return fontIcon;
     }
+
 }
