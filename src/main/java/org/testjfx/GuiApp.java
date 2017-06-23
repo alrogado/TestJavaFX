@@ -59,7 +59,8 @@ public class GuiApp extends Application {
                 GuiApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(GRAD_FGR_BGR);
         stage.setScene(scene);
-        Audio.addPlayersToMainScene(scene);
+        //todo cssfx control should
+        //Audio.addPlayersToMainScene(scene);
         //todo cssfx control should be configured by profile
         CSSFX.start(stage);
     }

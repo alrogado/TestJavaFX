@@ -596,8 +596,17 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         maxWidth = width - size * 0.25;
         fontSize = size * 0.06;
         text.setFont(Fonts.latoRegular(fontSize));
+        /*if (text.getLayoutBounds().getWidth() > maxWidth) { Helper.adjustTextSize(text, maxWidth, fontSize); }
+        text.relocate(width - size * 0.05 - text.getLayoutBounds().getWidth(), height - size * 0.1);*/
+
         if (text.getLayoutBounds().getWidth() > maxWidth) { Helper.adjustTextSize(text, maxWidth, fontSize); }
-        text.relocate(width - size * 0.05 - text.getLayoutBounds().getWidth(), height - size * 0.1);
+        switch(tile.getTextAlignment()) {
+            default    :
+            case LEFT  : text.setX(size * 0.05); break;
+            case CENTER: text.setX((width - text.getLayoutBounds().getWidth()) * 0.5); break;
+            case RIGHT : text.setX(width - (size * 0.05) - text.getLayoutBounds().getWidth()); break;
+        }
+        text.setY(height - size * 0.05);
 
         maxWidth = width - size * 0.25;
         fontSize = size * 0.06;

@@ -29,6 +29,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.LC;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
@@ -40,6 +41,8 @@ import java.util.Objects;
 import java.util.Random;
 
 import static java.util.Collections.singletonList;
+import static javafx.scene.text.TextAlignment.LEFT;
+import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.util.EffectUtils.fadeIn;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
@@ -76,19 +79,22 @@ public class RegulatorsController {
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
-        MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        MigPane rootMP = new MigPane("fill");
         //use Reactfx to manipulate bindings and values from communications
         //frequency.minValueProperty()
 
         rootMP.add(createWorkModesNodeList(), "alignx center, wrap");
         rootMP.add(createTempSparkGauage(), "alignx center, wrap");
-        rootMP.add(createStartButton(), "alignx center, wrap");
+        //rootMP.add(createStartButton(), "alignx center, wrap");
         //rootMP.add(createTempGauage(), "alignx center, wrap");
         //rootMP.add(createTempRegulator(), "alignx center, wrap");
         rootMP.add(createFreqFluBox(), "alignx center, wrap");
         rootMP.add(createLabelsPanel(), "alignx center, wrap");
 
-        root.getChildren().addAll(rootMP);
+
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(createStartButton(), rootMP);
+        root.getChildren().addAll(stackPane);
 
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};
@@ -118,9 +124,9 @@ public class RegulatorsController {
     }
 
     private Node createLabelsPanel(){
-        MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        MigPane rootMP = new MigPane("fill");
         rootMP.add(createPanelShoots(), "alignx left");
-        rootMP.add(createPanelTotals(), "alignx right, wrap");
+        rootMP.add(createPanelTotals(), "alignx right");
         return rootMP;
     }
     private Node createWorkModesNodeList(){
@@ -130,7 +136,7 @@ public class RegulatorsController {
         return rootMP;
     }
 
-    private Node createPanelShoots() {
+    private Node createMig0PanelShoots() {
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
         lblSession.setFill(GuiColors.FRG);
@@ -152,8 +158,32 @@ public class RegulatorsController {
         return rootMP;
     }
 
+    private Node createPanelShoots() {
+        MigPane rootMP = new MigPane("fill");
+        Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
+        lblSession.setFill(GuiColors.FRG);
+        lblSession.setTextOrigin(VPos.CENTER);
+        lblSession.setFont(Fonts.robotoMedium(40));
+        lblSession.setTextAlignment(TextAlignment.LEFT);
+        Text lblShootsValue = new Text("0");
+        lblShootsValue.setFill(GuiColors.FRG);
+        lblShootsValue.setTextOrigin(VPos.CENTER);
+        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
+        lblShootsValue.setFont(Fonts.robotoMedium(40));
+        lblShootsValue.setWrappingWidth(150);
+        JFXButton btnReload = new JFXButton();
+        FontIcon fontIcon = customizeIkon(MaterialDesign.MDI_RELOAD);
+        fontIcon.setFill(GuiColors.FRG);
+        btnReload.setGraphic(fontIcon);
+        rootMP.add(lblSession, "west");
+        rootMP.add(lblShootsValue, "center");
+        rootMP.add(btnReload, "east");
+
+        return rootMP;
+    }
+
     private Node createPanelTotals() {
-        MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        MigPane rootMP = new MigPane("fill");
         Text lblSession = new Text(Configuration.getBundleString("shoots-total.label"));
         lblSession.setFill(GuiColors.FRG);
         lblSession.setTextOrigin(VPos.CENTER);
@@ -164,8 +194,9 @@ public class RegulatorsController {
         lblShootsValue.setTextOrigin(VPos.CENTER);
         lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
         lblShootsValue.setFont(Fonts.robotoMedium(40));
-        rootMP.add(lblSession, "alignx left");
-        rootMP.add(lblShootsValue, "alignx right, wrap");
+        lblShootsValue.setWrappingWidth(150);
+        rootMP.add(lblSession, "west");
+        rootMP.add(lblShootsValue, "east");
 
         return rootMP;
     }
@@ -187,7 +218,7 @@ public class RegulatorsController {
 
         String[] modeNames = new String[]{"FPD", "15 ms", "30 ms", "100 ms", "400 ms"};
         for(String modeName:modeNames ){
-            nodesList.addAnimatedNode(createWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
+            nodesList.addAnimatedNode(createInnerWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
         }
         //angulo en el que van a salir los modos
         nodesList.setRotate(270);
@@ -204,12 +235,12 @@ public class RegulatorsController {
 
         String[] modeNames = new String[]{"FPD", "15 ms", "30 ms", "100 ms", "400 ms"};
         for(String modeName:modeNames ){
-            nodesList.getChildren().add(createWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
+            nodesList.getChildren().add(createInnerWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
         }
         return nodesList;
     }
 
-    private JFXButton createWorkModeButton(String title, String tooltipKey) {
+    private JFXButton createInnerWorkModeButton(String title, String tooltipKey) {
         JFXButton button = new JFXButton(title);
         button.setTooltip(new Tooltip(Configuration.getBundleString(tooltipKey)));
         button.setButtonType(JFXButton.ButtonType.RAISED);
@@ -242,7 +273,7 @@ public class RegulatorsController {
         hBox2.setSpacing(20);
         hBox2.setPadding(padding);
 
-        MigPane tempPane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        MigPane tempPane = new MigPane("fill");
         tempPane.add(hBox, migLayoutConstraints);
         tempPane.add(hBox2, migLayoutConstraints);
         return tempPane;
@@ -253,12 +284,14 @@ public class RegulatorsController {
                 Configuration.getBundleString("deposit.label"),
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
-                false);
+                false,
+                LEFT);
         tipTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("tip.label"),
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                false);
+                false,
+                RIGHT);
 
        /* MigPane pane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");

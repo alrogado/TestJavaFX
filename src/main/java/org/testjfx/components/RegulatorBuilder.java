@@ -5,12 +5,14 @@ import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
+import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
 import org.testjfx.conf.Configuration;
 import org.testjfx.util.GuiColors;
 
 import static javafx.scene.text.TextAlignment.CENTER;
+import static javafx.scene.text.TextAlignment.LEFT;
 import static org.testjfx.util.GuiColors.FRG;
 
 /**
@@ -56,7 +58,7 @@ public class RegulatorBuilder {
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
 
-    public static Tile createTempSparkRegulator(String title, double start, double stop, boolean averageVisible){
+    public static Tile createTempSparkRegulator(String title, double start, double stop, boolean averageVisible, TextAlignment textAllignment){
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
         String startFormated = String.format(Configuration.LOCALE, format, start);
@@ -66,7 +68,6 @@ public class RegulatorBuilder {
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
-                .backgroundColor(GuiColors.BKG)
                 .title(title)
                 //.titleColor(GuiColors.FRG_4)
                 .titleAlignment(CENTER)
@@ -75,6 +76,7 @@ public class RegulatorBuilder {
                 .decimals(decimals)
                 .text(text)
                 .textVisible(true)
+                .textAlignment(textAllignment)
                 //.textColor(GuiColors.FRG_2)
                 .unit("ºC")
                 .averageVisible(averageVisible)
@@ -87,7 +89,7 @@ public class RegulatorBuilder {
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
                 //.barColor(FRG)
-                .barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
+                //.barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
                         new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.LIGHT_GREEN),
                         new eu.hansolo.tilesfx.Section(start, stop, Tile.YELLOW),
