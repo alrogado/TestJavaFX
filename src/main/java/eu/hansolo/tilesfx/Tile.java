@@ -117,6 +117,7 @@ public class Tile extends Control {
         }
     }
     public enum TextSize {
+        SHORTER(0.04),
         NORMAL(0.06),
         BIGGER(0.08);
 

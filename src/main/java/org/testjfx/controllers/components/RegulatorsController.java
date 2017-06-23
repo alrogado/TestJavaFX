@@ -249,8 +249,16 @@ public class RegulatorsController {
     }
 
     private Node createTempSparkGauage() {
-        depositTempTile = RegulatorBuilder.createTempSparkRegulator(Configuration.APPBUNDLE.getString("deposit.label"), Configuration.getDepositMinValue(), Configuration.getDepositMaxValue());
-        tipTempTile = RegulatorBuilder.createTempSparkRegulator(Configuration.APPBUNDLE.getString("tip.label"), Configuration.getTipMinValue(), Configuration.getTipMaxValue());
+        depositTempTile = RegulatorBuilder.createTempSparkRegulator(
+                Configuration.APPBUNDLE.getString("deposit.label"),
+                Configuration.getDepositMinValue(),
+                Configuration.getDepositMaxValue(),
+                false);
+        tipTempTile = RegulatorBuilder.createTempSparkRegulator(
+                Configuration.APPBUNDLE.getString("tip.label"),
+                Configuration.getTipMinValue(),
+                Configuration.getTipMaxValue(),
+                false);
 
        /* MigPane pane = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //MigPane tempPane = new MigPane("debug", "[grow,fill]", "");

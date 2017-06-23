@@ -57,22 +57,28 @@ public class RegulatorBuilder {
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
 
-    public static Tile createTempSparkRegulator(String title, double start, double stop){
+    public static Tile createTempSparkRegulator(String title, double start, double stop, boolean averageVisible){
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
         String startFormated = String.format(Configuration.LOCALE, format, start);
         String stopFormated = String.format(Configuration.LOCALE, format, stop );
+
+        String text = Configuration.APPBUNDLE.getString("start.label")+": "+startFormated+" - "+Configuration.APPBUNDLE.getString("stop.label")+": "+stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)
                 .backgroundColor(GuiColors.BKG)
                 .title(title)
+                //.titleColor(GuiColors.FRG_4)
                 .titleAlignment(CENTER)
+                .textSize(Tile.TextSize.BIGGER) //este está mal asignado ya que sale en el Tñítulo
+                .foregroundBaseColor(GuiColors.FRG)
                 .decimals(decimals)
-                .text(" Start: "+startFormated+" - Stop: "+stopFormated)
+                .text(text)
                 .textVisible(true)
+                //.textColor(GuiColors.FRG_2)
                 .unit("ºC")
-                //.averageVisible(true)
+                .averageVisible(averageVisible)
                 .minValue(MINVALUETEMP)
                 .maxValue(MAXVALUETEMP)
                 .locale(Configuration.LOCALE)
