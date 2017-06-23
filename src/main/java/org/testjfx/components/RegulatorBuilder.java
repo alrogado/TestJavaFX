@@ -3,7 +3,6 @@ package org.testjfx.components;
 import eu.hansolo.fx.regulators.*;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
-import eu.hansolo.tilesfx.chart.RadarChart;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import org.kordamp.ikonli.Ikon;
@@ -63,7 +62,7 @@ public class RegulatorBuilder {
         String startFormated = String.format(Configuration.LOCALE, format, start);
         String stopFormated = String.format(Configuration.LOCALE, format, stop );
 
-        String text = Configuration.APPBUNDLE.getString("start.label")+": "+startFormated+" - "+Configuration.APPBUNDLE.getString("stop.label")+": "+stopFormated;
+        String text = Configuration.getBundleString("start.label")+": "+startFormated+" - "+Configuration.getBundleString("stop.label")+": "+stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(400, 400)

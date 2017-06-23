@@ -132,7 +132,7 @@ public class RegulatorsController {
 
     private Node createPanelShoots() {
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        Text lblSession = new Text(Configuration.APPBUNDLE.getString("shoots-sesion.label"));
+        Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
         lblSession.setFill(GuiColors.FRG);
         lblSession.setTextOrigin(VPos.CENTER);
         lblSession.setFont(Fonts.robotoMedium(40));
@@ -154,7 +154,7 @@ public class RegulatorsController {
 
     private Node createPanelTotals() {
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        Text lblSession = new Text(Configuration.APPBUNDLE.getString("shoots-total.label"));
+        Text lblSession = new Text(Configuration.getBundleString("shoots-total.label"));
         lblSession.setFill(GuiColors.FRG);
         lblSession.setTextOrigin(VPos.CENTER);
         lblSession.setFont(Fonts.robotoMedium(40));
@@ -172,7 +172,7 @@ public class RegulatorsController {
 
     private JFXNodesList getJfxNodesList() {
         JFXButton btnWorkModes = new JFXButton();
-        Label lblWorkModes = new Label(Configuration.APPBUNDLE.getString("workmodesbutton.label"));
+        Label lblWorkModes = new Label(Configuration.getBundleString("workmodesbutton.label"));
         btnWorkModes.setGraphic(lblWorkModes);
         //lblWorkModes.setStyle(FX_TEXT_FILL_WHITE);
         //btnWorkModes.setButtonType(JFXButton.ButtonType.RAISED);
@@ -211,7 +211,7 @@ public class RegulatorsController {
 
     private JFXButton createWorkModeButton(String title, String tooltipKey) {
         JFXButton button = new JFXButton(title);
-        button.setTooltip(new Tooltip(Configuration.APPBUNDLE.getString(tooltipKey)));
+        button.setTooltip(new Tooltip(Configuration.getBundleString(tooltipKey)));
         button.setButtonType(JFXButton.ButtonType.RAISED);
         button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
         button.setPrefSize(20,20);
@@ -219,8 +219,8 @@ public class RegulatorsController {
     }
 
     private Node createFreqFluBox() {
-        frequency = RegulatorBuilder.createRegulator(Configuration.APPBUNDLE.getString("frecuency.label"), "Hz", "",null, 50d, 30d, 200d);
-        fluency = RegulatorBuilder.createRegulator(Configuration.APPBUNDLE.getString("fluencia.label"), "J/cm",  "",null, 96d, 20d, 130d);
+        frequency = RegulatorBuilder.createRegulator(Configuration.getBundleString("frecuency.label"), "Hz", "",null, 50d, 30d, 200d);
+        fluency = RegulatorBuilder.createRegulator(Configuration.getBundleString("fluencia.label"), "J/cm",  "",null, 96d, 20d, 130d);
         FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
         regulatorsPane.setHgap(horizontalGap);
         regulatorsPane.setPadding(padding);
@@ -231,8 +231,8 @@ public class RegulatorsController {
         FeedbackRegulator depositTemp;
         ColorRegulator tipTemp;
 
-        depositTemp = RegulatorBuilder.createFeedbackRegulator(Configuration.APPBUNDLE.getString("deposit.label"), "ºC", MaterialDesign.MDI_TEMPERATURE_CELSIUS, 50d, 30d, 200d);
-        tipTemp = RegulatorBuilder.createColorRegulator(Configuration.APPBUNDLE.getString("tip.label"), "ºC", MaterialDesign.MDI_OIL_TEMPERATURE, 96d, 20d, 130d);
+        depositTemp = RegulatorBuilder.createFeedbackRegulator(Configuration.getBundleString("deposit.label"), "ºC", MaterialDesign.MDI_TEMPERATURE_CELSIUS, 50d, 30d, 200d);
+        tipTemp = RegulatorBuilder.createColorRegulator(Configuration.getBundleString("tip.label"), "ºC", MaterialDesign.MDI_OIL_TEMPERATURE, 96d, 20d, 130d);
 
         HBox hBox = new HBox(depositTemp);
         hBox.setSpacing(20);
@@ -250,12 +250,12 @@ public class RegulatorsController {
 
     private Node createTempSparkGauage() {
         depositTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.APPBUNDLE.getString("deposit.label"),
+                Configuration.getBundleString("deposit.label"),
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
                 false);
         tipTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.APPBUNDLE.getString("tip.label"),
+                Configuration.getBundleString("tip.label"),
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
                 false);
@@ -278,7 +278,7 @@ public class RegulatorsController {
         Tile depositTempTile = TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE)
                 //.prefSize(WIDTH, TILE_HEIGHT)
-                .title(Configuration.APPBUNDLE.getString("deposit.label"))
+                .title(Configuration.getBundleString("deposit.label"))
                 .unit("ºC")
                 .threshold(75)
                 .build();
@@ -286,7 +286,7 @@ public class RegulatorsController {
         Tile tipTempTile = TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE)
                 //.prefSize(WIDTH, TILE_HEIGHT)
-                .title(Configuration.APPBUNDLE.getString("tip.label"))
+                .title(Configuration.getBundleString("tip.label"))
                 .unit("ºC")
                 .threshold(75)
                 .build();

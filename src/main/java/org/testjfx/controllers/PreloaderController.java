@@ -124,7 +124,7 @@ public class PreloaderController {
                     int finalI = i;
                     Platform.runLater(() -> {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
-                        progressText.setText(Configuration.APPBUNDLE.getString(textProGressValues[finalI]));
+                        progressText.setText(Configuration.getBundleString(textProGressValues[finalI]));
                     });
                     Thread.sleep(500);
                 }

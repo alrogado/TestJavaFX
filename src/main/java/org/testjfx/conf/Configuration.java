@@ -8,6 +8,8 @@ import java.util.ResourceBundle;
  */
 public class Configuration {
 
+
+
     static final String FILE_NAME_USER_CONFIG = "userconfig.properties";
     static final String FILE_NAME_CONFIGURATION = "/config.properties";
 
@@ -125,6 +127,16 @@ public class Configuration {
     private static double depositMaxValue = 36;
     private static double tipMinValue = 15;
     private static double tipMaxValue = 40;
+
+    public static String getBundleString(String rscBundle){
+        String res = rscBundle;
+        try{
+            res = APPBUNDLE.getString(rscBundle);
+        }catch (Exception e){
+            //logger.e
+        }
+        return res;
+    }
 
     public static double getPulseVolume() {
         return pulseVolume;
