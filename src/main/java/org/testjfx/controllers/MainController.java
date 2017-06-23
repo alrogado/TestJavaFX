@@ -43,39 +43,53 @@ public class MainController {
 
     @FXML
     private StackPane root;
-    @FXML
+    /*@FXML
     private JFXRippler settingsRippler;
     @FXML
-    private JFXRippler houseRippler;
+    private JFXRippler houseRippler;*/
     @FXML
     private JFXToolbar toolbar;
     @FXML
     private JFXDrawer drawer;
 
-    Class startViewControllerClass = RegulatorsController.class;
+
 
     /**
      * init fxml when loaded.
      */
     @PostConstruct
     public void init() throws FlowException {
+
+        Class mainViewControllerClass = RegulatorsController.class;
+
         // create the inner flow and content
         Objects.requireNonNull(context, "context");
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(Configuration.APPBUNDLE);
-        Flow innerFlow = new Flow(startViewControllerClass, viewConfiguration);
+        Flow innerFlow = new Flow(mainViewControllerClass, viewConfiguration);
         FlowHandler flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
-        houseRippler.setControl(customizeIkon(Typicons.HOME_OUTLINE));
-        houseRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, startViewControllerClass));
+
+        JFXButton mainButton = new JFXButton();
+        mainButton.setGraphic(customizeIkon(Typicons.HOME_OUTLINE));
+        mainButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
+
+        JFXButton settingsButton = new JFXButton();
+        settingsButton.setGraphic(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
+        settingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));
+
+        toolbar.setRightItems(settingsButton,mainButton);
+
+        /*houseRippler.setControl(customizeIkon(Typicons.HOME_OUTLINE));
+        houseRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
 
         settingsRippler.setControl(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
-        settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));
+        settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));*/
 
         toolbar.setCenter(ClockBuilder.createClock());
 

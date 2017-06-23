@@ -25,6 +25,7 @@ import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
 
+import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
 import static org.testjfx.util.GuiColors.BKG;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
@@ -38,22 +39,22 @@ public class PasswordController {
 
 
     private EventHandler<ActionEvent> actionHandler;
-    private EventHandler<KeyEvent>    keyHandler;
+    private EventHandler<KeyEvent> keyHandler;
     private StringProperty passwordValue;
-    private StringBuilder             currentValue;
+    private StringBuilder currentPasswordValue;
     private JFXPasswordField passwordField;
     private Button one;
-    private Button                    two;
-    private Button                    three;
-    private Button                    four;
-    private Button                    five;
-    private Button                    six;
-    private Button                    seven;
-    private Button                    eight;
-    private Button                    nine;
-    private Button                    zero;
-    private Button                    ok;
-    private Button                    del;
+    private Button two;
+    private Button three;
+    private Button four;
+    private Button five;
+    private Button six;
+    private Button seven;
+    private Button eight;
+    private Button nine;
+    private Button zero;
+    private Button ok;
+    private Button del;
 
     @PostConstruct
     public void init() {
@@ -61,12 +62,9 @@ public class PasswordController {
         keyHandler      = EVENT -> handleEvent(EVENT);
 
         passwordValue = new SimpleStringProperty(this, "passwordValue", "");
-        currentValue = new StringBuilder();
+        currentPasswordValue = new StringBuilder();
 
         passwordField = new JFXPasswordField();
-        passwordField.setMaxWidth(Double.MAX_VALUE);
-        passwordField.setMaxHeight(Double.MAX_VALUE);
-        passwordField.getStyleClass().add("lcd");
         passwordField.textProperty().bind(passwordValue);
 
         one       = createButton("", MetrizeIcons.MET_NUMBER_ONE);
@@ -93,7 +91,7 @@ public class PasswordController {
 
     // ******************** Private Methods ***********************************
     private void updatPasswordValue() {
-        passwordValue.set(currentValue.toString());
+        passwordValue.set(currentPasswordValue.toString());
     }
 
     private Button createButton(final String TEXT) {
@@ -101,9 +99,9 @@ public class PasswordController {
         //button.getStyleClass().addAll("calculator", BUTTON_STYLE.STYLE_CLASS);
         button.setOnAction(actionHandler);
         button.setOnKeyPressed(keyHandler);
-        button.setButtonType(JFXButton.ButtonType.RAISED);
-        //button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
-        //button.setPrefSize(20,20);
+        /*button.setButtonType(JFXButton.ButtonType.RAISED);
+        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);*/
+        button.setPrefSize(20,20);
         return button;
     }
 
@@ -111,18 +109,15 @@ public class PasswordController {
     private Pane createFlowPane() {
 
         FlowGridPane buttonsPane = new FlowGridPane(3,4);
-        buttonsPane.setPadding(new Insets(10));
+        buttonsPane.setPadding(new Insets(5));
         buttonsPane.addRow(1,one,two,three);
         buttonsPane.addRow(2,four,five,six);
         buttonsPane.addRow(3,seven,eight,nine);
         buttonsPane.addRow(4,del,zero,ok);
         buttonsPane.setBackground(new Background(new BackgroundFill(BKG, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        FlowGridPane paneI = new FlowGridPane(1,2,buttonsPane,passwordField);
+        FlowGridPane pane = new FlowGridPane(1,2,buttonsPane,passwordField);
 
-        MigPane pane = new MigPane("insets 4 4 4 4","[fill,grow]", "[fill,grow]");
-        pane.add(paneI);
-        pane.setBackground(new Background(new BackgroundFill(BKG, CornerRadii.EMPTY, Insets.EMPTY)));
         return pane;
     }
 
@@ -131,45 +126,45 @@ public class PasswordController {
     private void handleEvent(final Event EVENT) {
         final Object  SOURCE = EVENT.getSource();
         if (SOURCE.equals(one)) {
-            currentValue.append("1");
+            currentPasswordValue.append("1");
             updatPasswordValue();
         } else if (SOURCE.equals(two)) {
-            currentValue.append("2");
+            currentPasswordValue.append("2");
             updatPasswordValue();
         } else if (SOURCE.equals(three) ) {
-            currentValue.append("3");
+            currentPasswordValue.append("3");
             updatPasswordValue();
         } else if (SOURCE.equals(four) ) {
-            currentValue.append("4");
+            currentPasswordValue.append("4");
             updatPasswordValue();
         } else if (SOURCE.equals(five) ) {
-            currentValue.append("5");
+            currentPasswordValue.append("5");
             updatPasswordValue();
         } else if (SOURCE.equals(six) ) {
-            currentValue.append("6");
+            currentPasswordValue.append("6");
             updatPasswordValue();
         } else if (SOURCE.equals(seven) ) {
-            currentValue.append("7");
+            currentPasswordValue.append("7");
             updatPasswordValue();
         } else if (SOURCE.equals(eight) ) {
-            currentValue.append("8");
+            currentPasswordValue.append("8");
             updatPasswordValue();
         } else if (SOURCE.equals(nine) ) {
-            currentValue.append("9");
+            currentPasswordValue.append("9");
             updatPasswordValue();
         } else if (SOURCE.equals(zero) ) {
-            currentValue.append("0");
+            currentPasswordValue.append("0");
             updatPasswordValue();
         } else if (SOURCE.equals(ok) ) {
             checkPassword();
         } else if (SOURCE.equals(del)) {
-            int length = currentValue.length();
+            int length = currentPasswordValue.length();
             if (length >= 1) {
                 if (length == 1) {
-                    currentValue.setLength(0);
-                    currentValue.append("");
+                    currentPasswordValue.setLength(0);
+                    currentPasswordValue.append("");
                 } else {
-                    currentValue.replace(length - 1, length, "");
+                    currentPasswordValue.replace(length - 1, length, "");
                 }
                 updatPasswordValue();
             }
@@ -179,6 +174,4 @@ public class PasswordController {
     private void checkPassword() {
 
     }
-
-
 }

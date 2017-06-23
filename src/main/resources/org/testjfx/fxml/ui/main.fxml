@@ -18,11 +18,11 @@
                     </leftItems>
 
                     <rightItems>
-                        <JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="settingsRippler">
+                        <!--<JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="settingsRippler">
                         </JFXRippler>
 
                         <JFXRippler position="BACK" styleClass="-fx-ripple-color:WHITE;" fx:id="houseRippler">
-                        </JFXRippler>
+                        </JFXRippler>-->
 
                     </rightItems>
                 </JFXToolbar>
