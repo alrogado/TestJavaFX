@@ -209,8 +209,8 @@ public class GaugeSparkLineTileSkin extends TileSkin {
 
         minValueText = new Text();
         maxValueText = new Text();
-
-        getPane().getChildren().addAll(sectionCanvas, highlightSectionCanvas, barBackground, bar, minValueText, maxValueText, titleText, valueUnitFlow, stdDeviationArea, averageLine, sparkLine, dot, averageText, timeSpanText, text);
+        //todo dot has been eliminated
+        getPane().getChildren().addAll(sectionCanvas, highlightSectionCanvas, barBackground, bar, minValueText, maxValueText, titleText, valueUnitFlow, stdDeviationArea, averageLine, sparkLine, averageText, timeSpanText, text);
         getPane().getChildren().addAll(horizontalTickLines);
         getPane().getChildren().addAll(tickLabelsY);
     }

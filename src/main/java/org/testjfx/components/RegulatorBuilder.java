@@ -12,7 +12,6 @@ import org.testjfx.conf.Configuration;
 import org.testjfx.util.GuiColors;
 
 import static javafx.scene.text.TextAlignment.CENTER;
-import static javafx.scene.text.TextAlignment.LEFT;
 import static org.testjfx.util.GuiColors.FRG;
 
 /**
@@ -20,9 +19,9 @@ import static org.testjfx.util.GuiColors.FRG;
  */
 public class RegulatorBuilder {
 
-    public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double value, Double minVal, Double maxVal){
+    public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double heigth, Double width, Double value, Double minVal, Double maxVal){
         return ColorRegulatorBuilder.create()
-                .prefSize(400, 400)
+                .prefSize(width,heigth)
                 //.textColor(Color.YELLOW)
                 //.textColor(Color.YELLOW)
                 //.color(Color.PURPLE)
@@ -33,9 +32,9 @@ public class RegulatorBuilder {
                 .build();
     }
 
-    public static FeedbackRegulator createFeedbackRegulator(String title, String unit, Ikon ikon, Double value, Double minVal, Double maxVal){
+    public static FeedbackRegulator createFeedbackRegulator(String title, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal){
         return FeedbackRegulatorBuilder.create()
-                .prefSize(400, 400)
+                .prefSize(width, height)
                 .minValue(0)
                 .maxValue(100)
                 .targetValue(80)
@@ -58,7 +57,7 @@ public class RegulatorBuilder {
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
 
-    public static Tile createTempSparkRegulator(String title, double start, double stop, boolean averageVisible, TextAlignment textAllignment){
+    public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, TextAlignment textAllignment){
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
         String startFormated = String.format(Configuration.LOCALE, format, start);
@@ -67,7 +66,7 @@ public class RegulatorBuilder {
         String text = Configuration.getBundleString("start.label")+": "+startFormated+" - "+Configuration.getBundleString("stop.label")+": "+stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
-                .prefSize(400, 400)
+                .prefSize(width, height)
                 .title(title)
                 //.titleColor(GuiColors.FRG_4)
                 .titleAlignment(CENTER)
@@ -86,6 +85,7 @@ public class RegulatorBuilder {
                 .animated(true)
                 .textVisible(true)
                 .sectionTextVisible(true)
+                .sectionsVisible(true)
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
                 //.barColor(FRG)
@@ -107,9 +107,9 @@ public class RegulatorBuilder {
                         new Stop(1.0, Tile.LIGHT_RED))
                 .build();
     }
-    public static Regulator createRegulator(String title, String subtitle, String unit, Ikon ikon, Double value, Double minVal, Double maxVal){
+    public static Regulator createRegulator(String title, String subtitle, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal){
         final Regulator regulator = eu.hansolo.fx.regulators.RegulatorBuilder.create()
-                .prefSize(400, 400)
+                .prefSize(width, height)
                 //.barColor(Color.rgb(255, 222, 102))
                 .title(title)
                 .subtitle(subtitle)

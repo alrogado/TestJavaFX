@@ -16,7 +16,7 @@ public class RegulatorsNotFullScreenApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(RegulatorsController.class, stage), false);
-        configureAndSetScene(stage,new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
+        configureAndSetScene(stage,new Scene(decorator, 400, 200));
         configureNotFullScreenStage(stage);
         stage.show();
     }

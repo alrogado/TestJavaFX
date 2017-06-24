@@ -1,6 +1,6 @@
 package org.testjfx.controllers.components;
 
-import eu.hansolo.tilesfx.RegulatorsPane;
+import org.testjfx.components.RegulatorsPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
