@@ -6,6 +6,7 @@ import eu.hansolo.fx.regulators.ColorRegulator;
 import eu.hansolo.fx.regulators.FeedbackRegulator;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
+import eu.hansolo.tilesfx.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
@@ -21,10 +22,8 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import net.miginfocom.layout.AC;
@@ -37,13 +36,13 @@ import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.util.GuiColors;
 
 import javax.annotation.PostConstruct;
-import java.util.Objects;
 import java.util.Random;
 
 import static java.util.Collections.singletonList;
 import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.util.EffectUtils.fadeIn;
+import static org.testjfx.util.GuiColors.FRG;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
@@ -78,23 +77,14 @@ public class RegulatorsController {
      */
     @PostConstruct
     public void init() {
-        Objects.requireNonNull(context, "context");
+        //Objects.requireNonNull(context, "context");
+        initComponents();
+
         MigPane rootMP = new MigPane("fill");
-        //use Reactfx to manipulate bindings and values from communications
-        //frequency.minValueProperty()
-
         rootMP.add(createWorkModesNodeList(), "alignx center, wrap");
-        rootMP.add(createTempSparkGauage(), "alignx center, wrap");
-        //rootMP.add(createStartButton(), "alignx center, wrap");
-        //rootMP.add(createTempGauage(), "alignx center, wrap");
-        //rootMP.add(createTempRegulator(), "alignx center, wrap");
-        rootMP.add(createFreqFluBox(), "alignx center, wrap");
+        rootMP.add(new RegulatorsPane(this), "alignx center, wrap");
         rootMP.add(createLabelsPanel(), "alignx center, wrap");
-
-
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(createStartButton(), rootMP);
-        root.getChildren().addAll(stackPane);
+        root.getChildren().addAll(rootMP);
 
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};
@@ -112,13 +102,23 @@ public class RegulatorsController {
         fadeIn(root);
     }
 
-    private MigPane createStartButton() {
+    public void initComponents() {
+        createTempSparkGauage();
+        createFreqFluBox();
+    }
+
+    public MigPane createStartButton() {
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         JFXButton button = new JFXButton("Start");
         button.setTooltip(new Tooltip(""));
         button.setButtonType(JFXButton.ButtonType.RAISED);
-        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
-        button.setPrefSize(20,20);
+        button.getStyleClass().add(ANIMATED_OPTION_SUB_BUTTON2);
+        double r=50;
+        button.setShape(new Circle(r));
+        button.setMinSize(2*r, 2*r);
+        button.setMaxSize(2*r, 2*r);
+        button.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+        //button.setPrefSize(40,40);
         rootMP.add(button, "alignx center");
         return rootMP;
     }
@@ -132,7 +132,7 @@ public class RegulatorsController {
     private Node createWorkModesNodeList(){
         MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
         //rootMP.add(getJfxNodesList(), "alignx center");
-        rootMP.add(getVBoxModesList(), "alignx center");
+        rootMP.add(getHBoxWorkModesList(), "alignx center");
         return rootMP;
     }
 
@@ -225,7 +225,7 @@ public class RegulatorsController {
         return nodesList;
     }
 
-    private Node getVBoxModesList() {
+    private Node getHBoxWorkModesList() {
         HBox nodesList = new HBox();
         nodesList.setSpacing(60);
         /*nodesList.addAnimatedNode(btnWorkModes,
@@ -250,8 +250,17 @@ public class RegulatorsController {
     }
 
     private Node createFreqFluBox() {
-        frequency = RegulatorBuilder.createRegulator(Configuration.getBundleString("frecuency.label"), "Hz", "",null, 50d, 30d, 200d);
-        fluency = RegulatorBuilder.createRegulator(Configuration.getBundleString("fluencia.label"), "J/cm",  "",null, 96d, 20d, 130d);
+        frequency = RegulatorBuilder.createRegulator(
+                Configuration.getBundleString("frecuency.label"),
+                "Hz",
+                "",null,
+                50d, 30d, 200d);
+        fluency = RegulatorBuilder.createRegulator(
+                Configuration.getBundleString("fluencia.label"),
+                "J/cm",
+                "",
+                null,
+                96d, 20d, 130d);
         FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
         regulatorsPane.setHgap(horizontalGap);
         regulatorsPane.setPadding(padding);
@@ -262,8 +271,16 @@ public class RegulatorsController {
         FeedbackRegulator depositTemp;
         ColorRegulator tipTemp;
 
-        depositTemp = RegulatorBuilder.createFeedbackRegulator(Configuration.getBundleString("deposit.label"), "ºC", MaterialDesign.MDI_TEMPERATURE_CELSIUS, 50d, 30d, 200d);
-        tipTemp = RegulatorBuilder.createColorRegulator(Configuration.getBundleString("tip.label"), "ºC", MaterialDesign.MDI_OIL_TEMPERATURE, 96d, 20d, 130d);
+        depositTemp = RegulatorBuilder.createFeedbackRegulator(
+                Configuration.getBundleString("deposit.label"),
+                "ºC",
+                MaterialDesign.MDI_TEMPERATURE_CELSIUS,
+                50d, 30d, 200d);
+        tipTemp = RegulatorBuilder.createColorRegulator(
+                Configuration.getBundleString("tip.label"),
+                "ºC",
+                MaterialDesign.MDI_OIL_TEMPERATURE,
+                96d, 20d, 130d);
 
         HBox hBox = new HBox(depositTemp);
         hBox.setSpacing(20);
@@ -335,6 +352,19 @@ public class RegulatorsController {
         return tempPane;
     }
 
+    public Tile getDepositTempTile() {
+        return depositTempTile;
+    }
 
+    public Tile getTipTempTile() {
+        return tipTempTile;
+    }
 
+    public Regulator getFrequency() {
+        return frequency;
+    }
+
+    public Regulator getFluency() {
+        return fluency;
+    }
 }

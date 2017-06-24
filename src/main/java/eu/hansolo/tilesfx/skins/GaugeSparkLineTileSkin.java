@@ -606,7 +606,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             case CENTER: text.setX((width - text.getLayoutBounds().getWidth()) * 0.5); break;
             case RIGHT : text.setX(width - (size * 0.05) - text.getLayoutBounds().getWidth()); break;
         }
-        text.setY(height - size * 0.05);
+        text.setY(height - size * 0.09);
 
         maxWidth = width - size * 0.25;
         fontSize = size * 0.06;
