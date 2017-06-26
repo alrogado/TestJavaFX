@@ -127,7 +127,8 @@ public class TextClockSkin extends ClockSkinBase {
 
         // draw the date
         if (clock.isDateVisible()) {
-            dateText.setText(dateFormat.format(TIME));
+            String strDate = dateFormat.format(TIME);
+            dateText.setText(strDate.substring(0,1).toUpperCase()+strDate.substring(1));
             dateText.setX((width - dateText.getLayoutBounds().getWidth()) * 0.5);
         }
     }

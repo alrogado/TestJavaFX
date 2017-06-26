@@ -82,13 +82,13 @@ public class PreloaderController {
                     try {
                         ViewConfiguration viewConfiguration = new ViewConfiguration();
                         viewConfiguration.setResources(Configuration.APPBUNDLE);
-                        Flow flow = new Flow(MainController.class, viewConfiguration);
+                        Flow flow = new Flow(MainAppController.class, viewConfiguration);
                         FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
                         context.register("ContentFlowHandler", handler);
                         context.register("ContentFlow", flow);
                         drawer.setContent(handler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
                         context.register("ContentPane", drawer.getContent().get(0));
-                        //configureContent(MainController.class, drawer);
+                        //configureContent(MainAppController.class, drawer);
                     } catch (Exception e) {
                         logger.error("",e);
                     }

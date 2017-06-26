@@ -41,7 +41,7 @@ public class RegulatorsPane extends Region {
         fluencyPane = new Pane(regulatorsController.getFluency());
         tipTilePane = new Pane(regulatorsController.getTipTempTile());
         depositTilePane = new Pane(regulatorsController.getDepositTempTile());
-        startButtonPane = new Pane(regulatorsController.createStartButton());
+        startButtonPane = new Pane(regulatorsController.getButtonStart());
         getChildren().addAll(
                 depositTilePane,
                 tipTilePane,
@@ -50,12 +50,12 @@ public class RegulatorsPane extends Region {
                 startButtonPane);
 
         layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
-            double sizeTile = Math.min(HEIGHTTILE, Math.min(newBounds.getWidth(), newBounds.getHeight()));
+            /*double sizeTile = Math.min(HEIGHTTILE, Math.min(newBounds.getWidth(), newBounds.getHeight()));
             tipTilePane.setPrefSize(sizeTile, sizeTile);
             depositTilePane.setPrefSize(sizeTile, sizeTile);
             double sizeTemp = Math.min(HEIGTHTEMP, Math.min(newBounds.getWidth(), newBounds.getHeight()));
             fluencyPane.setPrefSize(sizeTemp, sizeTemp);
-            frequencyPane.setPrefSize(sizeTemp, sizeTemp);
+            frequencyPane.setPrefSize(sizeTemp, sizeTemp);*/
         });
     }
 

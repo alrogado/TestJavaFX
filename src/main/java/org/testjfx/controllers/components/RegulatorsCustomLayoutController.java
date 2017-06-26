@@ -16,15 +16,11 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class RegulatorsCustomLayoutController {
 
-
-
     @FXMLViewFlowContext
     private ViewFlowContext context;
 
     @FXML
     StackPane root;
-
-
 
     int horizontalGap = 5;
     Insets padding = new Insets(5);

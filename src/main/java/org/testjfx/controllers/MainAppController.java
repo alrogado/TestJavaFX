@@ -12,7 +12,6 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -35,19 +34,15 @@ import static org.testjfx.GuiApp.*;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Application")
-public class MainController {
+public class MainAppController {
 
-    private static Logger logger = LoggerFactory.getLogger(MainController.class);
+    private static Logger logger = LoggerFactory.getLogger(MainAppController.class);
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
 
     @FXML
     private StackPane root;
-    /*@FXML
-    private JFXRippler settingsRippler;
-    @FXML
-    private JFXRippler houseRippler;*/
     @FXML
     private JFXToolbar toolbar;
     @FXML
@@ -90,14 +85,7 @@ public class MainController {
 
         toolbar.setRightItems(passwordButton,settingsButton,mainButton);
 
-        /*houseRippler.setControl(customizeIkon(Typicons.HOME_OUTLINE));
-        houseRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
-
-        settingsRippler.setControl(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
-        settingsRippler.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));*/
-
         toolbar.setCenter(ClockBuilder.createClock());
-
     }
 
     private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler,  Class controllerClass) {
@@ -112,8 +100,6 @@ public class MainController {
             }
         }
     }
-
-
 
     private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
         //flowHandler.getFlowContext().getCurrentViewContext().getConfiguration().getBuilderFactory().getBuilder()
