@@ -2,7 +2,6 @@ package org.testjfx.controllers.components;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
-import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
@@ -14,8 +13,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.feather.Feather;
@@ -25,8 +28,8 @@ import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
 
-import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
-import static org.testjfx.util.GuiColors.BKG;
+import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
+import static org.testjfx.util.GuiColors.FRG;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class PasswordController {
@@ -65,7 +68,11 @@ public class PasswordController {
         currentPasswordValue = new StringBuilder();
 
         passwordField = new JFXPasswordField();
+        passwordField.setStyle("-fx-label-float:true;");
         passwordField.textProperty().bind(passwordValue);
+        passwordField.setPrefSize(50,50);
+        passwordField.setMaxSize(50,50);
+
 
         one       = createButton("", MetrizeIcons.MET_NUMBER_ONE);
         two       = createButton("", MetrizeIcons.MET_NUMBER_TWO);
@@ -79,7 +86,7 @@ public class PasswordController {
         zero      = createButton("", MetrizeIcons.MET_NUMBER_ZERO);
         ok        = createButton("", Elusive.OK_CIRCLE);
         del       = createButton("", Feather.FTH_DELETE);
-        root.getChildren().addAll(createFlowPane());
+        root.getChildren().addAll(createPane());
     }
 
     private Button createButton(String TEXT, Ikon ikon) {
@@ -101,26 +108,36 @@ public class PasswordController {
         button.setOnKeyPressed(keyHandler);
         /*button.setButtonType(JFXButton.ButtonType.RAISED);
         button.getStyleClass().add(ANIMATED_OPTION_BUTTON);*/
-        button.setPrefSize(20,20);
+        button.setPrefSize(40,40);
         return button;
     }
 
 
-    private Pane createFlowPane() {
-
-        FlowGridPane buttonsPane = new FlowGridPane(3,4);
+    private Pane createPane() {
+        MigPane buttonsPane = new MigPane("fill");
         buttonsPane.setPadding(new Insets(5));
-        buttonsPane.addRow(1,one,two,three);
-        buttonsPane.addRow(2,four,five,six);
-        buttonsPane.addRow(3,seven,eight,nine);
-        buttonsPane.addRow(4,del,zero,ok);
-        buttonsPane.setBackground(new Background(new BackgroundFill(BKG, CornerRadii.EMPTY, Insets.EMPTY)));
+        buttonsPane.add(new HBox(15, one, two, three), "grow, span");
+        buttonsPane.add(new HBox(15, four, five, six), "grow, span");
+        buttonsPane.add(new HBox(15, seven, eight, nine), "grow, span");
+        buttonsPane.add(new HBox(15, del, zero, ok), "grow, span");
+        buttonsPane.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
+        buttonsPane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 
-        FlowGridPane pane = new FlowGridPane(1,2,buttonsPane,passwordField);
+        DropShadow dropShadow = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.65), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.028);
+        InnerShadow highlight = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, PREFERRED_WIDTH * 0.008);
+        InnerShadow innerShadow = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, -PREFERRED_WIDTH * 0.008);
+        highlight.setInput(innerShadow);
+        dropShadow.setInput(highlight);
+        buttonsPane.setEffect(dropShadow);
 
-        return pane;
+        VBox pane = new VBox(40, buttonsPane, passwordField);
+        pane.setMaxSize(250,300);
+        MigPane rootMP = new MigPane("fill");
+        rootMP.add(pane, "alignx center");
+        rootMP.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
+        return rootMP;
+
     }
-
 
     // ******************** Event handling ************************************
     private void handleEvent(final Event EVENT) {
