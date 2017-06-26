@@ -16,6 +16,7 @@ public class GuiColors {
     public static Color FRG_3 = Color.web("#001EDC");
     public static Color FRG_4 = Color.web("#001CC5");
 
+    public static Color FRG_SHADOW = new Color(FRG.getRed(), FRG.getGreen(), FRG.getBlue(), 0.15);
     public static Color BKG = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 0.0);
     public static Color BKG_5 = Color.web("#00ADA5");
 

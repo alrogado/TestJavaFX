@@ -68,8 +68,8 @@ public class RegulatorsController {
     //String migLayoutConstraints = "w 45sp,h 45sp";
     //String migLayoutConstraints = "w 50%,h 40%";
 
-    int horizontalGap = 5;
-    Insets padding = new Insets(5);
+    public static int horizontalGap = 5;
+    public static Insets padding = new Insets(5);
     public static Double WIDTHTILE = 400d;
     public static Double HEIGHTTILE = 400d;
     public static Double WIDTHTEMP = 320d;

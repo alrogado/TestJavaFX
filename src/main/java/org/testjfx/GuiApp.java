@@ -41,6 +41,8 @@ public class GuiApp extends Application {
 
     public static String APPTITLE = "Gui Appplication";
 
+    public static FlowHandler handler;
+
     public void start(Stage stage) {
         epochSeconds = Instant.now().getEpochSecond();
         logger.debug("start");
@@ -60,7 +62,7 @@ public class GuiApp extends Application {
         scene.setFill(GRAD_FGR_BGR);
         stage.setScene(scene);
         //todo cssfx control should
-        //Audio.addPlayersToMainScene(scene);
+        Audio.addPlayersToMainScene(scene);
         //todo cssfx control should be configured by profile
         CSSFX.start(stage);
     }
@@ -100,7 +102,7 @@ public class GuiApp extends Application {
         context.register("Stage", stage);
 
         DefaultFlowContainer container = new DefaultFlowContainer();
-        FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
+        handler = new FlowHandler(flow, context, viewConfiguration);
         try {
             handler.start(container);
         } catch (FlowException e) {

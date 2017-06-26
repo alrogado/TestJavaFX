@@ -31,27 +31,30 @@ public class SettingsController {
     private Double height = 400d;
     private Double width= 400d;
 
+    Regulator volumScreen;
+    Regulator volumPulse;
+
     /**
      * init fxml when loaded.
      */
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
-        MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        Regulator volumScreen = RegulatorBuilder.createRegulator(
+        MigPane rootMP = new MigPane("fill");
+        volumScreen = RegulatorBuilder.createRegulator(
                 "Pantalla", "","%",
                 Elusive.SCREEN_ALT,
                 width, height,
                 50d, 0d, 100d);
         //use Reactfx to manipulate bindings and values from communications
         //volumScreen.minValueProperty()
-        Regulator volumPulse = RegulatorBuilder.createRegulator(
+        volumPulse = RegulatorBuilder.createRegulator(
                 "Pulso", "","%",
                 Ionicons.ION_IOS_PULSE_STRONG,
                 width, height,
                 50d, 0d, 100d);
 
-        FlowGridPane regulatorsPane = new FlowGridPane(2,1, volumPulse, volumScreen);
+        FlowGridPane regulatorsPane = new FlowGridPane(2,1, volumScreen,volumPulse);
         regulatorsPane.setHgap(100);
         regulatorsPane.setPadding(new Insets(10));
 

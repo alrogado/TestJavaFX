@@ -1,5 +1,6 @@
 package org.testjfx.conf;
 
+import java.awt.font.ImageGraphicAttribute;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -127,6 +128,7 @@ public class Configuration {
     private static double depositMaxValue = 36;
     private static double tipMinValue = 15;
     private static double tipMaxValue = 40;
+    private static String password = "111";
 
     public static String getBundleString(String rscBundle){
         String res = rscBundle;
@@ -184,5 +186,13 @@ public class Configuration {
 
     public static void setTipMinValue(double tipMinValue) {
         Configuration.tipMinValue = tipMinValue;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
+    public static void setPassword(String password) {
+        Configuration.password = password;
     }
 }
