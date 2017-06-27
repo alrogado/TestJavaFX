@@ -130,7 +130,7 @@ public class Configuration {
     private static double tipMaxValue = 40;
     private static String password = "111";
     private static boolean depositFillEnabled;
-    private static boolean pedalEnabled;
+    private static boolean pedalEnabled = true;
     private static boolean triggerEnabled;
 
     public static String getBundleString(String rscBundle){

@@ -1,114 +1,148 @@
 package org.testjfx.components;
 
-import eu.hansolo.tilesfx.fonts.Fonts;
-import eu.hansolo.tilesfx.tools.Helper;
-import javafx.animation.FillTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
-import org.testjfx.util.GuiColors;
+import javafx.beans.property.*;
+import javafx.css.PseudoClass;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.Skin;
 
-import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
-import static org.testjfx.util.GuiColors.FRG_SHADOW;
+/**
+ * Created by pedro_000 on 6/15/2014.
+ */
+public class ToggleSwitch extends Labeled {
 
-public class ToggleSwitch extends Region {
+    boolean initialValue;
 
-    private BooleanProperty switchedOn = new SimpleBooleanProperty(false);
+    /***************************************************************************
+     *                                                                         *
+     * Constructors                                                            *
+     *                                                                         *
+     **************************************************************************/
 
-    private final Label label = new Label();
-    private final Text toggleText = new Text();
-    Circle trigger;
-    Rectangle background;
+    public ToggleSwitch(String text, boolean value) {
+        setTurnOnText(text);
+        setTurnOffText(text);
+        initialize();
+        setSelected(value);
+        initialValue = value;
+    }
 
-    private TranslateTransition translateAnimation = new TranslateTransition(Duration.seconds(0.25));
-    private FillTransition fillAnimation = new FillTransition(Duration.seconds(0.25));
+    public boolean isInitialValue() {
+        return initialValue;
+    }
 
-    private ParallelTransition animation = new ParallelTransition(translateAnimation, fillAnimation);
+    private void initialize() {
+        getStyleClass().setAll(DEFAULT_STYLE_CLASS);
+    }
 
-    public BooleanProperty switchedOnProperty() {
-        return switchedOn;
+    /***************************************************************************
+     *                                                                         *
+     * Properties                                                              *
+     *                                                                         *
+     **************************************************************************/
+
+    /**
+     * Indicates whether this ToggleSwitch is selected.
+     */
+    private BooleanProperty selected;
+    public final void setSelected(boolean value) {
+        selectedProperty().set(value);
+    }
+
+    public final boolean isSelected() {
+        return selected == null ? false : selected.get();
+    }
+
+    public final BooleanProperty selectedProperty() {
+        if (selected == null) {
+            selected = new BooleanPropertyBase() {
+                @Override protected void invalidated() {
+                    final Boolean v = get();
+                    pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, v);
+//                    accSendNotification(Attribute.SELECTED);
+                }
+
+                @Override
+                public Object getBean() {
+                    return ToggleSwitch.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "selected";
+                }
+            };
+        }
+        return selected;
+    }
+
+    /**
+     * The text to show when this switch is on. The text may be null.
+     */
+    public final StringProperty turnOnTextProperty() {
+        if (turnOnText == null) {
+            turnOnText = new SimpleStringProperty(this, "turnOnText", "");
+        }
+        return turnOnText;
+    }
+    private StringProperty turnOnText;
+    public final void setTurnOnText(String value) { turnOnTextProperty().setValue(value); }
+    public final String getTurnOnText() { return turnOnText == null ? "" : turnOnText.getValue(); }
+
+    /**
+     * The text to show when this switch is off. The text may be null.
+     */
+    public final StringProperty turnOffTextProperty() {
+        if (turnOffText == null) {
+            turnOffText = new SimpleStringProperty(this, "turnOffText", "");
+        }
+        return turnOffText;
+    }
+    private StringProperty turnOffText;
+    public final void setTurnOffText(String value) { turnOffTextProperty().setValue(value); }
+    public final String getTurnOffText() { return turnOffText == null ? "" : turnOffText.getValue(); }
+
+    /***************************************************************************
+     *                                                                         *
+     * Methods                                                                 *
+     *                                                                         *
+     **************************************************************************/
+
+    /**
+     * Toggles the state of the {@code ToggleSwitch}. If allowIndeterminate is
+     * true, then each invocation of this function will advance the CheckBox
+     * through the states checked, unchecked, and undefined. If
+     * allowIndeterminate is false, then the CheckBox will only cycle through
+     * the checked and unchecked states, and forcing indeterminate to equal to
+     * false.
+     */
+    public void fire() {
+        if (!isDisabled()) {
+            setSelected(!isSelected());
+            fireEvent(new ActionEvent());
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override protected Skin<?> createDefaultSkin() {
+        return new ToggleSwitchSkin(this);
     }
 
 
-    int width = 120;
-    int height = 50;
-    int radius = 25;
+    /***************************************************************************
+     *                                                                         *
+     * Stylesheet Handling                                                     *
+     *                                                                         *
+     **************************************************************************/
 
-    public
-    ToggleSwitch(String identifier, boolean value) {
-        DropShadow dropShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0, 0, 0, 0.65), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.028);
-        InnerShadow highlight = new InnerShadow(BlurType.THREE_PASS_BOX, FRG_SHADOW, PREFERRED_WIDTH * 0.008, 0.0, 0, PREFERRED_WIDTH * 0.008);
-        InnerShadow innerShadow = new InnerShadow(BlurType.THREE_PASS_BOX, Color.rgb(0, 0, 0, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, -PREFERRED_WIDTH * 0.008);
-        highlight.setInput(innerShadow);
-        dropShadow.setInput(highlight);
+    private static final String DEFAULT_STYLE_CLASS = "toggle-switch";
 
-        background = new Rectangle(width, height);
-        background.setArcWidth(height);
-        background.setArcHeight(height);
-        background.setFill(Color.WHITE);
-        background.setStroke(GuiColors.FRG);
+    private static final PseudoClass PSEUDO_CLASS_SELECTED =
+            PseudoClass.getPseudoClass("selected");
 
-        trigger = new Circle(radius);
-        trigger.setCenterX(radius);
-        trigger.setCenterY(radius);
-        trigger.setFill(Color.WHITE);
-        trigger.setStroke(GuiColors.FRG);
-        trigger.setEffect(dropShadow);
-
-        translateAnimation.setNode(trigger);
-        fillAnimation.setShape(background);
-
-        toggleText.setText(identifier);
-
-        label.setAlignment(Pos.CENTER);
-        label.prefWidthProperty().bind(widthProperty().divide(2));
-        label.prefHeightProperty().bind(heightProperty());
-        label.setText(value ?"ON":"OFF");
-        label.setTextFill(value ?Color.WHITE:GuiColors.FRG);
-        label.setFont(Fonts.latoBold(24));
-        label.setEffect(new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.15), PREFERRED_WIDTH * 0.008, 0.0, 2, PREFERRED_WIDTH * 0.016));
-
-        getChildren().addAll(background, trigger, label);
-
-        switchedOn.addListener((obs, oldState, newState) -> {
-            boolean isOn = newState.booleanValue();
-            translateAnimation.setToX(isOn ? width - height : getPadding().getTop()-2);
-            fillAnimation.setFromValue(isOn ? Color.WHITE : GuiColors.FRG);
-            fillAnimation.setToValue(isOn ? GuiColors.FRG : Color.WHITE);
-            label.setText(isOn ?"ON":"OFF");
-            label.setTextFill(isOn ?Color.WHITE:GuiColors.FRG);
-            animation.play();
-        });
-
-        setOnMouseClicked(event -> {
-            switchedOn.set(!switchedOn.get());
-        });
-
-        setEffect(dropShadow);
-    }
-
-    @Override
-    public Orientation getContentBias() {
-        return Orientation.HORIZONTAL;
-    }
-
-    @Override
-    protected void layoutChildren() {
-        //super.layoutChildren();
-        label.relocate(switchedOn.get()?getPadding().getLeft():getPadding().getLeft()+height, getPadding().getTop()-2);
-    }
+    /*@Override
+    public String getUserAgentStylesheet() {
+        return getClass().getResource("modena.css").toExternalForm();
+    }*/
 
 }

@@ -9,15 +9,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import net.miginfocom.layout.AC;
-import net.miginfocom.layout.LC;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorBuilder;
-import org.testjfx.components.TogglePane;
 import org.testjfx.components.ToggleSwitch;
-import org.testjfx.components.extra.ToggleSwitch2;
 import org.testjfx.conf.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +34,10 @@ public class SettingsController {
 
     Regulator volumScreen;
     Regulator volumPulse;
+
+    ToggleSwitch tsTrigger;
+    ToggleSwitch tsPedal;
+    ToggleSwitch tsFillDeposit;
 
     /**
      * init fxml when loaded.
@@ -68,13 +68,13 @@ public class SettingsController {
         VBox optionsPane = new VBox();
         optionsPane.setSpacing(20);
         optionsPane.setPadding(new Insets(10));
-        optionsPane.getChildren().add( new ToggleSwitch2("ON", "Hacer cositas"));
-        optionsPane.getChildren().add( new ToggleSwitch2("ONN", "Hacer cositasssssss"));
-        /*optionsPane.getChildren().add( new TogglePane("pedal.label", Configuration.getPedalEnabled()));
-        optionsPane.getChildren().add( new TogglePane("trigger.label", Configuration.getTriggerEnabled()));*/
-
+        tsFillDeposit = new ToggleSwitch("fillDeposit.label",Configuration.getDepositFillEnabled());
+        optionsPane.getChildren().add(tsFillDeposit);
+        tsPedal = new ToggleSwitch("pedal.label",Configuration.getPedalEnabled());
+        optionsPane.getChildren().add(tsPedal);
+        tsTrigger = new ToggleSwitch("trigger.label",Configuration.getTriggerEnabled());
+        optionsPane.getChildren().add(tsTrigger);
         rootMP.add(optionsPane,"alignx center, wrap");
-
         root.getChildren().addAll(rootMP);
         fadeIn(root);
     }
