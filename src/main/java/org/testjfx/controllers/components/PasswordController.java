@@ -2,17 +2,9 @@ package org.testjfx.controllers.components;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.validation.RequiredFieldValidator;
-import de.jensd.fx.glyphs.GlyphsBuilder;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import eu.hansolo.medusa.Fonts;
-import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.ViewController;
-import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
-import io.datafx.controller.flow.FlowHandler;
-import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
@@ -35,9 +27,7 @@ import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.tbee.javafx.scene.layout.MigPane;
-import org.testjfx.components.PasswordValidator;
 import org.testjfx.conf.Configuration;
-import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
@@ -45,12 +35,10 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
-import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.testjfx.GuiApp.ANIM_DURATION;
-import static org.testjfx.GuiApp.handler;
+import static org.testjfx.controllers.MainAppController.flowHandler;
 import static org.testjfx.util.GuiColors.FRG;
 
-@ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
+@ViewController(value = "/org/testjfx/fxml/ui/main_content_password.fxml")
 public class PasswordController {
 
     @FXMLViewFlowContext
@@ -94,7 +82,7 @@ public class PasswordController {
         passwordField.setPrefSize(50,50);
         passwordField.setMaxSize(50,50);
 
-        RequiredFieldValidator validatorNotNull = new RequiredFieldValidator();
+        /*RequiredFieldValidator validatorNotNull = new RequiredFieldValidator();
         validatorNotNull.setMessage("Pass Is empty");
         validatorNotNull.setIcon(GlyphsBuilder.create(FontAwesomeIconView.class)
                 .glyph(FontAwesomeIcon.WARNING)
@@ -109,7 +97,7 @@ public class PasswordController {
                 .size("24")
                 .styleClass("error")
                 .build());
-        passwordField.setValidators(validatorNotNull,validatorPssword);
+        passwordField.setValidators(validatorNotNull,validatorPssword);*/
 
 
         one       = createButton("", MetrizeIcons.MET_NUMBER_ONE);
@@ -137,6 +125,7 @@ public class PasswordController {
     // ******************** Private Methods ***********************************
     private void updatPasswordValue() {
         passwordValue.set(currentPasswordValue.toString());
+        checkPassword();
     }
 
     private Button createButton(final String TEXT) {
@@ -157,7 +146,7 @@ public class PasswordController {
         buttonsPane.add(new HBox(15, one, two, three), "grow, span");
         buttonsPane.add(new HBox(15, four, five, six), "grow, span");
         buttonsPane.add(new HBox(15, seven, eight, nine), "grow, span");
-        buttonsPane.add(new HBox(15, del, zero, ok), "grow, span");
+        buttonsPane.add(new HBox(15, del, zero), "grow, span");
 
         buttonsPane.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
         buttonsPane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
@@ -228,9 +217,9 @@ public class PasswordController {
     }
 
     private void checkPassword() {
-        if(passwordField.validate()){
+        if(Configuration.getPassword().equals(passwordField.getText())){
             try {
-                handler.navigateTo(SettingsOperatorController.class);
+                flowHandler.navigateTo(OperatorSettingsController.class);
             } catch (VetoException e) {
                 e.printStackTrace();
             } catch (FlowException e) {

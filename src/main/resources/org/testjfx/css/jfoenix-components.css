@@ -393,3 +393,41 @@
 }
 
 
+/*******************************************************************************
+ *                                                                             *
+ * ToggleSwitch                                                                *
+ *                                                                             *
+ ******************************************************************************/
+.toggle-switch .text {
+    -fx-fill: #0091DC;
+    -fx-font-size: 2.5em;
+    -fx-font-family: "Segoe UI Semibold", "Segoe UI";
+}
+
+.toggle-switch .thumb {
+    /*-fx-background-color: #0091DC;*/
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em;  /* 7 4 7 4*/
+}
+
+.toggle-switch:selected .thumb-area{
+    -fx-background-insets: 0;
+    -fx-background-color: transparent; /* The last one is the accent color */
+}
+
+.toggle-switch .thumb-area{
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+}
+
+.toggle-switch:selected:pressed .thumb-area{
+    -fx-background-insets: 0;
+    -fx-background-color: transparent; /* The last one is the accent color */
+}
+
+.toggle-switch .thumb-area{
+    -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* 7 16 7 16 */
+}
+
+.toggle-switch:disabled{
+    -fx-opacity: 0.4;
+}

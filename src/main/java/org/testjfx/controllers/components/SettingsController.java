@@ -8,12 +8,17 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.LC;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorBuilder;
+import org.testjfx.components.TogglePane;
+import org.testjfx.components.ToggleSwitch;
+import org.testjfx.components.extra.ToggleSwitch2;
+import org.testjfx.conf.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -58,15 +63,18 @@ public class SettingsController {
         regulatorsPane.setHgap(100);
         regulatorsPane.setPadding(new Insets(10));
 
-        /*HBox regulatorsPane = new HBox(volumScreen, volumPulse);
-        regulatorsPane.setSpacing(20);
-        regulatorsPane.setPadding(new Insets(10));*/
-
-        /*HBox bottomPane = new HBox(ClockBuilder.createClock());
-        bottomPane.setSpacing(20);
-        bottomPane.setPadding(new Insets(10));*/
-
         rootMP.add(regulatorsPane,"alignx center, wrap");
+
+        VBox optionsPane = new VBox();
+        optionsPane.setSpacing(20);
+        optionsPane.setPadding(new Insets(10));
+        optionsPane.getChildren().add( new ToggleSwitch2("ON", "Hacer cositas"));
+        optionsPane.getChildren().add( new ToggleSwitch2("ONN", "Hacer cositasssssss"));
+        /*optionsPane.getChildren().add( new TogglePane("pedal.label", Configuration.getPedalEnabled()));
+        optionsPane.getChildren().add( new TogglePane("trigger.label", Configuration.getTriggerEnabled()));*/
+
+        rootMP.add(optionsPane,"alignx center, wrap");
+
         root.getChildren().addAll(rootMP);
         fadeIn(root);
     }

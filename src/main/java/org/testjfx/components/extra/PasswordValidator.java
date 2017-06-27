@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.testjfx.components;
+package org.testjfx.components.extra;
 
 import com.jfoenix.validation.base.ValidatorBase;
 import javafx.beans.DefaultProperty;

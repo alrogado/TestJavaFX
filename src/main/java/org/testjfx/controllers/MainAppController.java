@@ -48,6 +48,8 @@ public class MainAppController {
     @FXML
     private JFXDrawer drawer;
 
+    public static FlowHandler flowHandler;
+
 
 
     /**
@@ -64,7 +66,7 @@ public class MainAppController {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
         viewConfiguration.setResources(Configuration.APPBUNDLE);
         Flow innerFlow = new Flow(mainViewControllerClass, viewConfiguration);
-        FlowHandler flowHandler = innerFlow.createHandler(context);
+        flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
         context.register("ContentFlow", innerFlow);
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));

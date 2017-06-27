@@ -17,7 +17,7 @@ public class SettingsNotFullScreenApp extends Application {
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(SettingsController.class, stage), false);
         configureAndSetScene(stage,new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
-        configureFullScreenStage(stage);
+        configureNotFullScreenStage(stage);
         stage.show();
     }
 

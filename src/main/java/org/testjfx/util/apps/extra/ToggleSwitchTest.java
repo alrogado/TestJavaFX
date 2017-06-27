@@ -4,13 +4,9 @@ import eu.hansolo.tilesfx.tools.FlowGridPane;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import org.testjfx.components.Audio;
 import org.testjfx.components.ToggleSwitch;
-import org.testjfx.components.ToggleSwitch2;
+import org.testjfx.components.extra.ToggleSwitch2;
 
 /**
  * Created by alrogado on 6/21/17.
@@ -24,12 +20,11 @@ public class ToggleSwitchTest extends Application {
         Group root = new Group();
         Scene scene = new Scene(root, 500, 200);
 
-        ToggleSwitch toggleSwitch = new ToggleSwitch(false);
-        FlowGridPane flowGridPane = new FlowGridPane(1,2, toggleSwitch);
+        ToggleSwitch toggleSwitch = new ToggleSwitch("Hacer cositas", false);
+        ToggleSwitch2 toggleSwitch2 = new ToggleSwitch2("ON", "Hacer cositas");
+        FlowGridPane flowGridPane = new FlowGridPane(1,2, toggleSwitch2);
         ((Group) scene.getRoot()).getChildren().add(flowGridPane);
 
-        //show the stage
-        primaryStage.setTitle("Media Player");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

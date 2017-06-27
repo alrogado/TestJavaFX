@@ -29,7 +29,7 @@ import static org.testjfx.controllers.components.RegulatorsController.*;
 import static org.testjfx.util.EffectUtils.fadeIn;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
-public class SettingsOperatorController {
+public class OperatorSettingsController {
 
     @FXMLViewFlowContext
     private ViewFlowContext context;

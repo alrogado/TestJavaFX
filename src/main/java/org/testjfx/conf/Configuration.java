@@ -129,6 +129,9 @@ public class Configuration {
     private static double tipMinValue = 15;
     private static double tipMaxValue = 40;
     private static String password = "111";
+    private static boolean depositFillEnabled;
+    private static boolean pedalEnabled;
+    private static boolean triggerEnabled;
 
     public static String getBundleString(String rscBundle){
         String res = rscBundle;
@@ -194,5 +197,41 @@ public class Configuration {
 
     public static void setPassword(String password) {
         Configuration.password = password;
+    }
+
+    public static boolean getDepositFillEnabled() {
+        return depositFillEnabled;
+    }
+
+    public static boolean isDepositFillEnabled() {
+        return depositFillEnabled;
+    }
+
+    public static void setDepositFillEnabled(boolean depositFillEnabled) {
+        Configuration.depositFillEnabled = depositFillEnabled;
+    }
+
+    public static boolean getPedalEnabled() {
+        return pedalEnabled;
+    }
+
+    public static boolean isPedalEnabled() {
+        return pedalEnabled;
+    }
+
+    public static void setPedalEnabled(boolean pedalEnabled) {
+        Configuration.pedalEnabled = pedalEnabled;
+    }
+
+    public static boolean getTriggerEnabled() {
+        return triggerEnabled;
+    }
+
+    public static boolean isTriggerEnabled() {
+        return triggerEnabled;
+    }
+
+    public static void setTriggerEnabled(boolean triggerEnabled) {
+        Configuration.triggerEnabled = triggerEnabled;
     }
 }
