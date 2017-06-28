@@ -2,6 +2,7 @@ package org.testjfx.components;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
+import eu.hansolo.tilesfx.fonts.Fonts;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableStringValue;
 import javafx.event.ActionEvent;
@@ -17,6 +18,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
 
 import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
@@ -93,9 +96,8 @@ public class VirtualLimitedBoard {
     // Creates a button with mutable text, and registers listener with it
     private Button createButton(final ObservableStringValue text, final KeyCode code, final JFXPasswordField target) {
         JFXButton button = new JFXButton(text.get());
-
         button.setButtonType(JFXButton.ButtonType.RAISED);
-        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
+        button.getStyleClass().add("virtual-keyborad-option-button");
 
         button.textProperty().bind(text);
 

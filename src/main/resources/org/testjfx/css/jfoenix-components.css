@@ -375,6 +375,18 @@
     -fx-border-width: 4px;
 }
 
+.virtual-keyborad-option-button {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-background-color: #0091DC;
+    -fx-background-radius: 70px;
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-border-color: WHITE;
+    -fx-border-radius: 70px;
+    -fx-border-width: 4px;
+}
+
 .animated-option-sub-button {
     -fx-background-color: #43609C;
 }

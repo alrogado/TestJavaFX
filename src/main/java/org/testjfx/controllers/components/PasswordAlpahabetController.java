@@ -55,13 +55,8 @@ public class PasswordAlpahabetController extends PasswordNumberController{
         buttonsPane.add(new VirtualLimitedBoard(this).view(), "alignx center, aligny center, grow,span");
 
         mainPane = new VBox(10, buttonsPane, passwordField);
-        mainPane.setMaxSize(600,300);
+        mainPane.setMaxSize(800,300);
 
-        //mainPane.setFillWidth(true);
-        //mainPane.setMaxSize(380,300);
-        /*mainPane.setMinWidth(380);
-        mainPane.setMinHeight(300);*/
-        //350,300
         MigPane rootMP = new MigPane("fill");
         rootMP.add(mainPane, "alignx center, aligny center, span");
         //rootMP.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
