@@ -12,7 +12,7 @@ import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.testjfx.controllers.components.PasswordController;
+import org.testjfx.controllers.components.PasswordNumberController;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class SideMenuController {
             }
         });
         Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
-        bindNodeToController(checkbox, PasswordController.class, contentFlow);
+        bindNodeToController(checkbox, PasswordNumberController.class, contentFlow);
     }
 
     private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow) {

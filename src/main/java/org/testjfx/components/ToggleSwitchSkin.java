@@ -87,6 +87,7 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 
         label = new LabeledText(control);
         label.setText(getSkinnable().getTurnOnText());
+        //label.setFont(Fonts.latoBold(22));
 
         labelContainer = new StackPane();
         labelContainer.getChildren().addAll(label);
@@ -94,6 +95,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         updateLabel();
         getChildren().addAll(labelContainer, thumbArea, thumb, labelOn, labelOff);
         StackPane.setAlignment(label, Pos.CENTER_LEFT);
+
+        control.setEffect(onOffDropShadow);
 
         thumb.getStyleClass().setAll("thumb");
         thumbArea.getStyleClass().setAll("thumb-area");
@@ -153,9 +156,9 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         labelOn.setLayoutY(thumbAreaY+radius+8);
         labelOff.setLayoutY(thumbAreaY+radius+8);
 
-        double factor = getSkinnable().isInitialValue()?-1.8:2;
+        double factor = getSkinnable().isInitialValue()? -1.8: 2;
         labelOn.setLayoutX(thumbArea.getLayoutX() + thumbAreaWidth - thumbWidth+10+factor);
-        labelOff.setLayoutX(thumbArea.getLayoutX()+2+factor);
+        labelOff.setLayoutX(thumbArea.getLayoutX() +2 +factor);
 
         labelContainer.resize(contentWidth - thumbAreaWidth, thumbAreaHeight);
         labelContainer.setLayoutY(thumbAreaY);

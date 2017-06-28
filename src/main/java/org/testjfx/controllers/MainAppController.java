@@ -18,7 +18,8 @@ import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.ClockBuilder;
-import org.testjfx.controllers.components.PasswordController;
+import org.testjfx.controllers.components.PasswordAlpahabetController;
+import org.testjfx.controllers.components.PasswordNumberController;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
@@ -83,7 +84,7 @@ public class MainAppController {
 
         JFXButton passwordButton = new JFXButton();
         passwordButton.setGraphic(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
-        passwordButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, PasswordController.class));
+        passwordButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, PasswordAlpahabetController.class));
 
         toolbar.setRightItems(passwordButton,settingsButton,mainButton);
 

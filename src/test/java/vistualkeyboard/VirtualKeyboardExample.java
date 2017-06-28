@@ -13,63 +13,64 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.testjfx.components.VirtualKeyboard;
 
 public class VirtualKeyboardExample extends Application {
 
-  @Override
-  public void start(Stage primaryStage) {
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-    final TextField textField = new TextField();
-    textField.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
-        System.out.println("text field: "+textField.getText());
-      }
-    });
-    final TextArea textArea = new TextArea();
-    
-    final Button okButton = new Button("OK");
-    okButton.setDefaultButton(true);
-    okButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
-        System.out.println("OK Button Pressed!");
-      }
-    });
-    
-    final Button cancelButton = new Button("Cancel");
-    cancelButton.setCancelButton(true);
-    cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
-        System.out.println("Canceled!");
-      }
-    });
-    
-    final CheckBox disabledCheckBox = new CheckBox("Disable");
-    
-    final HBox buttons = new HBox(5);
-    buttons.getChildren().addAll(okButton, cancelButton, disabledCheckBox);
-    buttons.setAlignment(Pos.CENTER);
+    @Override
+    public void start(Stage primaryStage) {
 
-    final VBox root = new VBox(5);
-    root.setPadding(new Insets(10));
-    Scene scene = new Scene(root);
-    
-    VirtualKeyboard vkb = new VirtualKeyboard();
-    
-    // just add a border to easily visualize the boundary of the keyboard:
-    vkb.view().setStyle("-fx-border-color: darkblue; -fx-border-radius: 5;");
-    vkb.view().disableProperty().bind(disabledCheckBox.selectedProperty());
-    
-    root.getChildren().addAll(textField, textArea, buttons, vkb.view());
+        final TextField textField = new TextField();
+        textField.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("text field: " + textField.getText());
+            }
+        });
+        final TextArea textArea = new TextArea();
 
-    primaryStage.setScene(scene);
-    primaryStage.show();
-  }
+        final Button okButton = new Button("OK");
+        okButton.setDefaultButton(true);
+        okButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("OK Button Pressed!");
+            }
+        });
 
-  public static void main(String[] args) {
-    launch(args);
-  }
+        final Button cancelButton = new Button("Cancel");
+        cancelButton.setCancelButton(true);
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Canceled!");
+            }
+        });
+
+        final CheckBox disabledCheckBox = new CheckBox("Disable");
+
+        final HBox buttons = new HBox(5);
+        buttons.getChildren().addAll(okButton, cancelButton, disabledCheckBox);
+        buttons.setAlignment(Pos.CENTER);
+
+        final VBox root = new VBox(5);
+        root.setPadding(new Insets(10));
+        Scene scene = new Scene(root);
+
+        VirtualKeyboard vkb = new VirtualKeyboard();
+
+        // just add a border to easily visualize the boundary of the keyboard:
+        vkb.view().setStyle("-fx-border-color: darkblue; -fx-border-radius: 5;");
+        vkb.view().disableProperty().bind(disabledCheckBox.selectedProperty());
+
+        root.getChildren().addAll(textField, textArea, buttons, vkb.view());
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 
 }

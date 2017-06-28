@@ -1,13 +1,12 @@
 package org.testjfx.controllers.components;
 
+import com.fxexperience.javafx.animation.ShakeTransition;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import eu.hansolo.medusa.Fonts;
 import io.datafx.controller.ViewController;
-import io.datafx.controller.flow.FlowException;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
-import io.datafx.controller.util.VetoException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -36,35 +35,43 @@ import java.util.Objects;
 
 import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
 import static org.testjfx.controllers.MainAppController.flowHandler;
+import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
 import static org.testjfx.util.GuiColors.FRG;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_password.fxml")
-public class PasswordController {
+public class PasswordNumberController {
 
     @FXMLViewFlowContext
-    private ViewFlowContext context;
+    protected ViewFlowContext context;
 
     @FXML
     StackPane root;
 
 
-    private EventHandler<ActionEvent> actionHandler;
-    private EventHandler<KeyEvent> keyHandler;
-    private StringProperty passwordValue;
-    private StringBuilder currentPasswordValue;
-    private JFXPasswordField passwordField;
-    private Button one;
-    private Button two;
-    private Button three;
-    private Button four;
-    private Button five;
-    private Button six;
-    private Button seven;
-    private Button eight;
-    private Button nine;
-    private Button zero;
-    private Button ok;
-    private Button del;
+    protected EventHandler<ActionEvent> actionHandler;
+    protected EventHandler<KeyEvent> keyHandler;
+    protected StringProperty passwordValue;
+    protected StringBuilder currentPasswordValue;
+    protected JFXPasswordField passwordField;
+    protected Button one;
+    protected Button two;
+    protected Button three;
+    protected Button four;
+    protected Button five;
+    protected Button six;
+    protected Button seven;
+    protected Button eight;
+    protected Button nine;
+    protected Button zero;
+    protected Button ok;
+    protected Button del;
+
+    protected VBox mainPane;
+
+    protected int spacing = 15;
+    protected Insets value = new Insets(5);
+    protected int prefWidthButton = 40;
+    protected int prefWidthHeightPassword = 50;
 
     @PostConstruct
     public void init() {
@@ -79,8 +86,9 @@ public class PasswordController {
         passwordField.setFont(Fonts.digital(72));
         passwordField.setStyle("-fx-label-float:true;");
         passwordField.textProperty().bind(passwordValue);
-        passwordField.setPrefSize(50,50);
-        passwordField.setMaxSize(50,50);
+
+        passwordField.setPrefSize(prefWidthHeightPassword, prefWidthHeightPassword);
+        passwordField.setMaxSize(prefWidthHeightPassword, prefWidthHeightPassword);
 
         /*RequiredFieldValidator validatorNotNull = new RequiredFieldValidator();
         validatorNotNull.setMessage("Pass Is empty");
@@ -100,53 +108,73 @@ public class PasswordController {
         passwordField.setValidators(validatorNotNull,validatorPssword);*/
 
 
-        one       = createButton("", MetrizeIcons.MET_NUMBER_ONE);
-        two       = createButton("", MetrizeIcons.MET_NUMBER_TWO);
-        three     = createButton("", MetrizeIcons.MET_NUMBER_THREE);
-        four      = createButton("", MetrizeIcons.MET_NUMBER_FOUR);
-        five      = createButton("", MetrizeIcons.MET_NUMBER_FIVE);
-        six       = createButton("", MetrizeIcons.MET_NUMBER_SIX);
-        seven     = createButton("", MetrizeIcons.MET_NUMBER_SEVEN);
-        eight     = createButton("", MetrizeIcons.MET_NUMBER_EIGHT);
-        nine      = createButton("", MetrizeIcons.MET_NUMBER_NINE);
-        zero      = createButton("", MetrizeIcons.MET_NUMBER_ZERO);
-        ok        = createButton("", Elusive.OK_CIRCLE);
-        del       = createButton("", Feather.FTH_DELETE);
+        one       = createPasswordButton("", MetrizeIcons.MET_NUMBER_ONE);
+        two       = createPasswordButton("", MetrizeIcons.MET_NUMBER_TWO);
+        three     = createPasswordButton("", MetrizeIcons.MET_NUMBER_THREE);
+        four      = createPasswordButton("", MetrizeIcons.MET_NUMBER_FOUR);
+        five      = createPasswordButton("", MetrizeIcons.MET_NUMBER_FIVE);
+        six       = createPasswordButton("", MetrizeIcons.MET_NUMBER_SIX);
+        seven     = createPasswordButton("", MetrizeIcons.MET_NUMBER_SEVEN);
+        eight     = createPasswordButton("", MetrizeIcons.MET_NUMBER_EIGHT);
+        nine      = createPasswordButton("", MetrizeIcons.MET_NUMBER_NINE);
+        zero      = createPasswordButton("", MetrizeIcons.MET_NUMBER_ZERO);
+        ok        = createPasswordButton("", Elusive.OK_CIRCLE);
+        del       = createPasswordButton("", Feather.FTH_DELETE);
+
         root.getChildren().addAll(createPane());
     }
 
-    private Button createButton(String TEXT, Ikon ikon) {
-        Button button = createButton(TEXT);
-        button.setGraphic(IkonUtils.customizeIkon(ikon));
+    protected Button createPasswordButton(String TEXT, Ikon ikon) {
+        Button button = createPasswordButton(TEXT);
+        if(ikon!=null)
+            button.setGraphic(IkonUtils.customizeIkon(ikon));
         return button;
     }
 
 
-    // ******************** Private Methods ***********************************
-    private void updatPasswordValue() {
+    // ******************** protected Methods ***********************************
+    public void updatPasswordValue() {
         passwordValue.set(currentPasswordValue.toString());
         checkPassword();
     }
 
-    private Button createButton(final String TEXT) {
+    protected Button createPasswordButton(final String TEXT) {
         JFXButton button = new JFXButton(TEXT);
         //button.getStyleClass().addAll("calculator", BUTTON_STYLE.STYLE_CLASS);
         button.setOnAction(actionHandler);
         button.setOnKeyPressed(keyHandler);
-        /*button.setButtonType(JFXButton.ButtonType.RAISED);
-        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);*/
-        button.setPrefSize(40,40);
+        if(TEXT!=null && !TEXT.trim().equals("")) {
+            button.setButtonType(JFXButton.ButtonType.RAISED);
+            button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
+        }
+        button.setPrefSize(prefWidthButton, prefWidthButton);
         return button;
     }
 
 
-    private Pane createPane() {
+    protected Pane createPane() {
+        MigPane buttonsPane = initButtonsPane();
+
+        buttonsPane.add(new HBox(spacing, one, two, three), "grow, span");
+        buttonsPane.add(new HBox(spacing, four, five, six), "grow, span");
+        buttonsPane.add(new HBox(spacing, seven, eight, nine), "grow, span");
+        buttonsPane.add(new HBox(spacing, del, zero), "grow, span");
+
+
+        mainPane = new VBox(10, buttonsPane, passwordField);
+        mainPane.setMaxSize(250,300);
+        MigPane rootMP = new MigPane("fill");
+        rootMP.add(mainPane, "alignx center, aligny center, span");
+        //rootMP.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
+        return rootMP;
+
+    }
+
+    protected MigPane initButtonsPane() {
         MigPane buttonsPane = new MigPane("fill");
-        buttonsPane.setPadding(new Insets(5));
-        buttonsPane.add(new HBox(15, one, two, three), "grow, span");
-        buttonsPane.add(new HBox(15, four, five, six), "grow, span");
-        buttonsPane.add(new HBox(15, seven, eight, nine), "grow, span");
-        buttonsPane.add(new HBox(15, del, zero), "grow, span");
+
+        buttonsPane.setPadding(value);
+
 
         buttonsPane.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
         buttonsPane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
@@ -157,18 +185,11 @@ public class PasswordController {
         highlight.setInput(innerShadow);
         dropShadow.setInput(highlight);
         buttonsPane.setEffect(dropShadow);
-
-        VBox pane = new VBox(40, buttonsPane, passwordField);
-        pane.setMaxSize(250,300);
-        MigPane rootMP = new MigPane("fill");
-        rootMP.add(pane, "alignx center, aligny center, span");
-        rootMP.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
-        return rootMP;
-
+        return buttonsPane;
     }
 
     // ******************** Event handling ************************************
-    private void handleEvent(final Event EVENT) {
+    protected void handleEvent(final Event EVENT) {
         final Object  SOURCE = EVENT.getSource();
         if (SOURCE.equals(one)) {
             currentPasswordValue.append("1");
@@ -216,15 +237,25 @@ public class PasswordController {
         }
     }
 
-    private void checkPassword() {
-        if(Configuration.getPassword().equals(passwordField.getText())){
-            try {
-                flowHandler.navigateTo(OperatorSettingsController.class);
-            } catch (VetoException e) {
-                e.printStackTrace();
-            } catch (FlowException e) {
-                e.printStackTrace();
+    protected void checkPassword() {
+        if(Configuration.getPassword().length()==passwordField.getText().length()) {
+            if (Configuration.getPassword().equals(passwordField.getText())) {
+                try {
+                    flowHandler.navigateTo(OperatorSettingsController.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resetPassword();
+                }
+            }else{
+                resetPassword();
+                new ShakeTransition(mainPane).play();
             }
         }
+    }
+
+    protected void resetPassword() {
+        currentPasswordValue = new StringBuilder("");
+        passwordValue.set("");
+        passwordField.setText("");
     }
 }
