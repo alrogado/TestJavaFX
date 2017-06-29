@@ -40,6 +40,8 @@ import org.testjfx.conf.Configuration;
 
 import java.util.Locale;
 
+import static org.testjfx.util.GuiColors.DROPSHADOW_TEXT;
+
 
 public class Regulator extends Region implements RegulatorControl {
     private static final Color          DEFAULT_COLOR    = Color.rgb(66,71,79);
@@ -264,6 +266,7 @@ public class Regulator extends Region implements RegulatorControl {
         titleText = new Text();
         titleText.setFill(Color.WHITE);
         titleText.setTextOrigin(VPos.CENTER);
+        titleText.setEffect(DROPSHADOW_TEXT);
 
         subtitleText = new Text();
         subtitleText.setFill(Color.WHITE);

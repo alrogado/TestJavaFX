@@ -16,6 +16,7 @@
 
 package eu.hansolo.tilesfx.skins;
 
+import com.fxexperience.javafx.animation.ShakeTransition;
 import eu.hansolo.tilesfx.Section;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.fonts.Fonts;
@@ -25,6 +26,8 @@ import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -41,6 +44,8 @@ import java.util.*;
 
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.Helper.enableNode;
+import static org.testjfx.util.GuiColors.DROPSHADOW_TEXT;
+import static org.testjfx.util.GuiColors.innerShadow;
 
 
 /**
@@ -138,14 +143,17 @@ public class GaugeSparkLineTileSkin extends TileSkin {
 
         titleText = new Text(tile.getTitle());
         titleText.setFill(tile.getTitleColor());
+        titleText.setEffect(DROPSHADOW_TEXT);
         Helper.enableNode(titleText, !tile.getTitle().isEmpty());
 
         valueText = new Text(String.format(locale, formatString, tile.getValue()));
         valueText.setFill(tile.getValueColor());
+        valueText.setEffect(DROPSHADOW_TEXT);
         Helper.enableNode(valueText, tile.isValueVisible());
 
         unitText = new Text(tile.getUnit());
         unitText.setFill(tile.getUnitColor());
+        unitText.setEffect(DROPSHADOW_TEXT);
         Helper.enableNode(unitText, !tile.getUnit().isEmpty());
 
         valueUnitFlow = new TextFlow(valueText, unitText);
@@ -389,15 +397,29 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         bar.setStartAngle(barStart);
         bar.setLength(barLength);
 
+        Section lastSection = null;
         if ( tile.getSectionsVisible() && !sections.isEmpty() ) {
             bar.setStroke(tile.getBarColor());
             for ( Section section : sections ) {
                 if ( section.contains(VALUE) ) {
                     bar.setStroke(section.getColor());
+                    //todo added the color to value and unit text
+                    valueText.setFill(section.getColor());
+                    unitText.setFill(section.getColor());
+                    barBackground.setFill(new Color(section.getColor().getRed(),section.getColor().getGreen(),section.getColor().getBlue(),0.40));
+                    barBackground.setEffect(new InnerShadow(BlurType.TWO_PASS_BOX, new Color(0,0,0, 0.35), 0.07 * size, 0, 0, 0));
+                    lastSection = section;
+                    //titleText.setFill(section.getColor());
+                    //text.setFill(section.getColor());
                     break;
                 }
             }
         }
+        if(lastSection!=null && (sections.indexOf(lastSection)==0||sections.indexOf(lastSection)==2)){
+            new ShakeTransition(valueText).play();
+            new ShakeTransition(unitText).play();
+        }
+
     }
 
     private void drawHighLightSections(final double VALUE) {
@@ -680,6 +702,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
                     sectionCtx.save();
 
                     sectionCtx.setStroke(section.getColor());
+
                     sectionCtx.strokeArc(x, y, wh, wh, -(120 + sectionStartAngle), -sectionAngleExtend, ArcType.OPEN);
                     sectionCtx.restore();
                 }
@@ -761,7 +784,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             /*if(movingAverage.getWindow().poll()!=null) {
                 format = timeFormatter.format(movingAverage.getWindow().poll().getTimestampAsDateTime(tile.getZoneId()));
             }*/
-            text.setText(tile.getText()+ " " + format);
+            text.setText(tile.getText());
         } else if (!tile.isTextVisible() && null != movingAverage.getTimeSpan()) {
             timeSpanText.setText(createTimeSpanText());
             text.setText(timeFormatter.format(movingAverage.getLastEntry().getTimestampAsDateTime(tile.getZoneId())));
@@ -770,7 +793,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         resizeStaticText();
 
         titleText.setFill(tile.getTitleColor());
-        valueText.setFill(tile.getValueColor());
+        //valueText.setFill(tile.getValueColor());
         text.setFill(tile.getTextColor());
         timeSpanText.setFill(tile.getTextColor());
         minValueText.setFill(tile.getTextColor());

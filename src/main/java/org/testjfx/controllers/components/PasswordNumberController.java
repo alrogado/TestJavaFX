@@ -15,9 +15,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -33,10 +30,10 @@ import javax.annotation.PostConstruct;
 
 import java.util.Objects;
 
-import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
 import static org.testjfx.controllers.MainAppController.flowHandler;
 import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
 import static org.testjfx.util.GuiColors.FRG;
+import static org.testjfx.util.GuiColors.DROPSHADOW_COMP;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_password.fxml")
 public class PasswordNumberController {
@@ -172,19 +169,10 @@ public class PasswordNumberController {
 
     protected MigPane initButtonsPane() {
         MigPane buttonsPane = new MigPane("fill");
-
         buttonsPane.setPadding(value);
-
-
         buttonsPane.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
         buttonsPane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-
-        DropShadow dropShadow = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.65), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.028);
-        InnerShadow highlight = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, PREFERRED_WIDTH * 0.008);
-        InnerShadow innerShadow = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, -PREFERRED_WIDTH * 0.008);
-        highlight.setInput(innerShadow);
-        dropShadow.setInput(highlight);
-        buttonsPane.setEffect(dropShadow);
+        buttonsPane.setEffect(DROPSHADOW_COMP);
         return buttonsPane;
     }
 
@@ -256,6 +244,7 @@ public class PasswordNumberController {
     protected void resetPassword() {
         currentPasswordValue = new StringBuilder("");
         passwordValue.set("");
-        passwordField.setText("");
+        passwordField.deleteText(0,passwordField.getLength());
     }
+
 }

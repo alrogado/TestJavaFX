@@ -375,6 +375,12 @@
     -fx-border-width: 4px;
 }
 
+/*******************************************************************************
+*                                                                             *
+* Virtual Keyboard                                                            *
+*                                                                             *
+******************************************************************************/
+
 .virtual-keyborad-option-button {
     -fx-pref-width: 70px;
     -fx-pref-height: 70px;
@@ -386,6 +392,57 @@
     -fx-border-radius: 70px;
     -fx-border-width: 4px;
 }
+
+/*******************************************************************************
+ *                                                                             *
+ * ChoiceBox                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+.choice-box{
+    -fx-background-color: #0091DC;
+    -fx-font-size: 2em "Roboto";
+    -fx-font-weight: BOLD;
+    -fx-text-fill: #0091DC;
+    -fx-text-color: #0091DC;
+    -fx-border-color: transparent;
+    -fx-border-radius: 20px;
+}
+
+.label-choice {
+    -fx-text-fill: #0091DC;
+    -fx-border-color:  #0091DC;
+    -fx-border-radius: 20px;
+    -fx-border-width: 4px;
+}
+
+.choice-box .label {
+    -fx-padding: 5px 6px 5px 8px;
+    -fx-text-fill: white;
+    -fx-background-color: white;
+}
+.choice-box .open-button {
+    -fx-padding: 1 0 0 10px;
+}
+.combo-box-base:editable {
+    -fx-padding: 2px 2px 2px 2px;
+    -fx-text-fill: #0091DC;
+    -fx-background-color: transparent;
+}
+
+.choice-box:showing > .label-choice,
+
+.choice-box:showing{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 5px, 5px, 5px, 5px;
+}
+.choice-box:showing:external-focus {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 5px, 5px, 5px, 5px;
+    -fx-padding: 5 0 5 0;
+}
+
 
 .animated-option-sub-button {
     -fx-background-color: #43609C;

@@ -5,8 +5,11 @@ import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.elusive.Elusive;
@@ -39,6 +42,8 @@ public class SettingsController {
     ToggleSwitch tsPedal;
     ToggleSwitch tsFillDeposit;
 
+    ChoiceBox choiceBox;
+
     /**
      * init fxml when loaded.
      */
@@ -68,6 +73,9 @@ public class SettingsController {
         VBox optionsPane = new VBox();
         optionsPane.setSpacing(20);
         optionsPane.setPadding(new Insets(10));
+
+        choiceBox = new ChoiceBox(FXCollections.observableArrayList("uno", "dos"));
+        optionsPane.getChildren().add(choiceBox);
         tsFillDeposit = new ToggleSwitch("fillDeposit.label",Configuration.getDepositFillEnabled());
         optionsPane.getChildren().add(tsFillDeposit);
         tsPedal = new ToggleSwitch("pedal.label",Configuration.getPedalEnabled());

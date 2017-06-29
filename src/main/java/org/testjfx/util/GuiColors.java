@@ -1,9 +1,14 @@
 package org.testjfx.util;
 
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
+
+import static eu.hansolo.medusa.FGauge.PREFERRED_WIDTH;
 
 /**
  * Created by alrogado on 5/29/17.
@@ -27,4 +32,19 @@ public class GuiColors {
 
     public static LinearGradient GRAD_FGR_BGR = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, STOPS_BGR_FGR);
     public static LinearGradient GRAD_BGR_FRG = new LinearGradient(0, 0, 1, 0, true, CycleMethod.REFLECT, STOPS_FGR_BGR);
+
+    public static DropShadow DROPSHADOW_COMP;
+    public static DropShadow DROPSHADOW_TEXT;
+    public static InnerShadow highlight;
+    public static InnerShadow innerShadow;
+    static{
+        DROPSHADOW_COMP = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.65), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.028);
+        DROPSHADOW_TEXT = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.35), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.008);
+        highlight = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, PREFERRED_WIDTH * 0.008);
+        innerShadow = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, -PREFERRED_WIDTH * 0.008);
+        highlight.setInput(innerShadow);
+        DROPSHADOW_COMP.setInput(highlight);
+        DROPSHADOW_TEXT.setInput(highlight);
+    }
+
 }

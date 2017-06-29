@@ -1,4 +1,4 @@
-package org.testjfx.util.apps;
+package org.testjfx.util.apps.extra;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

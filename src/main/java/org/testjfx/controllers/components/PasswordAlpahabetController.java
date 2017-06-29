@@ -55,7 +55,9 @@ public class PasswordAlpahabetController extends PasswordNumberController{
         buttonsPane.add(new VirtualLimitedBoard(this).view(), "alignx center, aligny center, grow,span");
 
         mainPane = new VBox(10, buttonsPane, passwordField);
-        mainPane.setMaxSize(800,300);
+        //MAXWIDTH ES EL VALOR A CAMBIAR CUANDO SE MODOFICA EL ESTILO DEL TECLADO
+        int maxWidth = 850;
+        mainPane.setMaxSize(maxWidth,300);
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(mainPane, "alignx center, aligny center, span");
@@ -66,5 +68,11 @@ public class PasswordAlpahabetController extends PasswordNumberController{
 
     public JFXPasswordField getPasswordTextField() {
         return passwordField;
+    }
+
+    protected void resetPassword() {
+        currentPasswordValue = new StringBuilder("");
+        passwordValue.set("");
+        passwordField.deleteText(0,passwordField.getLength());
     }
 }
