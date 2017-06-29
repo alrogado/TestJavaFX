@@ -17,10 +17,16 @@
 package eu.hansolo.tilesfx.skins;
 
 import com.fxexperience.javafx.animation.ShakeTransition;
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.tools.*;
 import eu.hansolo.tilesfx.Section;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.fonts.Fonts;
 import eu.hansolo.tilesfx.tools.*;
+import eu.hansolo.tilesfx.tools.GradientLookup;
+import eu.hansolo.tilesfx.tools.Helper;
+import eu.hansolo.tilesfx.tools.MovingAverage;
+import eu.hansolo.tilesfx.tools.Statistics;
 import javafx.beans.InvalidationListener;
 import javafx.geometry.VPos;
 import javafx.scene.CacheHint;
@@ -94,6 +100,8 @@ public class GaugeSparkLineTileSkin extends TileSkin {
     private GraphicsContext      highlightSectionCtx;
     private Arc                  barBackground;
     private Arc                  bar;
+    private Path                 minThreshold;
+    private Path                 maxThreshold;
 
 
     // ******************** Constructors **************************************
@@ -123,7 +131,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             hLine.getStrokeDashArray().addAll(1.0, 2.0);
             hLine.setStroke(Color.TRANSPARENT);
             horizontalTickLines.add(hLine);
-            Text tickLabelY = new Text("");
+            Text tickLabelY = new Text(""+i);
             tickLabelY.setFill(Color.TRANSPARENT);
             tickLabelsY.add(tickLabelY);
         }
@@ -163,7 +171,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         averageText.setFill(Tile.FOREGROUND);
         Helper.enableNode(averageText, tile.isAverageVisible());
 
-        text = new Text(tile.getText());
+        text = new Text();
         text.setTextOrigin(VPos.TOP);
         text.setFill(tile.getTextColor());
 
@@ -217,8 +225,54 @@ public class GaugeSparkLineTileSkin extends TileSkin {
 
         minValueText = new Text();
         maxValueText = new Text();
+
+
+        minThreshold = new Path();
+        double         centerX        = size * 0.5;
+        double         centerY        = size * 0.5;
+        if (true) {//is threshold visible
+            // Draw threshold
+            minThreshold.getElements().clear();
+            double thresholdAngle;
+            //if (Gauge.ScaleDirection.CLOCKWISE == scaleDirection) {
+                //thresholdAngle = startAngle - (gauge.getThreshold() - minValue) * angleStep;
+                thresholdAngle = 90;
+            /*} else {
+                thresholdAngle = startAngle + (gauge.getThreshold() - minValue) * angleStep;
+            }*/
+            double thresholdSize = eu.hansolo.medusa.tools.Helper.clamp(3.0, 3.5, 0.01 * size);
+            double sinValue      = Math.sin(Math.toRadians(thresholdAngle));
+            double cosValue      = Math.cos(Math.toRadians(thresholdAngle));
+            /*switch (tickLabelLocation) {
+                case OUTSIDE:*/
+                    minThreshold.getElements().add(new MoveTo(centerX + size * 0.38 * sinValue, centerY + size * 0.38 * cosValue));
+                    sinValue = Math.sin(Math.toRadians(thresholdAngle - thresholdSize));
+                    cosValue = Math.cos(Math.toRadians(thresholdAngle - thresholdSize));
+                    minThreshold.getElements().add(new LineTo(centerX + size * 0.34 * sinValue, centerY + size * 0.34 * cosValue));
+                    sinValue = Math.sin(Math.toRadians(thresholdAngle + thresholdSize));
+                    cosValue = Math.cos(Math.toRadians(thresholdAngle + thresholdSize));
+                    minThreshold.getElements().add(new LineTo(centerX + size * 0.34 * sinValue, centerY + size * 0.34 * cosValue));
+                    minThreshold.getElements().add(new ClosePath());
+                    //break;
+                /*case INSIDE:
+                default:
+                    minThreshold.getElements().add(new MoveTo(centerX + size * 0.465 * sinValue, centerY + size * 0.465 * cosValue));
+                    sinValue = Math.sin(Math.toRadians(thresholdAngle - thresholdSize));
+                    cosValue = Math.cos(Math.toRadians(thresholdAngle - thresholdSize));
+                    minThreshold.getElements().add(new LineTo(centerX + size * 0.425 * sinValue, centerY + size * 0.425 * cosValue));
+                    sinValue = Math.sin(Math.toRadians(thresholdAngle + thresholdSize));
+                    cosValue = Math.cos(Math.toRadians(thresholdAngle + thresholdSize));
+                    minThreshold.getElements().add(new LineTo(centerX + size * 0.425 * sinValue, centerY + size * 0.425 * cosValue));
+                    minThreshold.getElements().add(new ClosePath());
+                    break;
+            }*/
+            minThreshold.setFill(Color.BLACK);//gauge.getThresholdColor());
+            minThreshold.setStroke(Color.BLACK);//gauge.getTickMarkColor());
+        }
+
+
         //todo dot has been eliminated
-        getPane().getChildren().addAll(sectionCanvas, highlightSectionCanvas, barBackground, bar, minValueText, maxValueText, titleText, valueUnitFlow, stdDeviationArea, averageLine, sparkLine, averageText, timeSpanText, text);
+        getPane().getChildren().addAll(sectionCanvas, highlightSectionCanvas, barBackground, bar, minValueText, maxValueText, titleText, valueUnitFlow, stdDeviationArea, averageLine, sparkLine, averageText, timeSpanText, text, minThreshold);
         getPane().getChildren().addAll(horizontalTickLines);
         getPane().getChildren().addAll(tickLabelsY);
     }
@@ -358,8 +412,9 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         valueText.setText(String.format(locale, formatString, VALUE));
 
         if (!tile.isTextVisible() && null != movingAverage.getTimeSpan()) {
-            timeSpanText.setText(createTimeSpanText());
-            text.setText(timeFormatter.format(movingAverage.getLastEntry().getTimestampAsDateTime(tile.getZoneId())));
+            //todo se ha quitado par ano mostrar mas info
+            /*timeSpanText.setText(createTimeSpanText());
+            text.setText(timeFormatter.format(movingAverage.getLastEntry().getTimestampAsDateTime(tile.getZoneId())));*/
         }
         resizeDynamicText();
 
@@ -416,6 +471,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             }
         }
         if(lastSection!=null && (sections.indexOf(lastSection)==0||sections.indexOf(lastSection)==2)){
+            //todo launch in a separate thread
             new ShakeTransition(valueText).play();
             new ShakeTransition(unitText).play();
         }
@@ -775,10 +831,10 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         drawBackground();
         setBar(tile.getCurrentValue());
         titleText.setText(tile.getTitle());
-        text.setText(tile.getText());
         unitText.setText(tile.getUnit());
-        if (!tile.getDescription().isEmpty()) { text.setText(tile.getDescription()); }
-
+        if (!tile.getDescription().isEmpty()) {
+            //text.setText(tile.getDescription());
+        }
         if (tile.isTextVisible()) {
             String format = "";
             /*if(movingAverage.getWindow().poll()!=null) {
@@ -786,14 +842,14 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             }*/
             text.setText(tile.getText());
         } else if (!tile.isTextVisible() && null != movingAverage.getTimeSpan()) {
-            timeSpanText.setText(createTimeSpanText());
-            text.setText(timeFormatter.format(movingAverage.getLastEntry().getTimestampAsDateTime(tile.getZoneId())));
+            //todo controlar si se quiere mostrar los tiempos
+            //timeSpanText.setText(createTimeSpanText());
+            //text.setText(timeFormatter.format(movingAverage.getLastEntry().getTimestampAsDateTime(tile.getZoneId())));
         }
 
         resizeStaticText();
 
         titleText.setFill(tile.getTitleColor());
-        //valueText.setFill(tile.getValueColor());
         text.setFill(tile.getTextColor());
         timeSpanText.setFill(tile.getTextColor());
         minValueText.setFill(tile.getTextColor());

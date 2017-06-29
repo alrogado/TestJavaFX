@@ -1,13 +1,10 @@
 package org.testjfx.controllers.components;
 
 import com.jfoenix.controls.JFXButton;
-import eu.hansolo.fx.regulators.ColorRegulator;
-import eu.hansolo.fx.regulators.FeedbackRegulator;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
 import org.testjfx.components.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
-import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -22,8 +19,6 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import net.miginfocom.layout.AC;
-import net.miginfocom.layout.LC;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.testjfx.conf.Configuration;
@@ -247,14 +242,14 @@ public class RegulatorsController {
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
-                false,
+                false,false,
                 LEFT);
         tipTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("tip.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                false,
+                false, false,
                 RIGHT);
 
         FlowGridPane pane = new FlowGridPane(2,1, depositTempTile, tipTempTile);

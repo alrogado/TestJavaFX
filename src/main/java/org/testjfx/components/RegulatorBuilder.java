@@ -57,7 +57,7 @@ public class RegulatorBuilder {
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
 
-    public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, TextAlignment textAllignment){
+    public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, boolean textVisible, TextAlignment textAllignment){
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
         String startFormated = String.format(Configuration.LOCALE, format, start);
@@ -74,7 +74,9 @@ public class RegulatorBuilder {
                 .foregroundBaseColor(GuiColors.FRG)
                 .decimals(decimals)
                 .text(text)
-                .textVisible(true)
+                .textVisible(textVisible)
+                .sectionTextVisible(textVisible)
+                .sectionIconsVisible(textVisible)
                 .textAlignment(textAllignment)
                 //.textColor(GuiColors.FRG_2)
                 .unit("ºC")
@@ -83,27 +85,27 @@ public class RegulatorBuilder {
                 .maxValue(MAXVALUETEMP)
                 .locale(Configuration.LOCALE)
                 .animated(true)
-                .textVisible(true)
-                .sectionTextVisible(true)
-                .sectionsVisible(true)
+                .highlightSections(false)
                 .averagingPeriod(25)
                 .autoReferenceValue(true)
+                .autoScale(true)
+                //.animationDuration(500)
 
                 //.barColor(FRG)
                 //.barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
-                        new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.LIGHT_GREEN),
-                        new eu.hansolo.tilesfx.Section(start, stop, Tile.YELLOW),
+                        new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.GREEN),
+                        new eu.hansolo.tilesfx.Section(start, stop, FRG),
                         new eu.hansolo.tilesfx.Section(stop, MAXVALUETEMP, Tile.LIGHT_RED))
                 .sectionsVisible(true)
                 .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)
-
+                .alarmsVisible(true)
                 .gradientStops(
-                        new Stop(0.0, Tile.LIGHT_GREEN),
-                        new Stop(0.33, Tile.LIGHT_GREEN),
-                        new Stop(0.33,Tile.YELLOW),
-                        new Stop(0.67, Tile.YELLOW),
+                        new Stop(0.0, Tile.GREEN),
+                        new Stop(0.33, Tile.GREEN),
+                        new Stop(0.33, FRG),
+                        new Stop(0.67, FRG),
                         new Stop(0.67, Tile.LIGHT_RED),
                         new Stop(1.0, Tile.LIGHT_RED))
                 .build();

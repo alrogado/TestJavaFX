@@ -1,6 +1,5 @@
 package org.testjfx.controllers.components;
 
-import eu.hansolo.fx.regulators.Regulator;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
@@ -8,13 +7,8 @@ import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import net.miginfocom.layout.AC;
-import net.miginfocom.layout.LC;
-import org.kordamp.ikonli.elusive.Elusive;
-import org.kordamp.ikonli.ionicons.Ionicons;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorBuilder;
 import org.testjfx.conf.Configuration;
@@ -57,28 +51,28 @@ public class OperatorSettingsController {
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
-                true,
+                true, true,
                 LEFT);
         Tile tipTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("tip.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                true,
+                true,true,
                 RIGHT);
         Tile diodoTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("diodo.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
-                true,
+                true,true,
                 LEFT);
         Tile machineTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("machine.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                true,
+                true,true,
                 RIGHT);
 
         FlowGridPane pane = new FlowGridPane(2,2, depositTempTile, tipTempTile, diodoTempTile, machineTempTile);
