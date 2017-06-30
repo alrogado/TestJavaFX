@@ -11,7 +11,7 @@ import static org.testjfx.GuiApp.*;
 /**
  * Created by alrogado on 5/31/17.
  */
-public class OperatorSettingsNotFullScreenApp extends Application {
+public class OperatorSettingsNFSApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
