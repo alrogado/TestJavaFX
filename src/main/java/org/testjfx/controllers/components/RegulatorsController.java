@@ -3,6 +3,8 @@ package org.testjfx.controllers.components;
 import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testjfx.components.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
@@ -24,9 +26,13 @@ import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
 import org.tbee.javafx.scene.layout.MigPane;
+import org.testjfx.conf.Mode;
+import org.testjfx.conf.WorkModes;
+import org.testjfx.controllers.MainAppController;
 import org.testjfx.util.GuiColors;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
@@ -39,11 +45,10 @@ import static org.testjfx.util.IkonUtils.customizeIkon;
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class RegulatorsController {
 
+    private static Logger logger = LoggerFactory.getLogger(RegulatorsController.class);
 
-    private static final String FX_TEXT_FILL_WHITE = "-fx-text-fill:WHITE; -fx-background-color:#D63333";
-    public static final String ANIMATED_OPTION_BUTTON = "animated-option-button";
-    private static final String ANIMATED_OPTION_SUB_BUTTON = "animated-option-sub-button";
-    private static final String ANIMATED_OPTION_SUB_BUTTON2 = "animated-option-sub-button2";
+
+    public static final String WORKMODE_BUTTON = "workmode-button";
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -127,7 +132,7 @@ public class RegulatorsController {
         buttonStart = new JFXButton(Configuration.getBundleString("buttonStart.label"));
         buttonStart.setTooltip(new Tooltip(""));
         buttonStart.setButtonType(JFXButton.ButtonType.RAISED);
-        buttonStart.getStyleClass().add(ANIMATED_OPTION_BUTTON);
+        buttonStart.getStyleClass().add(WORKMODE_BUTTON);
         double r=50;
         buttonStart.setShape(new Circle(r));
         buttonStart.setMinSize(2*r, 2*r);
@@ -194,25 +199,29 @@ public class RegulatorsController {
 
     private Node getHBoxWorkModesList() {
         HBox nodesList = new HBox();
-        nodesList.setSpacing(5);
+        nodesList.setSpacing(10);
         /*nodesList.addAnimatedNode(btnWorkModes,
                 (expanded) -> singletonList(new KeyValue(lblWorkModes.rotateProperty(),
                         expanded ? 15 : 0,
                         Interpolator.EASE_BOTH)));*/
-
-        String[] modeNames = new String[]{"FPD", "15 ms", "30 ms", "100 ms", "400 ms"};
-        for(String modeName:modeNames ){
-            nodesList.getChildren().add(createInnerWorkModeButton(modeName, modeName.replaceAll(" ", "")+".tooltip"));
+        try {
+            for(Mode modeName: WorkModes.getLoadedWorkModes().getWorkModes()){
+                nodesList.getChildren().add(createInnerWorkModeButton(modeName));
+            }
+        } catch (IOException e) {
+            //todo decide what to show in messages panel
+            logger.error("problem Loading workModes",e);
         }
         return nodesList;
     }
 
-    private JFXButton createInnerWorkModeButton(String title, String tooltipKey) {
-        JFXButton button = new JFXButton(title);
-        button.setTooltip(new Tooltip(Configuration.getBundleString(tooltipKey)));
+    private JFXButton createInnerWorkModeButton(Mode mode) {
+        JFXButton button = new JFXButton(Configuration.getBundleString(mode.getName()+"_wm.label"));
+        button.setTooltip(new Tooltip(Configuration.getBundleString(mode.getName()+"_wm.tooltip")));
         button.setButtonType(JFXButton.ButtonType.RAISED);
-        button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
-        button.setPrefSize(20,20);
+        button.getStyleClass().add(WORKMODE_BUTTON);
+        button.setFont(Fonts.robotoMedium(50));
+        //button.setPrefSize(20,20);
         return button;
     }
 

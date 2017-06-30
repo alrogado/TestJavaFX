@@ -1,11 +1,13 @@
-package org.testjfx.controllers.components;
+package org.testjfx.controllers.components.extra;
 
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import org.reactfx.util.Lists;
 import org.testjfx.components.ClockBuilder;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +35,9 @@ public class ClocksTilesController {
     public void init() {
         Objects.requireNonNull(context, "context");
         flowGridPane.getChildren().addAll(ClockBuilder.createClock());
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(ClockBuilder.createClocks());
+        flowGridPane.getChildren().addAll(hBox);
         fadeIn(root);
     }
 }

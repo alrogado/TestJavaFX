@@ -226,7 +226,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         minValueText = new Text();
         maxValueText = new Text();
 
-
+        //todo calculations
         minThreshold = new Path();
         double         centerX        = size * 0.5;
         double         centerY        = size * 0.5;
@@ -420,7 +420,40 @@ public class GaugeSparkLineTileSkin extends TileSkin {
 
         setBar(VALUE);
         
-        if (tile.isHighlightSections()) { drawHighLightSections(VALUE); }
+        if (tile.isHighlightSections()) {
+            drawHighLightSections(VALUE);
+        }
+    }
+
+    private void markMinMaxValues( final double VALUE ) {
+        double barLength    = 0;
+        double startAngle     = 0;
+        double min          = tile.getMinValue();
+        double max          = tile.getMaxValue();
+        double step         = tile.getAngleStep();
+        double clampedValue = Helper.clamp(min, max, VALUE);
+
+        if ( tile.isStartFromZero() ) {
+            if ( ( VALUE > min || min < 0 ) && ( VALUE < max || max > 0 ) ) {
+                if ( max < 0 ) {
+                    startAngle = tile.getStartAngle() - 135 - tile.getAngleRange();
+                    barLength = ( max - clampedValue ) * step;
+                } else if ( min > 0 ) {
+                    startAngle = tile.getStartAngle() -135;
+                    barLength = ( min - clampedValue ) * step;
+                } else {
+                    startAngle = tile.getStartAngle() - 135 + min * step;
+                    barLength = - clampedValue * step;
+                }
+            }
+        } else {
+            startAngle = tile.getStartAngle() - 135;
+            barLength = ( min - clampedValue ) * step;
+        }
+
+        //bar.setStartAngle(startAngle);
+        //bar.setLength(barLength);
+
     }
 
     private void setBar( final double VALUE ) {
@@ -461,7 +494,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
                     //todo added the color to value and unit text
                     valueText.setFill(section.getColor());
                     unitText.setFill(section.getColor());
-                    barBackground.setFill(new Color(section.getColor().getRed(),section.getColor().getGreen(),section.getColor().getBlue(),0.40));
+                    barBackground.setFill(new Color(section.getColor().getRed(),section.getColor().getGreen(),section.getColor().getBlue(),0.20));
                     barBackground.setEffect(new InnerShadow(BlurType.TWO_PASS_BOX, new Color(0,0,0, 0.35), 0.07 * size, 0, 0, 0));
                     lastSection = section;
                     //titleText.setFill(section.getColor());

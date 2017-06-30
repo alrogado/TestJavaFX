@@ -31,7 +31,7 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 import static org.testjfx.controllers.MainAppController.flowHandler;
-import static org.testjfx.controllers.components.RegulatorsController.ANIMATED_OPTION_BUTTON;
+import static org.testjfx.controllers.components.RegulatorsController.WORKMODE_BUTTON;
 import static org.testjfx.util.GuiColors.FRG;
 import static org.testjfx.util.GuiColors.DROPSHADOW_COMP;
 
@@ -142,7 +142,7 @@ public class PasswordNumberController {
         button.setOnKeyPressed(keyHandler);
         if(TEXT!=null && !TEXT.trim().equals("")) {
             button.setButtonType(JFXButton.ButtonType.RAISED);
-            button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
+            //button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
         }
         button.setPrefSize(prefWidthButton, prefWidthButton);
         return button;

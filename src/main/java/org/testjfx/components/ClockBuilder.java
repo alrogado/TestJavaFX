@@ -1,7 +1,9 @@
 package org.testjfx.components;
 
 import eu.hansolo.medusa.Clock;
+import eu.hansolo.medusa.LcdDesign;
 import eu.hansolo.medusa.LcdFont;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import org.testjfx.conf.Configuration;
 
@@ -15,14 +17,16 @@ public class ClockBuilder {
 
     public static Clock createClock(){
         return eu.hansolo.medusa.ClockBuilder.create()
-                .skinType(Clock.ClockSkinType.TEXT)
+                .skinType(Clock.ClockSkinType.SLIM)
                 .locale(Configuration.LOCALE)
-                .lcdFont(LcdFont.DIGITAL)
+                .lcdFont(LcdFont.DIGITAL_BOLD)
                 .shadowsEnabled(true)
                 .running(true)
                 .secondsVisible(true)
                 .textColor(Color.WHITE)
+                .minuteColor(Color.WHITE)
                 .dateColor(Color.WHITE)
+                .lcdDesign(LcdDesign.WHITE)
                 .build();
     }
 

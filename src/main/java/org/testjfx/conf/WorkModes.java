@@ -2,6 +2,7 @@ package org.testjfx.conf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
@@ -37,12 +38,22 @@ public class WorkModes {
     public WorkModes loadConf() throws IOException {
         final InputStream file = WorkModes.class.getResourceAsStream(fileName);
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
+        /*
+        Now this is not needed
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addKeyDeserializer(FreqFluPair.class, new FreqFluPairKeyDeserializer());
+        simpleModule.addKeyDeserializer(Pulse.class, new PulseKeyDeserializer());
+        mapper.registerModule(simpleModule);*/
         return mapper.readValue(file, WorkModes.class);
     }
 
     public static void main(String args[]) throws IOException {
         WorkModes workModes = new WorkModes().loadConf();
         System.out.println("Size:"+workModes.getWorkModes().size());
+    }
+
+    public static WorkModes getLoadedWorkModes() throws IOException {
+        return new WorkModes().loadConf();
     }
 
     /*

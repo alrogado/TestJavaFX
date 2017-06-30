@@ -10,6 +10,46 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-common</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-comparators</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-converters</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-decoration</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-fields</artifactId>
+            <version>0.9.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.miglayout</groupId>
+                    <artifactId>miglayout-javafx</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.miglayout</groupId>
+                    <artifactId>miglayout-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jidefx-validation</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.21</version>
