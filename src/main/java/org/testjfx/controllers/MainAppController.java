@@ -2,6 +2,7 @@ package org.testjfx.controllers;
 
 
 import com.jfoenix.controls.*;
+import eu.hansolo.fx.regulators.Fonts;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
@@ -11,11 +12,18 @@ import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import io.datafx.controller.util.VetoException;
 import javafx.fxml.FXML;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.typicons.Typicons;
+import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.ClockBuilder;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
@@ -25,6 +33,7 @@ import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testjfx.util.GuiColors;
 
 import javax.annotation.PostConstruct;
 
@@ -89,6 +98,8 @@ public class MainAppController {
         toolbar.setRightItems(passwordButton,settingsButton,mainButton);
 
         toolbar.setCenter(ClockBuilder.createClock());
+
+        toolbar.getLeftItems().addAll(createPanelSessionShoots(),createPanelTotals());
     }
 
     private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler,  Class controllerClass) {
@@ -108,6 +119,56 @@ public class MainAppController {
         //flowHandler.getFlowContext().getCurrentViewContext().getConfiguration().getBuilderFactory().getBuilder()
         flow.withGlobalLink(node.getId(), controllerClass);
         flow.withGlobalLink(node.getId(), controllerClass);
+    }
+
+    private Node createPanelSessionShoots() {
+        Font robotoMedium = Fonts.robotoMedium(20);
+
+        Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
+        lblSession.setFill(GuiColors.FRG);
+        lblSession.setTextOrigin(VPos.CENTER);
+        lblSession.setFont(robotoMedium);
+        lblSession.setTextAlignment(TextAlignment.LEFT);
+
+        Text lblShootsValue = new Text("0");
+        lblShootsValue.setFill(Color.WHITE);
+        lblShootsValue.setTextOrigin(VPos.CENTER);
+        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
+        lblShootsValue.setFont(robotoMedium);
+        lblShootsValue.setWrappingWidth(100);
+
+        JFXButton btnReload = new JFXButton();
+        FontIcon fontIcon = customizeIkon(MaterialDesign.MDI_RELOAD);
+        fontIcon.setFill(Color.WHITE);
+        btnReload.setGraphic(fontIcon);
+
+        MigPane rootMP = new MigPane("fill");
+        rootMP.add(lblSession, "west");
+        rootMP.add(lblShootsValue, "center");
+        rootMP.add(btnReload, "east");
+        return rootMP;
+    }
+
+    private Node createPanelTotals() {
+        Font robotoMedium = Fonts.robotoMedium(20);
+
+        Text lblSession = new Text(Configuration.getBundleString("shoots-total.label"));
+        lblSession.setFill(GuiColors.FRG);
+        lblSession.setTextOrigin(VPos.CENTER);
+        lblSession.setFont(robotoMedium);
+        lblSession.setTextAlignment(TextAlignment.LEFT);
+
+        Text lblShootsValue = new Text("0");
+        lblShootsValue.setFill(Color.WHITE);
+        lblShootsValue.setTextOrigin(VPos.CENTER);
+        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
+        lblShootsValue.setFont(robotoMedium);
+        lblShootsValue.setWrappingWidth(100);
+
+        MigPane rootMP = new MigPane("fill");
+        rootMP.add(lblSession, "west");
+        rootMP.add(lblShootsValue, "east");
+        return rootMP;
     }
 
 }

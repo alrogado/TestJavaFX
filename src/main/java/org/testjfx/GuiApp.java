@@ -85,8 +85,7 @@ public class GuiApp extends Application {
         stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - Configuration.WIDTH / 2);
         stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - Configuration.HEIGHT / 2);
         stage.setAlwaysOnTop(false);
-        stage.setMinHeight(Configuration.HEIGHT);
-        stage.setMinWidth(Configuration.WIDTH);
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setHeight(Configuration.HEIGHT);
         stage.setWidth(Configuration.WIDTH);
         stage.setTitle(APPTITLE);

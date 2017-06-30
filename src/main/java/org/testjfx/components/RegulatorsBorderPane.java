@@ -16,20 +16,17 @@
 
 package org.testjfx.components;
 
-import com.jfoenix.controls.JFXButton;
-import eu.hansolo.fx.regulators.Regulator;
-import eu.hansolo.tilesfx.Tile;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import jfxtras.scene.layout.CircularPane;
 import org.testjfx.controllers.components.RegulatorsController;
 
 import static org.testjfx.controllers.components.RegulatorsController.HEIGHTTILE;
 import static org.testjfx.controllers.components.RegulatorsController.HEIGTHTEMP;
 
-public class RegulatorsPane extends Region {
+public class RegulatorsBorderPane extends Region {
 
     private RegulatorsController regulatorsController;
 
@@ -39,14 +36,19 @@ public class RegulatorsPane extends Region {
     Pane fluencyPane;
     Pane startButtonPane;
 
-    public RegulatorsPane(RegulatorsController regulatorsController) {
+
+    public RegulatorsBorderPane(RegulatorsController regulatorsController) {
         this.regulatorsController=regulatorsController;
-        setPadding(new Insets(0,0,5,5));
-        frequencyPane = new Pane(regulatorsController.getFrequency());
-        fluencyPane = new Pane(regulatorsController.getFluency());
-        tipTilePane = new Pane(regulatorsController.getTipTempTile());
-        depositTilePane = new Pane(regulatorsController.getDepositTempTile());
-        startButtonPane = new Pane(regulatorsController.getButtonStart());
+        frequencyPane = new BorderPane();
+        frequencyPane.getChildren().add(regulatorsController.getFrequency());
+        fluencyPane = new BorderPane();
+        fluencyPane.getChildren().add(regulatorsController.getFluency());
+        tipTilePane = new BorderPane();
+        tipTilePane.getChildren().add(regulatorsController.getTipTempTile());
+        depositTilePane = new BorderPane();
+        depositTilePane.getChildren().add(regulatorsController.getDepositTempTile());
+        startButtonPane = new BorderPane();
+        startButtonPane.getChildren().add(regulatorsController.getButtonStart());
         getChildren().addAll(
                 depositTilePane,
                 tipTilePane,
@@ -64,7 +66,7 @@ public class RegulatorsPane extends Region {
             regulatorsController.getDepositTempTile().setPrefSize(sizeTile, sizeTile);
             depositTilePane.layout();
 
-            double sizeTemp = Math.max(HEIGTHTEMP, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2))+getPadding().getLeft();
+            double sizeTemp = Math.max(HEIGTHTEMP, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2));
             fluencyPane.setPrefSize(sizeTemp, sizeTemp);
             regulatorsController.getFrequency().setPrefSize(sizeTemp, sizeTemp);
             fluencyPane.layout();
@@ -72,8 +74,6 @@ public class RegulatorsPane extends Region {
             frequencyPane.setPrefSize(sizeTemp, sizeTemp);
             regulatorsController.getFluency().setPrefSize(sizeTemp, sizeTemp);
             frequencyPane.layout();
-
-            //layoutChildren();
         });
     }
 
@@ -100,13 +100,13 @@ public class RegulatorsPane extends Region {
         double buttonHeight = startButtonPane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
         startButtonPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), buttonHeight);
 
-        frequencyPane.relocate(getPadding().getLeft() , getPadding().getTop() + depositTempHeight -5);
+        frequencyPane.relocate(getPadding().getLeft() , getPadding().getTop() + depositTempHeight );
         double frequencyWidth = frequencyPane.prefWidth(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        frequencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), frequencyWidth -5);
+        frequencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), frequencyWidth);
 
-        fluencyPane.relocate(getPadding().getLeft() + depositTempHeight +10  , getPadding().getTop() + depositTempHeight -5 );
+        fluencyPane.relocate(getPadding().getLeft() + depositTempHeight  , getPadding().getTop() + depositTempHeight  );
         double fluencyHeight = fluencyPane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        fluencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), fluencyHeight -5);
+        fluencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), fluencyHeight);
 
     }
 

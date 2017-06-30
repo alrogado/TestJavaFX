@@ -3,8 +3,10 @@ package org.testjfx.controllers.components;
 import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
+import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
@@ -14,22 +16,14 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
-import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.conf.Mode;
 import org.testjfx.conf.WorkModes;
-import org.testjfx.controllers.MainAppController;
-import org.testjfx.util.GuiColors;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -40,7 +34,6 @@ import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.util.EffectUtils.fadeIn;
 import static org.testjfx.util.GuiColors.FRG;
-import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class RegulatorsController {
@@ -70,10 +63,10 @@ public class RegulatorsController {
 
     public static int horizontalGap = 5;
     public static Insets padding = new Insets(5);
-    public static Double WIDTHTILE = 400d;
-    public static Double HEIGHTTILE = 400d;
-    public static Double WIDTHTEMP = 320d;
-    public static Double HEIGTHTEMP = 320d;
+    public static Double WIDTHTILE = 350d;
+    public static Double HEIGHTTILE = 350d;
+    public static Double WIDTHTEMP = 220d;
+    public static Double HEIGTHTEMP = 220d;
 
     /**
      * init fxml when loaded.
@@ -82,23 +75,17 @@ public class RegulatorsController {
     public void init() {
         Objects.requireNonNull(context, "context");
         initComponents();
-
         MigPane rootMP = new MigPane("fill");
-        rootMP.add(createWorkModesNodeList(), "alignx center, wrap");
-        rootMP.add(new RegulatorsPane(this), "alignx center, wrap");
-        rootMP.add(createLabelsPanel(), "alignx center, wrap");
-        /*FlowGridPane rootMP = new FlowGridPane(1,3,
-                createWorkModesNodeList(),
-                new RegulatorsPane(this),
-                createLabelsPanel());*/
-        /*FlowGridPane rootMP = new FlowGridPane(1,3,
-                createWorkModesNodeList(),
-                new FlowGridPane(1,2, tempNode, energyNode),
-                createLabelsPanel());*/
-        /*VBox rootMP = new VBox( createWorkModesNodeList(),
-                new RegulatorsPane(this),
-                createLabelsPanel());*/
+        rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
+        rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
+        rootMP.add(new RegulatorsPane(this), "alignx center, aligny center, wrap");
+        //rootMP.add(new RegulatorsPane(this), "aligny bottom, aligny bottom, wrap");
+        /*FlowPane rootMP = new FlowPane();
+        rootMP.getChildren().addAll(createWorkModesNodeList(),new RegulatorsPane(this));*/
 
+        /*FlowGridPane rootMP = new FlowGridPane(1,2, createHBoxWorkModesList(), new RegulatorsPane(this));
+        rootMP.setAlignment(Pos.CENTER);
+*/
         root.getChildren().addAll(rootMP);
 
         Random RDM = new Random();
@@ -115,6 +102,12 @@ public class RegulatorsController {
         };
         timer.start();
         fadeIn(root);
+    }
+
+    private Node createMessagesBox() {
+        Pane messagesPane = new Pane();
+        //messagesPane.();
+        return messagesPane;
     }
 
     public void initComponents() {
@@ -138,68 +131,14 @@ public class RegulatorsController {
         buttonStart.setMinSize(2*r, 2*r);
         buttonStart.setMaxSize(2*r, 2*r);
         buttonStart.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-        //buttonStart.setPrefSize(40,40);
-        //rootMP.add(buttonStart, "alignx center");
         return buttonStart;
     }
 
-    private Node createLabelsPanel(){
-        MigPane rootMP = new MigPane("fill");
-        rootMP.add(createPanelShoots(), "alignx left");
-        rootMP.add(createPanelTotals(), "alignx right");
-        return rootMP;
-    }
-    private Node createWorkModesNodeList(){
-        MigPane rootMP = new MigPane("fill");
-        //rootMP.add(getJfxNodesList(), "alignx center");
-        rootMP.add(getHBoxWorkModesList(), "alignx center");
-        return rootMP;
-    }
-
-    private Node createPanelShoots() {
-        MigPane rootMP = new MigPane("fill");
-        Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
-        lblSession.setFill(GuiColors.FRG);
-        lblSession.setTextOrigin(VPos.CENTER);
-        lblSession.setFont(Fonts.robotoMedium(40));
-        lblSession.setTextAlignment(TextAlignment.LEFT);
-        Text lblShootsValue = new Text("0");
-        lblShootsValue.setFill(GuiColors.FRG);
-        lblShootsValue.setTextOrigin(VPos.CENTER);
-        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
-        lblShootsValue.setFont(Fonts.robotoMedium(40));
-        lblShootsValue.setWrappingWidth(150);
-        JFXButton btnReload = new JFXButton();
-        FontIcon fontIcon = customizeIkon(MaterialDesign.MDI_RELOAD);
-        fontIcon.setFill(GuiColors.FRG);
-        btnReload.setGraphic(fontIcon);
-        rootMP.add(lblSession, "west");
-        rootMP.add(lblShootsValue, "center");
-        rootMP.add(btnReload, "east");
-        return rootMP;
-    }
-
-    private Node createPanelTotals() {
-        MigPane rootMP = new MigPane("fill");
-        Text lblSession = new Text(Configuration.getBundleString("shoots-total.label"));
-        lblSession.setFill(GuiColors.FRG);
-        lblSession.setTextOrigin(VPos.CENTER);
-        lblSession.setFont(Fonts.robotoMedium(40));
-        lblSession.setTextAlignment(TextAlignment.LEFT);
-        Text lblShootsValue = new Text("0");
-        lblShootsValue.setFill(GuiColors.FRG);
-        lblShootsValue.setTextOrigin(VPos.CENTER);
-        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
-        lblShootsValue.setFont(Fonts.robotoMedium(40));
-        lblShootsValue.setWrappingWidth(150);
-        rootMP.add(lblSession, "west");
-        rootMP.add(lblShootsValue, "east");
-        return rootMP;
-    }
-
-    private Node getHBoxWorkModesList() {
+    private Node createHBoxWorkModesList() {
         HBox nodesList = new HBox();
-        nodesList.setSpacing(10);
+        //nodesList.setEffect(new GaussianBlur());
+        nodesList.setSpacing(5);
+        nodesList.setPadding(new Insets(0,0,0,0));
         /*nodesList.addAnimatedNode(btnWorkModes,
                 (expanded) -> singletonList(new KeyValue(lblWorkModes.rotateProperty(),
                         expanded ? 15 : 0,
