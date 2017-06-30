@@ -19,19 +19,23 @@ package org.testjfx.components;
 import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Regulator;
 import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.tools.FlowGridPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
+import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.components.RegulatorsController;
 
-import static org.testjfx.controllers.components.RegulatorsController.HEIGHTTILE;
-import static org.testjfx.controllers.components.RegulatorsController.HEIGTHTEMP;
+import static javafx.scene.text.TextAlignment.LEFT;
+import static javafx.scene.text.TextAlignment.RIGHT;
+import static org.testjfx.controllers.components.RegulatorsController.*;
+import static org.testjfx.util.GuiColors.FRG;
 
 public class RegulatorsPane extends Region {
 
-    private RegulatorsController regulatorsController;
 
     Pane depositTilePane;
     Pane tipTilePane;
@@ -39,38 +43,51 @@ public class RegulatorsPane extends Region {
     Pane fluencyPane;
     Pane startButtonPane;
 
-    public RegulatorsPane(RegulatorsController regulatorsController) {
-        this.regulatorsController=regulatorsController;
+    Tile depositTempTile;
+    Tile tipTempTile;
+
+    JFXButton buttonStart;
+
+    Regulator frequency;
+    Regulator fluency;
+
+    public static Double WIDTHTILE = 380d;
+    public static Double HEIGHTTILE = 380d;
+    public static Double WIDTHTEMP = 220d;
+    public static Double HEIGTHTEMP = 220d;
+
+    public RegulatorsPane() {
+        initComponents();
         setPadding(new Insets(0,0,5,5));
-        frequencyPane = new Pane(regulatorsController.getFrequency());
-        fluencyPane = new Pane(regulatorsController.getFluency());
-        tipTilePane = new Pane(regulatorsController.getTipTempTile());
-        depositTilePane = new Pane(regulatorsController.getDepositTempTile());
-        startButtonPane = new Pane(regulatorsController.getButtonStart());
+        frequencyPane = new Pane(getFrequency());
+        fluencyPane = new Pane(getFluency());
+        tipTilePane = new Pane(getTipTempTile());
+        depositTilePane = new Pane(getDepositTempTile());
+        startButtonPane = new Pane(getButtonStart());
         getChildren().addAll(
                 depositTilePane,
                 tipTilePane,
                 frequencyPane,
                 fluencyPane,
                 startButtonPane);
-
+        //setPrefSize(getTipTempTile().getWidth()+getFluency().getWidth(), getTipTempTile().getHeight()+getFluency().getHeight());
         layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
             double sizeTile = Math.max(HEIGHTTILE, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2));
             tipTilePane.setPrefSize(sizeTile, sizeTile);
-            regulatorsController.getTipTempTile().setPrefSize(sizeTile, sizeTile);
+            getTipTempTile().setPrefSize(sizeTile, sizeTile);
             tipTilePane.layout();
 
             depositTilePane.setPrefSize(sizeTile, sizeTile);
-            regulatorsController.getDepositTempTile().setPrefSize(sizeTile, sizeTile);
+            getDepositTempTile().setPrefSize(sizeTile, sizeTile);
             depositTilePane.layout();
 
             double sizeTemp = Math.max(HEIGTHTEMP, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2))+getPadding().getLeft();
             fluencyPane.setPrefSize(sizeTemp, sizeTemp);
-            regulatorsController.getFrequency().setPrefSize(sizeTemp, sizeTemp);
+            getFrequency().setPrefSize(sizeTemp, sizeTemp);
             fluencyPane.layout();
 
             frequencyPane.setPrefSize(sizeTemp, sizeTemp);
-            regulatorsController.getFluency().setPrefSize(sizeTemp, sizeTemp);
+            getFluency().setPrefSize(sizeTemp, sizeTemp);
             frequencyPane.layout();
 
             //layoutChildren();
@@ -102,11 +119,11 @@ public class RegulatorsPane extends Region {
 
         frequencyPane.relocate(getPadding().getLeft() , getPadding().getTop() + depositTempHeight -5);
         double frequencyWidth = frequencyPane.prefWidth(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        frequencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), frequencyWidth -5);
+        frequencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), frequencyWidth -15);
 
         fluencyPane.relocate(getPadding().getLeft() + depositTempHeight +10  , getPadding().getTop() + depositTempHeight -5 );
         double fluencyHeight = fluencyPane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        fluencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), fluencyHeight -5);
+        fluencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), fluencyHeight -15);
 
     }
 
@@ -119,5 +136,91 @@ public class RegulatorsPane extends Region {
     @Override protected double computePrefWidth(double height) {
         double widthWithPadding = height - getPadding().getLeft() - getPadding().getRight();
         return getPadding().getTop() + fluencyPane.prefWidth(widthWithPadding) + tipTilePane.prefWidth(widthWithPadding) +getPadding().getBottom();
+    }
+
+    public void initComponents() {
+        createTempeperatureSparkGauage();
+        createFreqFluGridPane();
+        createStartButton();
+    }
+
+    public JFXButton createStartButton() {
+        //todo controlar que con la inicializacion con
+        // new LC().fillX().fillY().pack(), new AC(), new AC()
+        // esto no se va de madre, porque al usar unos con una y otros con otra esto hace que se
+        // vaya de madre toda la aplicación, es bastante desconcertante
+        //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
+        buttonStart = new JFXButton(Configuration.getBundleString("buttonStart.label"));
+        buttonStart.setTooltip(new Tooltip(""));
+        buttonStart.setButtonType(JFXButton.ButtonType.RAISED);
+        buttonStart.getStyleClass().add(WORKMODE_BUTTON);
+        double r=50;
+        buttonStart.setShape(new Circle(r));
+        buttonStart.setMinSize(2*r, 2*r);
+        buttonStart.setMaxSize(2*r, 2*r);
+        buttonStart.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+        return buttonStart;
+    }
+
+    private Node createFreqFluGridPane() {
+        frequency = RegulatorBuilder.createRegulator(
+                Configuration.getBundleString("frecuency.label"),
+                "Hz",
+                "",null,
+                WIDTHTEMP, HEIGTHTEMP,
+                50d, 30d, 200d);
+        fluency = RegulatorBuilder.createRegulator(
+                Configuration.getBundleString("fluencia.label"),
+                "J/cm",
+                "",
+                null,
+                WIDTHTEMP, HEIGTHTEMP,
+                96d, 20d, 130d);
+        FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
+        regulatorsPane.setHgap(horizontalGap);
+        regulatorsPane.setPadding(padding);
+        return regulatorsPane;
+    }
+
+    private Node createTempeperatureSparkGauage() {
+        depositTempTile = RegulatorBuilder.createTempSparkRegulator(
+                Configuration.getBundleString("deposit.label"),
+                WIDTHTILE, HEIGHTTILE,
+                Configuration.getDepositMinValue(),
+                Configuration.getDepositMaxValue(),
+                false,false,
+                LEFT);
+        tipTempTile = RegulatorBuilder.createTempSparkRegulator(
+                Configuration.getBundleString("tip.label"),
+                WIDTHTILE, HEIGHTTILE,
+                Configuration.getTipMinValue(),
+                Configuration.getTipMaxValue(),
+                false, false,
+                RIGHT);
+
+        FlowGridPane pane = new FlowGridPane(2,1, depositTempTile, tipTempTile);
+        pane.setHgap(horizontalGap);
+        pane.setPadding(padding);
+        return pane;
+    }
+
+    public Tile getDepositTempTile() {
+        return depositTempTile;
+    }
+
+    public Tile getTipTempTile() {
+        return tipTempTile;
+    }
+
+    public Regulator getFrequency() {
+        return frequency;
+    }
+
+    public Regulator getFluency() {
+        return fluency;
+    }
+
+    public JFXButton getButtonStart() {
+        return buttonStart;
     }
 }

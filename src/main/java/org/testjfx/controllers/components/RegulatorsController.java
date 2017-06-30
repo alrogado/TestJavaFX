@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
 import javafx.geometry.Pos;
+import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
@@ -49,24 +50,13 @@ public class RegulatorsController {
     @FXML
     StackPane root;
 
-    Tile depositTempTile;
-    Tile tipTempTile;
-
-    JFXButton buttonStart;
-
-    Regulator frequency;
-    Regulator fluency;
-
-
     //String migLayoutConstraints = "w 45sp,h 45sp";
     //String migLayoutConstraints = "w 50%,h 40%";
 
     public static int horizontalGap = 5;
     public static Insets padding = new Insets(5);
-    public static Double WIDTHTILE = 350d;
-    public static Double HEIGHTTILE = 350d;
-    public static Double WIDTHTEMP = 220d;
-    public static Double HEIGTHTEMP = 220d;
+
+    RegulatorsPane regulatorsPane;
 
     /**
      * init fxml when loaded.
@@ -74,11 +64,14 @@ public class RegulatorsController {
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
-        initComponents();
         MigPane rootMP = new MigPane("fill");
         rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
         rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
-        rootMP.add(new RegulatorsPane(this), "alignx center, aligny center, wrap");
+        regulatorsPane = new RegulatorsPane();
+        rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
+
+        //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny bottom, wrap");
+        //regulatorsPane.layout();
         //rootMP.add(new RegulatorsPane(this), "aligny bottom, aligny bottom, wrap");
         /*FlowPane rootMP = new FlowPane();
         rootMP.getChildren().addAll(createWorkModesNodeList(),new RegulatorsPane(this));*/
@@ -94,8 +87,8 @@ public class RegulatorsController {
             @Override public void handle(long now) {
                 if (now > lastTimerCall[0] + 3_500_000_000L) {
                     //(0, 32767+32768) then subtract by 32768
-                    depositTempTile.setValue((RDM.nextInt(80)-20));
-                    tipTempTile.setValue((RDM.nextInt(80)-20));
+                    regulatorsPane.getDepositTempTile().setValue((RDM.nextInt(80)-20));
+                    regulatorsPane.getTipTempTile().setValue((RDM.nextInt(80)-20));
                     lastTimerCall[0] = now;
                 }
             }
@@ -106,33 +99,16 @@ public class RegulatorsController {
 
     private Node createMessagesBox() {
         Pane messagesPane = new Pane();
+
+        messagesPane.setPadding(new Insets(5,5,5,5));
+        messagesPane.getChildren().add(new Text("testeando"));
         //messagesPane.();
         return messagesPane;
     }
 
-    public void initComponents() {
-        createTempeperatureSparkGauage();
-        createFreqFluGridPane();
-        createStartButton();
-    }
 
-    public JFXButton createStartButton() {
-        //todo controlar que con la inicializacion con
-        // new LC().fillX().fillY().pack(), new AC(), new AC()
-        // esto no se va de madre, porque al usar unos con una y otros con otra esto hace que se
-        // vaya de madre toda la aplicación, es bastante desconcertante
-        //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        buttonStart = new JFXButton(Configuration.getBundleString("buttonStart.label"));
-        buttonStart.setTooltip(new Tooltip(""));
-        buttonStart.setButtonType(JFXButton.ButtonType.RAISED);
-        buttonStart.getStyleClass().add(WORKMODE_BUTTON);
-        double r=50;
-        buttonStart.setShape(new Circle(r));
-        buttonStart.setMinSize(2*r, 2*r);
-        buttonStart.setMaxSize(2*r, 2*r);
-        buttonStart.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-        return buttonStart;
-    }
+
+
 
     private Node createHBoxWorkModesList() {
         HBox nodesList = new HBox();
@@ -164,65 +140,5 @@ public class RegulatorsController {
         return button;
     }
 
-    private Node createFreqFluGridPane() {
-        frequency = RegulatorBuilder.createRegulator(
-                Configuration.getBundleString("frecuency.label"),
-                "Hz",
-                "",null,
-                WIDTHTEMP, HEIGTHTEMP,
-                50d, 30d, 200d);
-        fluency = RegulatorBuilder.createRegulator(
-                Configuration.getBundleString("fluencia.label"),
-                "J/cm",
-                "",
-                null,
-                WIDTHTEMP, HEIGTHTEMP,
-                96d, 20d, 130d);
-        FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
-        regulatorsPane.setHgap(horizontalGap);
-        regulatorsPane.setPadding(padding);
-        return regulatorsPane;
-    }
 
-    private Node createTempeperatureSparkGauage() {
-        depositTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("deposit.label"),
-                WIDTHTILE, HEIGHTTILE,
-                Configuration.getDepositMinValue(),
-                Configuration.getDepositMaxValue(),
-                false,false,
-                LEFT);
-        tipTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("tip.label"),
-                WIDTHTILE, HEIGHTTILE,
-                Configuration.getTipMinValue(),
-                Configuration.getTipMaxValue(),
-                false, false,
-                RIGHT);
-
-        FlowGridPane pane = new FlowGridPane(2,1, depositTempTile, tipTempTile);
-        pane.setHgap(horizontalGap);
-        pane.setPadding(padding);
-        return pane;
-    }
-
-    public Tile getDepositTempTile() {
-        return depositTempTile;
-    }
-
-    public Tile getTipTempTile() {
-        return tipTempTile;
-    }
-
-    public Regulator getFrequency() {
-        return frequency;
-    }
-
-    public Regulator getFluency() {
-        return fluency;
-    }
-
-    public JFXButton getButtonStart() {
-        return buttonStart;
-    }
 }

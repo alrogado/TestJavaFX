@@ -17,7 +17,7 @@ public class ClockBuilder {
 
     public static Clock createClock(){
         return eu.hansolo.medusa.ClockBuilder.create()
-                .skinType(Clock.ClockSkinType.SLIM)
+                .skinType(Clock.ClockSkinType.TEXT)
                 .locale(Configuration.LOCALE)
                 .lcdFont(LcdFont.DIGITAL_BOLD)
                 .shadowsEnabled(true)

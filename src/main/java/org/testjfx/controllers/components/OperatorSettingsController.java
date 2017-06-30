@@ -19,6 +19,8 @@ import java.util.Random;
 
 import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
+import static org.testjfx.components.RegulatorsPane.HEIGHTTILE;
+import static org.testjfx.components.RegulatorsPane.WIDTHTILE;
 import static org.testjfx.controllers.components.RegulatorsController.*;
 import static org.testjfx.util.EffectUtils.fadeIn;
 
