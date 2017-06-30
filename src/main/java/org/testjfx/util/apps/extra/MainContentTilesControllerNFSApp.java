@@ -11,7 +11,7 @@ import static org.testjfx.GuiApp.*;
 /**
  * Created by alrogado on 5/31/17.
  */
-public class MainContentTilesControllerNotFullScreenApp extends Application {
+public class MainContentTilesControllerNFSApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
