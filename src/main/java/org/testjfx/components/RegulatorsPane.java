@@ -19,6 +19,7 @@ package org.testjfx.components;
 import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Regulator;
 import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -27,7 +28,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import org.testjfx.conf.Configuration;
-import org.testjfx.controllers.components.RegulatorsController;
 
 import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
@@ -36,60 +36,51 @@ import static org.testjfx.util.GuiColors.FRG;
 
 public class RegulatorsPane extends Region {
 
-
-    Pane depositTilePane;
-    Pane tipTilePane;
-    Pane frequencyPane;
-    Pane fluencyPane;
-    Pane startButtonPane;
-
+    
     Tile depositTempTile;
     Tile tipTempTile;
 
-    JFXButton buttonStart;
+    Tile fluencyTile;
+    Tile frequencyTile;
 
-    Regulator frequency;
-    Regulator fluency;
+    Pane startButtonPane;
 
-    public static Double WIDTHTILE = 380d;
-    public static Double HEIGHTTILE = 380d;
-    public static Double WIDTHTEMP = 220d;
-    public static Double HEIGTHTEMP = 220d;
+    public static Double WIDTHTILE = 420d;
+    public static Double HEIGHTTILE = 420d;
+
+    double widthSizeTile = 0;
+    double heigthSizeTile = 0;
+    double sizeTile = 0;
+    double factor = 1.78;
 
     public RegulatorsPane() {
         initComponents();
-        setPadding(new Insets(0,0,5,5));
-        frequencyPane = new Pane(getFrequency());
-        fluencyPane = new Pane(getFluency());
-        tipTilePane = new Pane(getTipTempTile());
-        depositTilePane = new Pane(getDepositTempTile());
-        startButtonPane = new Pane(getButtonStart());
+        //setPadding(new Insets(0,0,5,5));
+        
         getChildren().addAll(
-                depositTilePane,
-                tipTilePane,
-                frequencyPane,
-                fluencyPane,
-                startButtonPane);
-        //setPrefSize(getTipTempTile().getWidth()+getFluency().getWidth(), getTipTempTile().getHeight()+getFluency().getHeight());
+                getDepositTempTile(),
+                getTipTempTile(),
+                getFrequencyTile(),
+                getFluencyTile(),
+                getStartButtonPane());
+        /*widthSizeTile = getWidth()/factor;
+        heigthSizeTile = getHeight()/factor;*/
+        sizeTile = Math.max(HEIGHTTILE, Math.min(getWidth()/factor, getHeight()/factor));
+        widthSizeTile = sizeTile;
+        heigthSizeTile = sizeTile;
+
+        //setPrefSize(getTipTempTile().getWidth()*2, getTipTempTile().getHeight()*2);
         layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
-            double sizeTile = Math.max(HEIGHTTILE, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2));
-            tipTilePane.setPrefSize(sizeTile, sizeTile);
-            getTipTempTile().setPrefSize(sizeTile, sizeTile);
-            tipTilePane.layout();
-
-            depositTilePane.setPrefSize(sizeTile, sizeTile);
-            getDepositTempTile().setPrefSize(sizeTile, sizeTile);
-            depositTilePane.layout();
-
-            double sizeTemp = Math.max(HEIGTHTEMP, Math.min(newBounds.getWidth()/2, newBounds.getHeight()/2))+getPadding().getLeft();
-            fluencyPane.setPrefSize(sizeTemp, sizeTemp);
-            getFrequency().setPrefSize(sizeTemp, sizeTemp);
-            fluencyPane.layout();
-
-            frequencyPane.setPrefSize(sizeTemp, sizeTemp);
-            getFluency().setPrefSize(sizeTemp, sizeTemp);
-            frequencyPane.layout();
-
+            //double widthSizeTile = Math.max(newBounds.getWidth(), newBounds.getHeight())/factor;
+            /*widthSizeTile = newBounds.getWidth()/factor;
+            heigthSizeTile = newBounds.getHeight()/factor;*/
+            sizeTile = Math.max(HEIGHTTILE, Math.min(newBounds.getWidth()/factor, newBounds.getHeight()/factor));
+            widthSizeTile = sizeTile;
+            heigthSizeTile = sizeTile;
+            getTipTempTile().setPrefSize(widthSizeTile, heigthSizeTile);
+            getDepositTempTile().setPrefSize(widthSizeTile, heigthSizeTile);
+            getFluencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
+            getFrequencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
             //layoutChildren();
         });
     }
@@ -104,38 +95,36 @@ public class RegulatorsPane extends Region {
     protected void layoutChildren() {
         super.layoutChildren();
 
-        depositTilePane.relocate(getPadding().getLeft(), getPadding().getTop());
-        double depositTempHeight = depositTilePane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        double depositTempWidth = depositTilePane.prefWidth(getHeight() - getPadding().getLeft() - getPadding().getRight());
-        depositTilePane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), depositTempHeight);
+        getDepositTempTile().relocate(getPadding().getLeft(), getPadding().getTop());
+        double depositTempHeight = getDepositTempTile().prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
+        double depositTempWidth = getDepositTempTile().prefWidth(getHeight() - getPadding().getLeft() - getPadding().getRight());
 
-        tipTilePane.relocate(getPadding().getLeft()+ depositTempWidth, getPadding().getTop());
-        double tipTempHeight = tipTilePane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        tipTilePane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), tipTempHeight);
+        getTipTempTile().relocate(getPadding().getLeft()+ depositTempWidth, getPadding().getTop());
+        double tipTempHeight = getTipTempTile().prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
 
-        startButtonPane.relocate(getPadding().getLeft()+ depositTempWidth -startButtonPane.getWidth()/2, getPadding().getTop()+tipTempHeight-startButtonPane.getHeight()/2-10);
-        double buttonHeight = startButtonPane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        startButtonPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), buttonHeight);
+        getStartButtonPane().relocate(getPadding().getLeft()+ depositTempWidth - getStartButtonPane().getWidth()/2, getPadding().getTop()+tipTempHeight- getStartButtonPane().getHeight()/2-10);
 
-        frequencyPane.relocate(getPadding().getLeft() , getPadding().getTop() + depositTempHeight -5);
-        double frequencyWidth = frequencyPane.prefWidth(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        frequencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), frequencyWidth -15);
+        getFrequencyTile().relocate(getPadding().getLeft(), getPadding().getTop() + depositTempHeight -70);
+        double frequencyWidth = getFrequencyTile().prefWidth(getWidth() - getPadding().getLeft() - getPadding().getRight());
 
-        fluencyPane.relocate(getPadding().getLeft() + depositTempHeight +10  , getPadding().getTop() + depositTempHeight -5 );
-        double fluencyHeight = fluencyPane.prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        fluencyPane.resize(getWidth() - getPadding().getLeft() - getPadding().getRight(), fluencyHeight -15);
+        getFluencyTile().relocate(getPadding().getLeft() + frequencyWidth, getPadding().getTop() + depositTempHeight-70);
+
+        getTipTempTile().resize(widthSizeTile, heigthSizeTile);
+        getDepositTempTile().resize(widthSizeTile, heigthSizeTile);
+        getFluencyTile().resize(widthSizeTile, heigthSizeTile);
+        getFrequencyTile().resize(widthSizeTile, heigthSizeTile);
 
     }
 
     @Override
     protected double computePrefHeight(double width) {
         double widthWithPadding = width - getPadding().getLeft() - getPadding().getRight();
-        return getPadding().getTop() + fluencyPane.prefHeight(widthWithPadding) + tipTilePane.prefHeight(widthWithPadding) +getPadding().getBottom();
+        return getPadding().getTop() + getFluencyTile().prefHeight(widthWithPadding) + getTipTempTile().prefHeight(widthWithPadding) +getPadding().getBottom();
     }
 
     @Override protected double computePrefWidth(double height) {
-        double widthWithPadding = height - getPadding().getLeft() - getPadding().getRight();
-        return getPadding().getTop() + fluencyPane.prefWidth(widthWithPadding) + tipTilePane.prefWidth(widthWithPadding) +getPadding().getBottom();
+        double widthWithPadding = height - getPadding().getTop() - getPadding().getBottom();
+        return getPadding().getTop() + getFluencyTile().prefWidth(widthWithPadding) + getTipTempTile().prefWidth(widthWithPadding) +getPadding().getBottom();
     }
 
     public void initComponents() {
@@ -144,39 +133,56 @@ public class RegulatorsPane extends Region {
         createStartButton();
     }
 
-    public JFXButton createStartButton() {
+    public Node createStartButton() {
         //todo controlar que con la inicializacion con
         // new LC().fillX().fillY().pack(), new AC(), new AC()
         // esto no se va de madre, porque al usar unos con una y otros con otra esto hace que se
         // vaya de madre toda la aplicación, es bastante desconcertante
         //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        buttonStart = new JFXButton(Configuration.getBundleString("buttonStart.label"));
-        buttonStart.setTooltip(new Tooltip(""));
-        buttonStart.setButtonType(JFXButton.ButtonType.RAISED);
-        buttonStart.getStyleClass().add(WORKMODE_BUTTON);
+        JFXButton startButton = new JFXButton(Configuration.getBundleString("buttonStart.label"));
+        startButton.setTooltip(new Tooltip(""));
+        startButton.setButtonType(JFXButton.ButtonType.RAISED);
+        startButton.getStyleClass().add(WORKMODE_BUTTON);
         double r=50;
-        buttonStart.setShape(new Circle(r));
-        buttonStart.setMinSize(2*r, 2*r);
-        buttonStart.setMaxSize(2*r, 2*r);
-        buttonStart.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-        return buttonStart;
+        startButton.setShape(new Circle(r));
+        startButton.setMinSize(2*r, 2*r);
+        startButton.setMaxSize(2*r, 2*r);
+        startButton.setBorder(new Border(new BorderStroke(FRG, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+        startButtonPane = new Pane(startButton);
+        return startButton;
     }
 
     private Node createFreqFluGridPane() {
-        frequency = RegulatorBuilder.createRegulator(
+        Regulator frequency = RegulatorBuilder.createRegulator(
                 Configuration.getBundleString("frecuency.label"),
                 "Hz",
                 "",null,
-                WIDTHTEMP, HEIGTHTEMP,
+                WIDTHTILE, HEIGHTTILE,
                 50d, 30d, 200d);
-        fluency = RegulatorBuilder.createRegulator(
+
+        frequencyTile = TileBuilder.create()
+                .prefSize(WIDTHTILE, HEIGHTTILE)
+                .skinType(Tile.SkinType.CUSTOM)
+                //.textVisible(false)
+                .graphic(frequency)
+                .build();
+
+        Regulator fluency = RegulatorBuilder.createRegulator(
                 Configuration.getBundleString("fluencia.label"),
                 "J/cm",
                 "",
                 null,
-                WIDTHTEMP, HEIGTHTEMP,
+                WIDTHTILE, HEIGHTTILE,
                 96d, 20d, 130d);
-        FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequency, fluency);
+
+        fluencyTile = TileBuilder.create()
+                .prefSize(WIDTHTILE, HEIGHTTILE)
+                .skinType(Tile.SkinType.CUSTOM)
+                .graphic(fluency)
+                //.textVisible(false)
+                .build();
+
+        FlowGridPane regulatorsPane = new FlowGridPane(2,1, frequencyTile, fluencyTile);
         regulatorsPane.setHgap(horizontalGap);
         regulatorsPane.setPadding(padding);
         return regulatorsPane;
@@ -212,15 +218,16 @@ public class RegulatorsPane extends Region {
         return tipTempTile;
     }
 
-    public Regulator getFrequency() {
-        return frequency;
+    public Pane getStartButtonPane() {
+        return startButtonPane;
     }
 
-    public Regulator getFluency() {
-        return fluency;
+    public Tile getFluencyTile() {
+        return fluencyTile;
     }
 
-    public JFXButton getButtonStart() {
-        return buttonStart;
+    public Tile getFrequencyTile() {
+        return frequencyTile;
     }
+
 }

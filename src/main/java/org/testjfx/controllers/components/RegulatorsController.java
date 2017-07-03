@@ -65,10 +65,11 @@ public class RegulatorsController {
     public void init() {
         Objects.requireNonNull(context, "context");
         MigPane rootMP = new MigPane("fill");
-        rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
+        //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
         rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
         regulatorsPane = new RegulatorsPane();
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
+
 
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny bottom, wrap");
         //regulatorsPane.layout();
@@ -85,6 +86,7 @@ public class RegulatorsController {
         final long[] lastTimerCall = {System.nanoTime()};
         AnimationTimer timer = new AnimationTimer() {
             @Override public void handle(long now) {
+                regulatorsPane.layout();
                 if (now > lastTimerCall[0] + 3_500_000_000L) {
                     //(0, 32767+32768) then subtract by 32768
                     regulatorsPane.getDepositTempTile().setValue((RDM.nextInt(80)-20));
