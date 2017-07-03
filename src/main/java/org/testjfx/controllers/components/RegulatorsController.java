@@ -42,7 +42,6 @@ public class RegulatorsController {
     private static Logger logger = LoggerFactory.getLogger(RegulatorsController.class);
 
 
-    public static final String WORKMODE_BUTTON = "workmode-button";
 
     @FXMLViewFlowContext
     private ViewFlowContext context;
@@ -66,8 +65,9 @@ public class RegulatorsController {
         Objects.requireNonNull(context, "context");
         MigPane rootMP = new MigPane("fill");
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
-        rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
+        //rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
         regulatorsPane = new RegulatorsPane();
+        regulatorsPane.disable();
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
 
 
@@ -106,40 +106,6 @@ public class RegulatorsController {
         messagesPane.getChildren().add(new Text("testeando"));
         //messagesPane.();
         return messagesPane;
-    }
-
-
-
-
-
-    private Node createHBoxWorkModesList() {
-        HBox nodesList = new HBox();
-        //nodesList.setEffect(new GaussianBlur());
-        nodesList.setSpacing(5);
-        nodesList.setPadding(new Insets(0,0,0,0));
-        /*nodesList.addAnimatedNode(btnWorkModes,
-                (expanded) -> singletonList(new KeyValue(lblWorkModes.rotateProperty(),
-                        expanded ? 15 : 0,
-                        Interpolator.EASE_BOTH)));*/
-        try {
-            for(Mode modeName: WorkModes.getLoadedWorkModes().getWorkModes()){
-                nodesList.getChildren().add(createInnerWorkModeButton(modeName));
-            }
-        } catch (IOException e) {
-            //todo decide what to show in messages panel
-            logger.error("problem Loading workModes",e);
-        }
-        return nodesList;
-    }
-
-    private JFXButton createInnerWorkModeButton(Mode mode) {
-        JFXButton button = new JFXButton(Configuration.getBundleString(mode.getName()+"_wm.label"));
-        button.setTooltip(new Tooltip(Configuration.getBundleString(mode.getName()+"_wm.tooltip")));
-        button.setButtonType(JFXButton.ButtonType.RAISED);
-        button.getStyleClass().add(WORKMODE_BUTTON);
-        button.setFont(Fonts.robotoMedium(50));
-        //button.setPrefSize(20,20);
-        return button;
     }
 
 
