@@ -20,14 +20,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.kordamp.ikonli.elusive.Elusive;
+import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.conf.Configuration;
 import org.testjfx.components.ClockBuilder;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
-import org.testjfx.controllers.components.PasswordNumberController;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
@@ -82,20 +84,23 @@ public class MainAppController {
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
-
-        JFXButton mainButton = new JFXButton();
-        mainButton.setGraphic(customizeIkon(Typicons.HOME_OUTLINE));
-        mainButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
+        JFXButton operatorsButton = new JFXButton();
+        operatorsButton.setGraphic(customizeIkon(Ionicons.ION_SETTINGS));
+        operatorsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, PasswordAlpahabetController.class));
 
         JFXButton settingsButton = new JFXButton();
         settingsButton.setGraphic(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
         settingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));
 
-        JFXButton passwordButton = new JFXButton();
-        passwordButton.setGraphic(customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
-        passwordButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, PasswordAlpahabetController.class));
+        JFXButton regulatorsButton = new JFXButton();
+        regulatorsButton.setGraphic(customizeIkon(Typicons.HOME_OUTLINE));
+        regulatorsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
 
-        toolbar.setRightItems(passwordButton,settingsButton,mainButton);
+        JFXButton turonOffButton = new JFXButton();
+        turonOffButton.setGraphic(customizeIkon(Elusive.OFF)); //o MetrizeIcons.MET_OFF
+        turonOffButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
+
+        toolbar.setRightItems(operatorsButton, settingsButton, regulatorsButton, turonOffButton);
 
         toolbar.setCenter(ClockBuilder.createClock());
 

@@ -41,8 +41,6 @@ public class RegulatorsController {
 
     private static Logger logger = LoggerFactory.getLogger(RegulatorsController.class);
 
-
-
     @FXMLViewFlowContext
     private ViewFlowContext context;
 
@@ -67,9 +65,8 @@ public class RegulatorsController {
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
         //rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
         regulatorsPane = new RegulatorsPane();
-        regulatorsPane.disable();
-        rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
 
+        rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
 
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny bottom, wrap");
         //regulatorsPane.layout();
@@ -88,14 +85,25 @@ public class RegulatorsController {
             @Override public void handle(long now) {
                 regulatorsPane.layout();
                 if (now > lastTimerCall[0] + 3_500_000_000L) {
-                    //(0, 32767+32768) then subtract by 32768
-                    regulatorsPane.getDepositTempTile().setValue((RDM.nextInt(80)-20));
-                    regulatorsPane.getTipTempTile().setValue((RDM.nextInt(80)-20));
+
+                    int depositTemp = RDM.nextInt(80) - 20;
+                    int tipTemp = RDM.nextInt(80) - 20;
+
+                    regulatorsPane.getDepositTempTile().setValue(depositTemp);
+                    regulatorsPane.getTipTempTile().setValue(tipTemp);
                     lastTimerCall[0] = now;
+
+                    if((tipTemp>=regulatorsPane.getTipTempTile().getSections().get(1).getStart()&&tipTemp<=regulatorsPane.getTipTempTile().getSections().get(1).getStop())
+                        &&(depositTemp>=regulatorsPane.getDepositTempTile().getSections().get(1).getStart()&&depositTemp<=regulatorsPane.getDepositTempTile().getSections().get(1).getStop()))
+                        regulatorsPane.disable(false);
+                    else{
+                        regulatorsPane.disable(true);
+                    }
                 }
             }
         };
         timer.start();
+        regulatorsPane.disable(true);
         fadeIn(root);
     }
 
