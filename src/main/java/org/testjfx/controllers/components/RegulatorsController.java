@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.GuiApp;
 import org.testjfx.components.PopupNotification;
+import org.testjfx.components.RegulatorsInnerControlsPane;
 import org.testjfx.components.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
@@ -84,7 +85,8 @@ public class RegulatorsController {
         MigPane rootMP = new MigPane("fill");
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
         //rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
-        regulatorsPane = RegulatorsPane.getInstance();
+        //regulatorsPane = RegulatorsPane.getInstance();
+        regulatorsPane = RegulatorsInnerControlsPane.getInstance();
 
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
 
@@ -119,7 +121,7 @@ public class RegulatorsController {
                     else{
                         regulatorsPane.disable(true);
                     }
-                    showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.INFO);
+                    //showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.INFO);
                 }
             }
         };
@@ -184,7 +186,7 @@ public class RegulatorsController {
         child.setIconColor(FRG);
         pane.add(child, 1,0);
         layout.setBody(pane);
-
+        dialog.setTransitionType(JFXDialog.DialogTransition.TOP);
         dialog.setContent(layout);
         dialog.show(root);
     }

@@ -108,7 +108,6 @@ public class PreloaderController {
     private void simulateTasks() {
         //simulate long init in background
         String[] textProGressValues = new String[]{
-                "menu.title.close",
                 "menu.title.save.as",
                 "menu.title.revert",
                 "menu.title.new",
@@ -126,7 +125,7 @@ public class PreloaderController {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
                         progressText.setText(Configuration.getBundleString(textProGressValues[finalI]));
                     });
-                    Thread.sleep(500);
+                    Thread.sleep(350);
                 }
                 ready.setValue(Boolean.TRUE);
                 Thread.sleep(400);
