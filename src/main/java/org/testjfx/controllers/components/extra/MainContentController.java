@@ -21,8 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
-import org.controlsfx.glyphfont.GlyphFont;
-import org.controlsfx.glyphfont.GlyphFontRegistry;
+
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.reactfx.EventStreams;
@@ -78,13 +77,6 @@ public class MainContentController {
 
     @FXML
     private JFXDialog dialog;
-
-    static {
-        InputStream devicons = MainContentController.class.getResourceAsStream("/META-INF/resources/devicons/1.8.0/fonts/devicons.ttf");
-        GlyphFontRegistry.register("devicons", devicons, 16);
-    }
-
-    private GlyphFont devicons = GlyphFontRegistry.font("devicons");
 
     Tile personalTile;
 
