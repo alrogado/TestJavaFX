@@ -31,7 +31,6 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 import static org.testjfx.controllers.MainAppController.flowHandler;
-import static org.testjfx.controllers.components.RegulatorsController.WORKMODE_BUTTON;
 import static org.testjfx.util.GuiColors.FRG;
 import static org.testjfx.util.GuiColors.DROPSHADOW_COMP;
 

@@ -21,8 +21,8 @@ import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.TileBuilder;
-import eu.hansolo.tilesfx.tools.FlowGridPane;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -30,7 +30,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import jidefx.scene.control.popup.BalloonPopupOutline;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testjfx.conf.Configuration;
@@ -44,7 +44,6 @@ import java.util.Set;
 
 import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
-import static org.testjfx.controllers.components.RegulatorsController.*;
 import static org.testjfx.util.GuiColors.*;
 
 public class RegulatorsPane extends Region {
@@ -91,7 +90,9 @@ public class RegulatorsPane extends Region {
     private Set<JFXButton> buttonsSet = new HashSet<>();
     private Pane messagePanel;
 
-    public RegulatorsPane() {
+    static RegulatorsPane instance;
+
+    protected RegulatorsPane() {
         initComponents();
         //setPadding(new Insets(0,0,5,5));
 
@@ -107,37 +108,47 @@ public class RegulatorsPane extends Region {
         );
         /*widthSizeTile = getWidth()/factor;
         heigthSizeTile = getHeight()/factor;*/
-        sizeTile = Math.max(HEIGHTTILE, Math.min(getWidth() / factor, getHeight() / factor));
-        widthSizeTile = sizeTile;
-        heigthSizeTile = sizeTile;
+        calculateTileSize(Math.min(getWidth() / factor, getHeight() / factor));
 
         //setPrefSize(getTipTempTile().getWidth()*2, getTipTempTile().getHeight()*2);
         layoutBoundsProperty().addListener((observableValue, oldBounds, newBounds) -> {
             //double widthSizeTile = Math.max(newBounds.getWidth(), newBounds.getHeight())/factor;
             /*widthSizeTile = newBounds.getWidth()/factor;
             heigthSizeTile = newBounds.getHeight()/factor;*/
-            sizeTile = Math.max(HEIGHTTILE, Math.min(newBounds.getWidth() / factor, newBounds.getHeight() / factor));
-            widthSizeTile = sizeTile;
-            heigthSizeTile = sizeTile;
-            getTipTempTile().setPrefSize(widthSizeTile, heigthSizeTile);
+            calculateTileSize(Math.min(newBounds.getWidth() / factor, newBounds.getHeight() / factor));
 
+            getTipTempTile().setPrefSize(widthSizeTile, heigthSizeTile);
             getDepositTempTile().setPrefSize(widthSizeTile, heigthSizeTile);
             getFluencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
             getFrequencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
 
-            //reposition the distance for workmode buttons
-            int factorForSpacingButtons = 40;
-            getWorkModebuttonsPaneLeft().setSpacing((getHeight() / 3 / getWorkModebuttonsPaneLeft().getChildren().size()) - factorForSpacingButtons);
-            getWorkModebuttonsPaneRight().setSpacing((getHeight() / 3 / getWorkModebuttonsPaneRight().getChildren().size()) - factorForSpacingButtons);
+            setSpacingWorkModeButtons();
 
-            int factortoResizeStartButton = 10;
-            startButtonRadious = Math.max(initialStartButtonRadious, Math.min(newBounds.getWidth() / factortoResizeStartButton, newBounds.getHeight() / factortoResizeStartButton));
-            double size = 2 * startButtonRadious;
-            startButton.setPrefSize(size, size);
-            startButton.setMinSize(size, size);
-            startButton.setMaxSize(size, size);
+            prefSizeStartButton(newBounds);
 
         });
+    }
+
+    protected void prefSizeStartButton(Bounds newBounds) {
+        int factortoResizeStartButton = 10;
+        startButtonRadious = Math.max(initialStartButtonRadious, Math.min(newBounds.getWidth() / factortoResizeStartButton, newBounds.getHeight() / factortoResizeStartButton));
+        double size = 2 * startButtonRadious;
+        startButton.setPrefSize(size, size);
+        startButton.setMinSize(size, size);
+        startButton.setMaxSize(size, size);
+    }
+
+    protected void setSpacingWorkModeButtons() {
+        //reposition the distance for workmode buttons
+        int factorForSpacingButtons = 0;
+        getWorkModebuttonsPaneLeft().setSpacing((getHeight() / 3 / getWorkModebuttonsPaneLeft().getChildren().size()) - factorForSpacingButtons);
+        getWorkModebuttonsPaneRight().setSpacing((getHeight() / 3 / getWorkModebuttonsPaneRight().getChildren().size()) - factorForSpacingButtons);
+    }
+
+    private void calculateTileSize(double min) {
+        sizeTile = Math.max(HEIGHTTILE, min);
+        widthSizeTile = sizeTile;
+        heigthSizeTile = sizeTile;
     }
 
 
@@ -150,26 +161,34 @@ public class RegulatorsPane extends Region {
     protected void layoutChildren() {
         super.layoutChildren();
 
-        getDepositTempTile().relocate(getPadding().getLeft(), getPadding().getTop());
-        double depositTempHeight = getDepositTempTile().prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
-        double depositTempWidth = getDepositTempTile().prefWidth(getHeight() - getPadding().getLeft() - getPadding().getRight());
+        double x = getPadding().getLeft();
+        double y = getPadding().getTop();
 
-        getTipTempTile().relocate(getPadding().getLeft()+ depositTempWidth, getPadding().getTop());
-        double tipTempHeight = getTipTempTile().prefHeight(getWidth() - getPadding().getLeft() - getPadding().getRight());
+        getDepositTempTile().relocate(x, y);
 
-        getStartButtonPane().relocate(getPadding().getLeft()+ depositTempWidth - getStartButtonPane().getWidth()/2, getPadding().getTop()+tipTempHeight- getStartButtonPane().getHeight()/2-startButtonRadious/2);
+        double depositTempHeight = getDepositTempTile().prefHeight(getWidth() - x - getPadding().getRight());
+        double depositTempWidth = getDepositTempTile().prefWidth(getHeight() - x - getPadding().getRight());
 
-        int MOVE_FEREQ_FLU_IN_Y  = 70;
-        getFrequencyTile().relocate(getPadding().getLeft(), getPadding().getTop() + depositTempHeight - MOVE_FEREQ_FLU_IN_Y );
-        double frequencyWidth = getFrequencyTile().prefWidth(getWidth() - getPadding().getLeft() - getPadding().getRight());
+        int repositionFactorForTipTempTile  = getRepositionFactorForTipTile();
+        getTipTempTile().relocate(x + depositTempWidth+ repositionFactorForTipTempTile, y);
+        double tipTempHeight = getTipTempTile().prefHeight(getWidth() - x - getPadding().getRight());
 
-        getFluencyTile().relocate(getPadding().getLeft() + frequencyWidth, getPadding().getTop() + depositTempHeight - MOVE_FEREQ_FLU_IN_Y );
+        getStartButtonPane().relocate(x + depositTempWidth - getStartButtonPane().getWidth()/2, y +tipTempHeight- getStartButtonPane().getHeight()/2-startButtonRadious/2);
+
+        int repositionFactorYForFreqTile  = getRepositionFactorXForFreqTile();
+        getFrequencyTile().relocate(x, y + depositTempHeight - repositionFactorYForFreqTile );
+
+        int repositionFactorXForFluencyTile  = getRepositionFactorXForFluencyTile();
+        double frequencyWidth = getFrequencyTile().prefWidth(getWidth() - x - getPadding().getRight());
+        getFluencyTile().relocate(x + frequencyWidth + repositionFactorXForFluencyTile, y + depositTempHeight - repositionFactorYForFreqTile );
 
         //todo refactor workmode value pane
-        getWorkModebuttonsPaneLeft().relocate(-120, getPadding().getTop());
-        getWorkModebuttonsPaneRight().relocate(depositTempHeight*2 -40, getPadding().getTop());
+        int repositionFactorXForLeftButtons = getRepositionFactorXForLeftButtons();
+        getWorkModebuttonsPaneLeft().relocate(repositionFactorXForLeftButtons, y);
+        int respositionFactorXForRightButtons = getRespositionFactorXForRightButtons();
+        getWorkModebuttonsPaneRight().relocate(depositTempHeight*2 - respositionFactorXForRightButtons, y);
 
-        //todo we need toset resize to the same value in setPrefSize in order to not move controls after resize root pane
+        //todo we need to set resize to the same value in setPrefSize in order to not move controls after resize root pane
         getTipTempTile().resize(widthSizeTile, heigthSizeTile);
         getDepositTempTile().resize(widthSizeTile, heigthSizeTile);
         getFluencyTile().resize(widthSizeTile, heigthSizeTile);
@@ -182,6 +201,26 @@ public class RegulatorsPane extends Region {
         }
         startButton.setFont(Fonts.robotoBlack(startButton.getWidth()/6));
 
+    }
+
+    private int getRespositionFactorXForRightButtons() {
+        return 40;
+    }
+
+    private int getRepositionFactorXForLeftButtons() {
+        return -120;
+    }
+
+    protected int getRepositionFactorXForFluencyTile() {
+        return 0;
+    }
+
+    protected int getRepositionFactorXForFreqTile() {
+        return 70;
+    }
+
+    protected int getRepositionFactorForTipTile() {
+        return 0;
     }
 
     @Override
@@ -367,8 +406,10 @@ public class RegulatorsPane extends Region {
 
     public Pane getMessagePanel() {
         messagePanel = new Pane();
-        BalloonPopupOutline e = new BalloonPopupOutline();
-        messagePanel.getChildren().add(e);
         return messagePanel;
+    }
+
+    public static RegulatorsPane getInstance() {
+        return instance==null?instance=new RegulatorsPane():instance;
     }
 }

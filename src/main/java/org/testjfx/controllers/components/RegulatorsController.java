@@ -1,13 +1,24 @@
 package org.testjfx.controllers.components;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.Ikonli;
+import org.kordamp.ikonli.elusive.Elusive;
+import org.kordamp.ikonli.ionicons.Ionicons;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
+import org.testjfx.GuiApp;
+import org.testjfx.components.PopupNotification;
 import org.testjfx.components.RegulatorsPane;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
@@ -25,8 +36,10 @@ import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
 import org.testjfx.conf.Mode;
 import org.testjfx.conf.WorkModes;
+import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
@@ -47,6 +60,8 @@ public class RegulatorsController {
     @FXML
     StackPane root;
 
+    private JFXDialog dialog;
+
     //String migLayoutConstraints = "w 45sp,h 45sp";
     //String migLayoutConstraints = "w 50%,h 40%";
 
@@ -55,16 +70,21 @@ public class RegulatorsController {
 
     RegulatorsPane regulatorsPane;
 
+
+
     /**
      * init fxml when loaded.
      */
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
+
+        root.getChildren().remove(dialog);
+
         MigPane rootMP = new MigPane("fill");
         //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
         //rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
-        regulatorsPane = new RegulatorsPane();
+        regulatorsPane = RegulatorsPane.getInstance();
 
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
 
@@ -99,6 +119,7 @@ public class RegulatorsController {
                     else{
                         regulatorsPane.disable(true);
                     }
+                    showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.INFO);
                 }
             }
         };
@@ -109,12 +130,63 @@ public class RegulatorsController {
 
     private Node createMessagesBox() {
         Pane messagesPane = new Pane();
-
         messagesPane.setPadding(new Insets(5,5,5,5));
         messagesPane.getChildren().add(new Text("testeando"));
         //messagesPane.();
         return messagesPane;
     }
 
+    public void showInfo(String title, String message, TrayIcon.MessageType messageType) {
+
+        if(dialog!=null &&dialog.isVisible()){
+            dialog.close();
+        }
+        dialog = new JFXDialog();
+
+        JFXDialogLayout layout = new JFXDialogLayout();
+        Text titleText = new Text(title);
+        titleText.setFont(new Font("Roboto Bold", 18));
+        layout.setHeading(titleText);
+        dialog.setOverlayClose(false);
+
+        VBox vbox = new VBox();
+        vbox.setPrefWidth(400);
+        vbox.setSpacing(7);
+
+        Label messageLbl = new Label(message);
+        messageLbl.setId("message");
+        messageLbl.setFont(new Font("Roboto", 12));
+
+        vbox.getChildren().addAll(messageLbl);
+
+        FlowGridPane pane = new FlowGridPane(2,1);
+        pane.add(messageLbl, 0,0);
+        Ikon ikon = Ikonli.NONE;
+        switch(messageType){
+            case ERROR:
+                /** An error message */
+                ikon = Elusive.ERROR_ALT;
+                break;
+            case WARNING:
+                /** A warning message */
+                ikon = Elusive.WARNING_SIGN;
+                break;
+            case INFO:
+                /** An information message */
+                ikon = Elusive.INFO_SIGN;
+                break;
+            case NONE:
+                /** Simple message */
+                ikon = Elusive.DELL;
+                break;
+        }
+        FontIcon child = IkonUtils.customizeIkon(ikon);
+        child.setIconColor(FRG);
+        pane.add(child, 1,0);
+        layout.setBody(pane);
+
+        dialog.setContent(layout);
+        dialog.show(root);
+    }
 
 }

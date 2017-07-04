@@ -12,4 +12,20 @@
 <?import eu.hansolo.tilesfx.Tile?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1">
 
+    <!--<JFXDialog fx:id="dialog">
+        <JFXDialogLayout>
+            <heading>
+                <Label></Label>
+            </heading>
+            <body>
+                <Label>
+                </Label>
+                &lt;!&ndash;<JFXButton fx:id="acceptDialogButton" styleClass="dialog-accept">ACCEPT
+                </JFXButton>&ndash;&gt;
+            </body>
+            &lt;!&ndash;<actions>
+                <JFXButton fx:id="acceptDialogButton" styleClass="dialog-accept">ACCEPT</JFXButton>
+            </actions>&ndash;&gt;
+        </JFXDialogLayout>
+    </JFXDialog>-->
 </StackPane>

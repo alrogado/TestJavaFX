@@ -21,8 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jidefx.scene.control.decoration.DecorationUtils;
 import jidefx.scene.control.decoration.Decorator;
-import jidefx.scene.control.field.BoundingBoxField;
-import jidefx.scene.control.field.PopupField;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
 import net.miginfocom.layout.LC;
@@ -61,16 +59,6 @@ public class TestCombo extends Application{
         primaryStage.show();
     }
 
-    private static void addDecoratorForPopupField(Label label, PopupField<?> field) {
-        field.setPopupButtonVisible(true);
-
-       /* ImageView tip = new ImageView(new Image("/images/logo.png"));
-        Tooltip tooltip = new Tooltip("Pattern:" + field.getPattern());
-        Tooltip.install(tip, tooltip);
-        DecorationUtils.install(label, new Decorator<Node>(tip, Pos.CENTER_RIGHT, new Point2D(80, 0)));*/
-
-        field.installAdjustmentMouseHandler(label, 1);
-    }
 
 
 }

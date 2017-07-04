@@ -1,8 +1,11 @@
 package org.testjfx;
 
 import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXDialog;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import eu.hansolo.enzo.notification.Notification;
+import eu.hansolo.enzo.notification.NotifierBuilder;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowException;
@@ -11,6 +14,8 @@ import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -34,6 +39,9 @@ import static org.testjfx.util.GuiColors.GRAD_FGR_BGR;
 public class GuiApp extends Application {
 
     private static Logger logger = LoggerFactory.getLogger(GuiApp.class);
+    private static Notification.Notifier notifier;
+
+    private static JFXDialog dialog;
 
     private long epochSeconds;
 
@@ -117,6 +125,18 @@ public class GuiApp extends Application {
         decorator = new JFXDecorator(stage, container.getView());
         //todo - no quitar - el set maximized porque hace efecto extraño de repeticion y no funciona bien el fade in fade out
         decorator.setMaximized(false);
+
+        notifier = NotifierBuilder.create()
+                .owner(stage)
+                .popupAnimationTime(Duration.millis(1000))
+                .popupLifeTime(Duration.millis(10000))
+                .popupLocation(Pos.TOP_CENTER)
+                //.popupLifeTime(Duration.millis(10000))
+                //.styleSheet(getClass().getResource("mynotification.css").toExternalForm())
+                .build();
+
+        dialog = new JFXDialog();
+
     }
 
     public static void main(String[] args) {
@@ -137,5 +157,9 @@ public class GuiApp extends Application {
                 }
             }
         }
+    }
+
+    public static void showInfo(String title, String message) {
+        notifier.notify(new Notification(title, message, Notification.INFO_ICON));
     }
 }
