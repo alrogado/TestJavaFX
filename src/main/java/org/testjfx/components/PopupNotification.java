@@ -3,9 +3,10 @@ package org.testjfx.components;
 /**
  * Created by alvaro.lopez on 03/07/2017.
  */
-import javafx.event.EventHandler;
-import eu.hansolo.enzo.notification.NotificationEvent;
+
 import eu.hansolo.enzo.notification.Notification.Notifier;
+import eu.hansolo.enzo.notification.NotificationEvent;
+import javafx.event.EventHandler;
 
 public class PopupNotification {
 

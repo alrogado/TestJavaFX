@@ -48,7 +48,8 @@ public class GuiColors {
     public static DropShadow DROPSHADOW_TEXT;
     public static InnerShadow highlight;
     public static InnerShadow innerShadow;
-    static{
+
+    static {
         DROPSHADOW_COMP = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.65), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.028);
         DROPSHADOW_TEXT = new DropShadow(BlurType.TWO_PASS_BOX, Color.rgb(0, 0, 0, 0.35), PREFERRED_WIDTH * 0.016, 0.0, 0, PREFERRED_WIDTH * 0.008);
         highlight = new InnerShadow(BlurType.TWO_PASS_BOX, Color.rgb(255, 255, 255, 0.2), PREFERRED_WIDTH * 0.008, 0.0, 0, PREFERRED_WIDTH * 0.008);

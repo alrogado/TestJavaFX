@@ -5,7 +5,6 @@ import com.sun.javafx.scene.control.skin.LabeledText;
 import eu.hansolo.tilesfx.fonts.Fonts;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -26,7 +25,7 @@ import static org.testjfx.util.GuiColors.FRG_SHADOW;
 /**
  * Created by pedro_000 on 12/4/13.
  */
-public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
+public class ToggleSwitchSkin extends SkinBase<ToggleSwitch> {
     StackPane thumb;
     StackPane thumbArea;
     LabeledText label;
@@ -66,7 +65,7 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         background = new Rectangle(width, height);
         background.setArcWidth(height);
         background.setArcHeight(height);
-        background.setFill(control.isSelected()?GuiColors.FRG:Color.WHITE);
+        background.setFill(control.isSelected() ? GuiColors.FRG : Color.WHITE);
         background.setStroke(GuiColors.FRG);
         background.setEffect(dropShadow);
 
@@ -114,9 +113,9 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         double thumbAreaWidth = snapSize(thumbArea.prefWidth(-1));
         double thumbWidth = snapSize(thumb.prefWidth(-1));
         if (getSkinnable().isSelected()) {
-            transition.setByX(thumbAreaWidth - thumbWidth*2.3);
-        }else {
-            transition.setByX(-(thumbAreaWidth - thumbWidth*2.3));
+            transition.setByX(thumbAreaWidth - thumbWidth * 2.3);
+        } else {
+            transition.setByX(-(thumbAreaWidth - thumbWidth * 2.3));
         }
         transition.setCycleCount(1);
         transition.play();
@@ -125,12 +124,12 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
 
     private void mousePressedOnToggleSwitch() {
         getSkinnable().setSelected(!getSkinnable().isSelected());
-        background.setFill(getSkinnable().isSelected()?GuiColors.FRG:Color.WHITE);
+        background.setFill(getSkinnable().isSelected() ? GuiColors.FRG : Color.WHITE);
     }
 
     private void updateLabel() {
         //label.setText(getSkinnable().isSelected() ? getSkinnable().getTurnOnText() : getSkinnable().getTurnOffText());
-        trigger.setFill(getSkinnable().isSelected() ? GuiColors.FRG:Color.WHITE);
+        trigger.setFill(getSkinnable().isSelected() ? GuiColors.FRG : Color.WHITE);
         labelOn.setVisible(getSkinnable().isSelected() ? true : false);
         labelOff.setVisible(getSkinnable().isSelected() ? false : true);
     }
@@ -153,34 +152,36 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         thumbArea.setLayoutX(contentWidth - thumbAreaWidth);
         thumbArea.setLayoutY(thumbAreaY);
 
-        labelOn.setLayoutY(thumbAreaY+radius+8);
-        labelOff.setLayoutY(thumbAreaY+radius+8);
+        labelOn.setLayoutY(thumbAreaY + radius + 8);
+        labelOff.setLayoutY(thumbAreaY + radius + 8);
 
-        double factor = getSkinnable().isInitialValue()? -1.8: 2;
-        labelOn.setLayoutX(thumbArea.getLayoutX() + thumbAreaWidth - thumbWidth+10+factor);
-        labelOff.setLayoutX(thumbArea.getLayoutX() +2 +factor);
+        double factor = getSkinnable().isInitialValue() ? -1.8 : 2;
+        labelOn.setLayoutX(thumbArea.getLayoutX() + thumbAreaWidth - thumbWidth + 10 + factor);
+        labelOff.setLayoutX(thumbArea.getLayoutX() + 2 + factor);
 
         labelContainer.resize(contentWidth - thumbAreaWidth, thumbAreaHeight);
         labelContainer.setLayoutY(thumbAreaY);
 
-        if (getSkinnable().isSelected()){
+        if (getSkinnable().isSelected()) {
             thumb.setLayoutX(thumbArea.getLayoutX() + thumbAreaWidth - thumbWidth);
             thumb.setLayoutY(thumbAreaY + (thumbAreaHeight - thumbHeight) / 2);
-        } else{
+        } else {
             thumb.setLayoutX(thumbArea.getLayoutX());
             thumb.setLayoutY(thumbAreaY + (thumbAreaHeight - thumbHeight) / 2);
         }
     }
 
 
-    @Override protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+    @Override
+    protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
         final String labelText = label.getText();
         final Font font = label.getFont();
         double textWidth = Utils.computeTextWidth(font, labelText, 0);
         return leftInset + textWidth + thumbArea.prefWidth(-1) + rightInset + extraWidth;
     }
 
-    @Override protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+    @Override
+    protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
         final Font font = label.getFont();
         final String labelText = label.getText();
         final double textHeight = Utils.computeTextHeight(font, labelText, 0, label.getLineSpacing(), label.getBoundsType());
@@ -188,7 +189,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         return topInset + Math.max(thumb.prefHeight(-1), textHeight) + bottomInset;
     }
 
-    @Override protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+    @Override
+    protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
         final String labelText = label.getText();
         final Font font = label.getFont();
         double textWidth = Utils.computeTextWidth(font, labelText, 0);
@@ -196,8 +198,8 @@ public class ToggleSwitchSkin extends SkinBase<ToggleSwitch>{
         return leftInset + textWidth + 20 + thumbArea.prefWidth(-1) + rightInset;
     }
 
-    @Override protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset)
-    {
+    @Override
+    protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
         final Font font = label.getFont();
         final String labelText = label.getText();
         final double textHeight = Utils.computeTextHeight(font, labelText, 0, label.getLineSpacing(), label.getBoundsType());

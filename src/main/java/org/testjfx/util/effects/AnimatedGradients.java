@@ -7,8 +7,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import static javafx.application.Application.launch;
-
 /**
  * Created by alvaro.lopez on 12/06/2017.
  */
@@ -42,4 +40,5 @@ public class AnimatedGradients extends Application {
         }
         primaryStage.show();
 
-    }}
+    }
+}

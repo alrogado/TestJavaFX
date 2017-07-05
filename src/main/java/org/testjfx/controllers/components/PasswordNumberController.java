@@ -27,23 +27,17 @@ import org.testjfx.conf.Configuration;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Objects;
 
 import static org.testjfx.controllers.MainAppController.flowHandler;
-import static org.testjfx.util.GuiColors.FRG;
 import static org.testjfx.util.GuiColors.DROPSHADOW_COMP;
+import static org.testjfx.util.GuiColors.FRG;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_password.fxml")
 public class PasswordNumberController {
 
     @FXMLViewFlowContext
     protected ViewFlowContext context;
-
-    @FXML
-    StackPane root;
-
-
     protected EventHandler<ActionEvent> actionHandler;
     protected EventHandler<KeyEvent> keyHandler;
     protected StringProperty passwordValue;
@@ -61,19 +55,19 @@ public class PasswordNumberController {
     protected Button zero;
     protected Button ok;
     protected Button del;
-
     protected VBox mainPane;
-
     protected int spacing = 15;
     protected Insets value = new Insets(5);
     protected int prefWidthButton = 40;
     protected int prefWidthHeightPassword = 50;
+    @FXML
+    StackPane root;
 
     @PostConstruct
     public void init() {
         Objects.requireNonNull(context, "context");
-        actionHandler   = EVENT -> handleEvent(EVENT);
-        keyHandler      = EVENT -> handleEvent(EVENT);
+        actionHandler = EVENT -> handleEvent(EVENT);
+        keyHandler = EVENT -> handleEvent(EVENT);
 
         passwordValue = new SimpleStringProperty(this, "passwordValue", "");
         currentPasswordValue = new StringBuilder();
@@ -104,25 +98,25 @@ public class PasswordNumberController {
         passwordField.setValidators(validatorNotNull,validatorPssword);*/
 
 
-        one       = createPasswordButton("", MetrizeIcons.MET_NUMBER_ONE);
-        two       = createPasswordButton("", MetrizeIcons.MET_NUMBER_TWO);
-        three     = createPasswordButton("", MetrizeIcons.MET_NUMBER_THREE);
-        four      = createPasswordButton("", MetrizeIcons.MET_NUMBER_FOUR);
-        five      = createPasswordButton("", MetrizeIcons.MET_NUMBER_FIVE);
-        six       = createPasswordButton("", MetrizeIcons.MET_NUMBER_SIX);
-        seven     = createPasswordButton("", MetrizeIcons.MET_NUMBER_SEVEN);
-        eight     = createPasswordButton("", MetrizeIcons.MET_NUMBER_EIGHT);
-        nine      = createPasswordButton("", MetrizeIcons.MET_NUMBER_NINE);
-        zero      = createPasswordButton("", MetrizeIcons.MET_NUMBER_ZERO);
-        ok        = createPasswordButton("", Elusive.OK_CIRCLE);
-        del       = createPasswordButton("", Feather.FTH_DELETE);
+        one = createPasswordButton("", MetrizeIcons.MET_NUMBER_ONE);
+        two = createPasswordButton("", MetrizeIcons.MET_NUMBER_TWO);
+        three = createPasswordButton("", MetrizeIcons.MET_NUMBER_THREE);
+        four = createPasswordButton("", MetrizeIcons.MET_NUMBER_FOUR);
+        five = createPasswordButton("", MetrizeIcons.MET_NUMBER_FIVE);
+        six = createPasswordButton("", MetrizeIcons.MET_NUMBER_SIX);
+        seven = createPasswordButton("", MetrizeIcons.MET_NUMBER_SEVEN);
+        eight = createPasswordButton("", MetrizeIcons.MET_NUMBER_EIGHT);
+        nine = createPasswordButton("", MetrizeIcons.MET_NUMBER_NINE);
+        zero = createPasswordButton("", MetrizeIcons.MET_NUMBER_ZERO);
+        ok = createPasswordButton("", Elusive.OK_CIRCLE);
+        del = createPasswordButton("", Feather.FTH_DELETE);
 
         root.getChildren().addAll(createPane());
     }
 
     protected Button createPasswordButton(String TEXT, Ikon ikon) {
         Button button = createPasswordButton(TEXT);
-        if(ikon!=null)
+        if (ikon != null)
             button.setGraphic(IkonUtils.customizeIkon(ikon));
         return button;
     }
@@ -139,7 +133,7 @@ public class PasswordNumberController {
         //button.getStyleClass().addAll("calculator", BUTTON_STYLE.STYLE_CLASS);
         button.setOnAction(actionHandler);
         button.setOnKeyPressed(keyHandler);
-        if(TEXT!=null && !TEXT.trim().equals("")) {
+        if (TEXT != null && !TEXT.trim().equals("")) {
             button.setButtonType(JFXButton.ButtonType.RAISED);
             //button.getStyleClass().add(ANIMATED_OPTION_BUTTON);
         }
@@ -158,7 +152,7 @@ public class PasswordNumberController {
 
 
         mainPane = new VBox(10, buttonsPane, passwordField);
-        mainPane.setMaxSize(250,300);
+        mainPane.setMaxSize(250, 300);
         MigPane rootMP = new MigPane("fill");
         rootMP.add(mainPane, "alignx center, aligny center, span");
         //rootMP.setBackground(new Background(new BackgroundFill(FRG, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -177,38 +171,38 @@ public class PasswordNumberController {
 
     // ******************** Event handling ************************************
     protected void handleEvent(final Event EVENT) {
-        final Object  SOURCE = EVENT.getSource();
+        final Object SOURCE = EVENT.getSource();
         if (SOURCE.equals(one)) {
             currentPasswordValue.append("1");
             updatPasswordValue();
         } else if (SOURCE.equals(two)) {
             currentPasswordValue.append("2");
             updatPasswordValue();
-        } else if (SOURCE.equals(three) ) {
+        } else if (SOURCE.equals(three)) {
             currentPasswordValue.append("3");
             updatPasswordValue();
-        } else if (SOURCE.equals(four) ) {
+        } else if (SOURCE.equals(four)) {
             currentPasswordValue.append("4");
             updatPasswordValue();
-        } else if (SOURCE.equals(five) ) {
+        } else if (SOURCE.equals(five)) {
             currentPasswordValue.append("5");
             updatPasswordValue();
-        } else if (SOURCE.equals(six) ) {
+        } else if (SOURCE.equals(six)) {
             currentPasswordValue.append("6");
             updatPasswordValue();
-        } else if (SOURCE.equals(seven) ) {
+        } else if (SOURCE.equals(seven)) {
             currentPasswordValue.append("7");
             updatPasswordValue();
-        } else if (SOURCE.equals(eight) ) {
+        } else if (SOURCE.equals(eight)) {
             currentPasswordValue.append("8");
             updatPasswordValue();
-        } else if (SOURCE.equals(nine) ) {
+        } else if (SOURCE.equals(nine)) {
             currentPasswordValue.append("9");
             updatPasswordValue();
-        } else if (SOURCE.equals(zero) ) {
+        } else if (SOURCE.equals(zero)) {
             currentPasswordValue.append("0");
             updatPasswordValue();
-        } else if (SOURCE.equals(ok) ) {
+        } else if (SOURCE.equals(ok)) {
             checkPassword();
         } else if (SOURCE.equals(del)) {
             int length = currentPasswordValue.length();
@@ -225,7 +219,7 @@ public class PasswordNumberController {
     }
 
     protected void checkPassword() {
-        if(Configuration.getPassword().length()==passwordField.getText().length()) {
+        if (Configuration.getPassword().length() == passwordField.getText().length()) {
             if (Configuration.getPassword().equals(passwordField.getText())) {
                 try {
                     flowHandler.navigateTo(OperatorSettingsController.class);
@@ -233,7 +227,7 @@ public class PasswordNumberController {
                     e.printStackTrace();
                     resetPassword();
                 }
-            }else{
+            } else {
                 resetPassword();
                 new ShakeTransition(mainPane).play();
             }
@@ -243,7 +237,7 @@ public class PasswordNumberController {
     protected void resetPassword() {
         currentPasswordValue = new StringBuilder("");
         passwordValue.set("");
-        passwordField.deleteText(0,passwordField.getLength());
+        passwordField.deleteText(0, passwordField.getLength());
     }
 
 }

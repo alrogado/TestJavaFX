@@ -23,14 +23,14 @@ public class Utils {
 
     public static double computeTextWidth(Font font, String text, double wrappingWidth) {
         layout.setContent(text != null ? text : "", font.impl_getNativeFont());
-        layout.setWrapWidth((float)wrappingWidth);
+        layout.setWrapWidth((float) wrappingWidth);
         return layout.getBounds().getWidth();
     }
 
     public static double computeTextHeight(Font font, String text, double wrappingWidth, double lineSpacing, TextBoundsType boundsType) {
         layout.setContent(text != null ? text : "", font.impl_getNativeFont());
-        layout.setWrapWidth((float)wrappingWidth);
-        layout.setLineSpacing((float)lineSpacing);
+        layout.setWrapWidth((float) wrappingWidth);
+        layout.setLineSpacing((float) lineSpacing);
         if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {
             layout.setBoundsType(TextLayout.BOUNDS_CENTER);
         } else {

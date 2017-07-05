@@ -20,32 +20,13 @@ import org.testjfx.util.GuiColors;
  * Created by alvaro.lopez on 12/06/2017.
  */
 public class LightAndColorText extends Application {
+    static String text = "Saphire LS";
     Stage stage;
     Scene scene;
-
-    @Override public void start(Stage stage) {
-        stage.show();
-
-        scene = new Scene(new Group());
-        ObservableList<Node> content = ((Group)scene.getRoot()).getChildren();
-
-        content.add(lighting());
-        content.add(innerShadow());
-
-        final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(
-                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
-                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                GuiApp.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm(),
-                GuiApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
-        stage.setScene(scene);
-    }
 
     public static void main(String[] args) {
         Application.launch(args);
     }
-
-    static String text = "Saphire LS";
 
     static Node lighting() {
         Light.Distant light = new Light.Distant();
@@ -85,6 +66,25 @@ public class LightAndColorText extends Application {
         t.setTranslateY(300);
 
         return t;
+    }
+
+    @Override
+    public void start(Stage stage) {
+        stage.show();
+
+        scene = new Scene(new Group());
+        ObservableList<Node> content = ((Group) scene.getRoot()).getChildren();
+
+        content.add(lighting());
+        content.add(innerShadow());
+
+        final ObservableList<String> stylesheets = scene.getStylesheets();
+        stylesheets.addAll(
+                GuiApp.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+                GuiApp.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+                GuiApp.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm(),
+                GuiApp.class.getResource("/org/testjfx/css/jfoenix-main-demo.css").toExternalForm());
+        stage.setScene(scene);
     }
 
 

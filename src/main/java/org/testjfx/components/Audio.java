@@ -9,14 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testjfx.conf.Configuration;
 
-import static javafx.application.Application.launch;
-
 /**
  * Created by alrogado on 6/20/17.
  */
 public class Audio {
-
-    private static Logger logger = LoggerFactory.getLogger(Audio.class);
 
     static MediaPlayer PULSE;
     static MediaPlayer TOUCH;
@@ -25,9 +21,9 @@ public class Audio {
     static MediaPlayer WARN;
     static MediaPlayer WAIT;
     static MediaPlayer ERROR;
+    private static Logger logger = LoggerFactory.getLogger(Audio.class);
 
-
-    public static void addPlayersToMainScene(Scene scene){
+    public static void addPlayersToMainScene(Scene scene) {
         PULSE = new MediaPlayer(new Media(Audio.class.getResource("/audio/pulse.wav").toString()));
         TOUCH = new MediaPlayer(new Media(Audio.class.getResource("/audio/touch.wav").toString()));
         MESSAGE = new MediaPlayer(new Media(Audio.class.getResource("/audio/message.wav").toString()));
@@ -35,13 +31,13 @@ public class Audio {
         WARN = new MediaPlayer(new Media(Audio.class.getResource("/audio/warn.wav").toString()));
         WAIT = new MediaPlayer(new Media(Audio.class.getResource("/audio/wait.wav").toString()));
         ERROR = new MediaPlayer(new Media(Audio.class.getResource("/audio/error.wav").toString()));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(PULSE));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(TOUCH));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(MESSAGE));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(INFO));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(WARN));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(WAIT));
-        ((JFXDecorator)scene.getRoot()).getChildren().add(new MediaView(ERROR));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(PULSE));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(TOUCH));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(MESSAGE));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(INFO));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(WARN));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(WAIT));
+        ((JFXDecorator) scene.getRoot()).getChildren().add(new MediaView(ERROR));
 
     }
 

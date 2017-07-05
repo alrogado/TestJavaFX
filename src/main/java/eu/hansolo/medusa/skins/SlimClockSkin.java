@@ -36,18 +36,18 @@ import java.time.temporal.ChronoField;
  * Created by hansolo on 11.02.16.
  */
 public class SlimClockSkin extends ClockSkinBase {
-    private static final DateTimeFormatter  DATE_TEXT_FORMATTER = DateTimeFormatter.ofPattern("cccc");
-    private static final DateTimeFormatter  HOUR_FORMATTER      = DateTimeFormatter.ofPattern("HH");
-    private static final DateTimeFormatter  MINUTE_FORMATTER    = DateTimeFormatter.ofPattern("mm");
-    private DateTimeFormatter  dateNumberFormatter;
-    private double            size;
-    private Circle            secondBackgroundCircle;
-    private Text              dateText;
-    private Text              dateNumbers;
-    private Text              hour;
-    private Text              minute;
-    private Arc               secondArc;
-    private Pane              pane;
+    private static final DateTimeFormatter DATE_TEXT_FORMATTER = DateTimeFormatter.ofPattern("cccc");
+    private static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter.ofPattern("HH");
+    private static final DateTimeFormatter MINUTE_FORMATTER = DateTimeFormatter.ofPattern("mm");
+    private DateTimeFormatter dateNumberFormatter;
+    private double size;
+    private Circle secondBackgroundCircle;
+    private Text dateText;
+    private Text dateNumbers;
+    private Text hour;
+    private Text minute;
+    private Arc secondArc;
+    private Pane pane;
 
 
     // ******************** Constructors **************************************
@@ -62,10 +62,11 @@ public class SlimClockSkin extends ClockSkinBase {
 
 
     // ******************** Initialization ************************************
-    @Override protected void initGraphics() {
+    @Override
+    protected void initGraphics() {
         // Set initial size
         if (Double.compare(clock.getPrefWidth(), 0.0) <= 0 || Double.compare(clock.getPrefHeight(), 0.0) <= 0 ||
-            Double.compare(clock.getWidth(), 0.0) <= 0 || Double.compare(clock.getHeight(), 0.0) <= 0) {
+                Double.compare(clock.getWidth(), 0.0) <= 0 || Double.compare(clock.getHeight(), 0.0) <= 0) {
             if (clock.getPrefWidth() > 0 && clock.getPrefHeight() > 0) {
                 clock.setPrefSize(clock.getPrefWidth(), clock.getPrefHeight());
             } else {
@@ -114,13 +115,15 @@ public class SlimClockSkin extends ClockSkinBase {
         getChildren().setAll(pane);
     }
 
-    @Override protected void registerListeners() {
+    @Override
+    protected void registerListeners() {
         super.registerListeners();
     }
 
 
     // ******************** Methods *******************************************
-    @Override protected void handleEvents(final String EVENT_TYPE) {
+    @Override
+    protected void handleEvents(final String EVENT_TYPE) {
         super.handleEvents(EVENT_TYPE);
         if ("VISIBILITY".equals(EVENT_TYPE)) {
             boolean isDateVisible = clock.isDateVisible();
@@ -140,7 +143,8 @@ public class SlimClockSkin extends ClockSkinBase {
 
 
     // ******************** Graphics ******************************************
-    @Override public void updateTime(final ZonedDateTime TIME) {
+    @Override
+    public void updateTime(final ZonedDateTime TIME) {
         if (dateText.isVisible()) {
             dateText.setText(DATE_TEXT_FORMATTER.format(TIME));
             Helper.adjustTextSize(dateText, 0.6 * size, size * 0.08);
@@ -148,10 +152,10 @@ public class SlimClockSkin extends ClockSkinBase {
 
             dateNumbers.setText(dateNumberFormatter.format(TIME));
             Helper.adjustTextSize(dateNumbers, 0.8 * size, size * 0.15);
-            dateNumbers.relocate((size -dateNumbers.getLayoutBounds().getWidth()) * 0.52, size * 0.68984962);
+            dateNumbers.relocate((size - dateNumbers.getLayoutBounds().getWidth()) * 0.52, size * 0.68984962);
         }
 
-        hour.setText(HOUR_FORMATTER.format(TIME)+ ":");
+        hour.setText(HOUR_FORMATTER.format(TIME) + ":");
         Helper.adjustTextSize(hour, 0.4 * size, 0.328 * size);
         hour.relocate(0.136 * size, (size - hour.getLayoutBounds().getHeight()) * 0.5);
 
@@ -164,21 +168,23 @@ public class SlimClockSkin extends ClockSkinBase {
             if (clock.isDiscreteSeconds()) {
                 secondArc.setLength((-6 * TIME.getSecond()));
             } else {
-                secondArc.setLength((-6 * TIME.getSecond() -TIME.get(ChronoField.MILLI_OF_SECOND) * 0.006));
+                secondArc.setLength((-6 * TIME.getSecond() - TIME.get(ChronoField.MILLI_OF_SECOND) * 0.006));
             }
         }
     }
 
-    @Override public void updateAlarms() {
+    @Override
+    public void updateAlarms() {
 
     }
 
 
     // ******************** Resizing ******************************************
-    @Override protected void resize() {
-        double width  = clock.getWidth() - clock.getInsets().getLeft() - clock.getInsets().getRight();
+    @Override
+    protected void resize() {
+        double width = clock.getWidth() - clock.getInsets().getLeft() - clock.getInsets().getRight();
         double height = clock.getHeight() - clock.getInsets().getTop() - clock.getInsets().getBottom();
-        size          = width < height ? width : height;
+        size = width < height ? width : height;
 
         if (size > 0) {
             double center = size * 0.5;
@@ -205,16 +211,17 @@ public class SlimClockSkin extends ClockSkinBase {
         }
     }
 
-    @Override protected void redraw() {
+    @Override
+    protected void redraw() {
         pane.setBorder(new Border(new BorderStroke(clock.getBorderPaint(), BorderStrokeStyle.SOLID, new CornerRadii(1024), new BorderWidths(clock.getBorderWidth() / 250 * size))));
         pane.setBackground(new Background(new BackgroundFill(clock.getBackgroundPaint(), new CornerRadii(1024), Insets.EMPTY)));
-        
+
         secondBackgroundCircle.setStroke(Helper.getTranslucentColorFrom(clock.getSecondColor(), 0.2));
         secondArc.setStroke(clock.getSecondColor());
 
         hour.setFill(clock.getHourColor());
         minute.setFill(clock.getMinuteColor());
-        
+
         dateText.setFill(clock.getDateColor());
         dateNumbers.setFill(clock.getDateColor());
 

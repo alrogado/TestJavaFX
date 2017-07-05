@@ -16,26 +16,15 @@
 
 package eu.hansolo.tilesfx;
 
+import eu.hansolo.tilesfx.chart.ChartData;
 import eu.hansolo.tilesfx.chart.RadarChart;
 import eu.hansolo.tilesfx.chart.RadarChart.Mode;
-import eu.hansolo.tilesfx.events.AlarmEvent;
-import eu.hansolo.tilesfx.events.AlarmEventListener;
-import eu.hansolo.tilesfx.events.SwitchEvent;
-import eu.hansolo.tilesfx.events.TileEvent;
+import eu.hansolo.tilesfx.events.*;
 import eu.hansolo.tilesfx.events.TileEvent.EventType;
-import eu.hansolo.tilesfx.events.TileEventListener;
-import eu.hansolo.tilesfx.events.TimeEvent;
 import eu.hansolo.tilesfx.events.TimeEvent.TimeEventType;
-import eu.hansolo.tilesfx.events.TimeEventListener;
 import eu.hansolo.tilesfx.fonts.Fonts;
 import eu.hansolo.tilesfx.skins.*;
-import eu.hansolo.tilesfx.chart.ChartData;
-import eu.hansolo.tilesfx.tools.TimeData;
-import eu.hansolo.tilesfx.tools.Helper;
-import eu.hansolo.tilesfx.tools.Location;
-import eu.hansolo.tilesfx.tools.MovingAverage;
-import eu.hansolo.tilesfx.tools.SectionComparator;
-import eu.hansolo.tilesfx.tools.TimeSectionComparator;
+import eu.hansolo.tilesfx.tools.*;
 import eu.hansolo.tilesfx.weather.DarkSky;
 import javafx.animation.Animation.Status;
 import javafx.animation.Interpolator;
@@ -71,21 +60,8 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Queue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
@@ -97,351 +73,276 @@ import static org.testjfx.util.GuiColors.FRG;
  * Created by hansolo on 19.12.16.
  */
 public class Tile extends Control {
-    public enum SkinType { AREA_CHART("AreaChartTileSkin"), BAR_CHART("BarChartTileSkin"),
-        LINE_CHART("LineChartTileSkin"), CLOCK("ClockTileSkin"), GAUGE("GaugeTileSkin"),
-        HIGH_LOW("HighLowTileSkin)"), PERCENTAGE("PercentageTileSkin"),
-        PLUS_MINUS("PlusMinusTileSkin"), SLIDER("SliderTileSkin"),
-        SPARK_LINE("SparkLineTileSkin"), SWITCH("SwitchTileSkin"),
-        WORLDMAP("WorldMapTileSkin"), TIMER_CONTROL("TimerControlTileSkin"),
-        NUMBER("NumberTileSkin"), TEXT("TextTileSkin"),
-        WEATHER("WeatherTileSkin"), TIME("TimeTileSkin"),
-        CUSTOM("CustomTileSkin"), LEADER_BOARD("LeaderBoardTileSkin"),
-        MAP("MapTileSkin"), RADIAL_CHART("RadialChart"), DONUT_CHART("DonutChart"),
-        CIRCULAR_PROGRESS("CircularProgress"), STOCK("Stock"),
-        GAUGE_SPARK_LINE("GaugeSparkLine"), SMOOTH_AREA_CHART("SmoothAreaChartTileSkin"),
-        RADAR_CHART("RadarChart"), COUNTRY("Country");
-
-        public final String CLASS_NAME;
-        SkinType(final String CLASS_NAME) {
-            this.CLASS_NAME = CLASS_NAME;
-        }
-    }
-    public enum TextSize {
-        SHORTER(0.04),
-        NORMAL(0.06),
-        BIGGER(0.08);
-
-        public final double factor;
-
-        TextSize(final double FACTOR) {
-            factor = FACTOR;
-        }
-    }
-    public enum TileColor {
-        TILEFRGCOL(Color.rgb(new Double(FRG.getRed()).intValue(),new Double(FRG.getGreen()).intValue(),new Double(FRG.getBlue()).intValue()),"foregourd"),
-        GRAY(Color.rgb(139,144,146), "GRAY"),
-        RED(Color.rgb(229, 80, 76), "RED"),
-        LIGHT_RED(Color.rgb(255, 84, 56), "LIGHT_RED"),
-        GREEN(Color.rgb(143, 198, 94), "GREEN"),
-        LIGHT_GREEN(Color.rgb(132, 228, 50), "LIGHT_GREEN"),
-        BLUE(Color.rgb(55, 179, 252), "BLUE"),
-        DARK_BLUE(Color.rgb(55, 94, 252), "DARK_BLUE"),
-        ORANGE(Color.rgb(237, 162, 57), "ORANGE"),
-        YELLOW_ORANGE(Color.rgb(229, 198, 76), "YELLOW_ORANGE"),
-        YELLOW(Color.rgb(229, 229, 76), "YELLOW"),
-        MAGENTA(Color.rgb(198, 75, 232), "MAGENTA");
-
-        public final Color  color;
-        public final String styleName;
-
-        TileColor(final Color COLOR, final String STYLE_NAME) {
-            color     = COLOR;
-            styleName = STYLE_NAME;
-        }
-    }
-    public enum MapProvider {
-        BW("blackwhite"),
-        STREET("street"),
-        BRIGHT("bright"),
-        DARK("dark"),
-        SAT("sat"),
-        TOPO("topo");
-
-        public final String name;
-
-        MapProvider(final String NAME) {
-            name = NAME;
-        }
-    }
-
-    public  static final Color       BACKGROUND            = BKG;
-    public  static final Color       FOREGROUND            = FRG;
-    public  static final Color       GRAY                  = TileColor.GRAY.color;
-    public  static final Color       RED                   = TileColor.RED.color;
-    public  static final Color       LIGHT_RED             = TileColor.LIGHT_RED.color;
-    public  static final Color       GREEN                 = TileColor.GREEN.color;
-    public  static final Color       LIGHT_GREEN           = TileColor.LIGHT_GREEN.color;
-    public  static final Color       BLUE                  = TileColor.BLUE.color;
-    public  static final Color       DARK_BLUE             = TileColor.DARK_BLUE.color;
-    public  static final Color       ORANGE                = TileColor.ORANGE.color;
-    public  static final Color       YELLOW_ORANGE         = TileColor.YELLOW_ORANGE.color;
-    public  static final Color       YELLOW                = TileColor.YELLOW.color;
-    public  static final Color       MAGENTA               = TileColor.MAGENTA.color;
-    public  static final int         SHORT_INTERVAL        = 20;
-    public  static final int         LONG_INTERVAL         = 1000;
-    private static final int         MAX_NO_OF_DECIMALS    = 3;
-    private static final String      COUNTRY_PROPERTIES    = "eu/hansolo/tilesfx/lowres.properties";
-
-    private        final TileEvent   EXCEEDED_EVENT        = new TileEvent(EventType.THRESHOLD_EXCEEDED);
-    private        final TileEvent   UNDERRUN_EVENT        = new TileEvent(EventType.THRESHOLD_UNDERRUN);
-    private        final TileEvent   RECALC_EVENT          = new TileEvent(EventType.RECALC);
-    private        final TileEvent   REDRAW_EVENT          = new TileEvent(EventType.REDRAW);
-    private        final TileEvent   RESIZE_EVENT          = new TileEvent(EventType.RESIZE);
-    private        final TileEvent   VISIBILITY_EVENT      = new TileEvent(EventType.VISIBILITY);
-    private        final TileEvent   SECTION_EVENT         = new TileEvent(EventType.SECTION);
-    private        final TileEvent   SERIES_EVENT          = new TileEvent(EventType.SERIES);
-    private        final TileEvent   DATA_EVENT            = new TileEvent(EventType.DATA);
-    private        final TileEvent   ALERT_EVENT           = new TileEvent(EventType.ALERT);
-    private        final TileEvent   VALUE_EVENT           = new TileEvent(EventType.VALUE);
-    private        final TileEvent   FINISHED_EVENT        = new TileEvent(EventType.FINISHED);
-    private        final TileEvent   GRAPHIC_EVENT         = new TileEvent(EventType.GRAPHIC);
-    private        final TileEvent   AVERAGING_EVENT       = new TileEvent(EventType.AVERAGING);
-    private        final TileEvent   LOCATION_EVENT        = new TileEvent(EventType.LOCATION);
-    private        final TileEvent   TRACK_EVENT           = new TileEvent(EventType.TRACK);
-    private        final TileEvent   MAP_PROVIDER_EVENT    = new TileEvent(EventType.MAP_PROVIDER);
-
+    public static final Color BACKGROUND = BKG;
+    public static final Color FOREGROUND = FRG;
+    public static final Color GRAY = TileColor.GRAY.color;
+    public static final Color RED = TileColor.RED.color;
+    public static final Color LIGHT_RED = TileColor.LIGHT_RED.color;
+    public static final Color GREEN = TileColor.GREEN.color;
+    public static final Color LIGHT_GREEN = TileColor.LIGHT_GREEN.color;
+    public static final Color BLUE = TileColor.BLUE.color;
+    public static final Color DARK_BLUE = TileColor.DARK_BLUE.color;
+    public static final Color ORANGE = TileColor.ORANGE.color;
+    public static final Color YELLOW_ORANGE = TileColor.YELLOW_ORANGE.color;
+    public static final Color YELLOW = TileColor.YELLOW.color;
+    public static final Color MAGENTA = TileColor.MAGENTA.color;
+    public static final int SHORT_INTERVAL = 20;
+    public static final int LONG_INTERVAL = 1000;
+    private static final int MAX_NO_OF_DECIMALS = 3;
+    private static final String COUNTRY_PROPERTIES = "eu/hansolo/tilesfx/lowres.properties";
+    private static ScheduledExecutorService periodicTickExecutorService;
+    private final TileEvent EXCEEDED_EVENT = new TileEvent(EventType.THRESHOLD_EXCEEDED);
+    private final TileEvent UNDERRUN_EVENT = new TileEvent(EventType.THRESHOLD_UNDERRUN);
+    private final TileEvent RECALC_EVENT = new TileEvent(EventType.RECALC);
+    private final TileEvent REDRAW_EVENT = new TileEvent(EventType.REDRAW);
+    private final TileEvent RESIZE_EVENT = new TileEvent(EventType.RESIZE);
+    private final TileEvent VISIBILITY_EVENT = new TileEvent(EventType.VISIBILITY);
+    private final TileEvent SECTION_EVENT = new TileEvent(EventType.SECTION);
+    private final TileEvent SERIES_EVENT = new TileEvent(EventType.SERIES);
+    private final TileEvent DATA_EVENT = new TileEvent(EventType.DATA);
+    private final TileEvent ALERT_EVENT = new TileEvent(EventType.ALERT);
+    private final TileEvent VALUE_EVENT = new TileEvent(EventType.VALUE);
+    private final TileEvent FINISHED_EVENT = new TileEvent(EventType.FINISHED);
+    private final TileEvent GRAPHIC_EVENT = new TileEvent(EventType.GRAPHIC);
+    private final TileEvent AVERAGING_EVENT = new TileEvent(EventType.AVERAGING);
+    private final TileEvent LOCATION_EVENT = new TileEvent(EventType.LOCATION);
+    private final TileEvent TRACK_EVENT = new TileEvent(EventType.TRACK);
+    private final TileEvent MAP_PROVIDER_EVENT = new TileEvent(EventType.MAP_PROVIDER);
     // Tile events
-    private List<TileEventListener>  listenerList          = new CopyOnWriteArrayList<>();
-    private List<AlarmEventListener> alarmListenerList     = new CopyOnWriteArrayList<>();
-    private List<TimeEventListener>  timeEventListenerList = new CopyOnWriteArrayList<>();
-
-
+    private List<TileEventListener> listenerList = new CopyOnWriteArrayList<>();
+    private List<AlarmEventListener> alarmListenerList = new CopyOnWriteArrayList<>();
+    private List<TimeEventListener> timeEventListenerList = new CopyOnWriteArrayList<>();
     // Data related
-    private              DoubleProperty                         value;
-    private              DoubleProperty                         oldValue;      // last value
-    private              DoubleProperty                         currentValue;
-    private              DoubleProperty                         formerValue;   // last current value
-    private              double                                 _minValue;
-    private              DoubleProperty                         minValue;
-    private              double                                 _maxValue;
-    private              DoubleProperty                         maxValue;
-    private              double                                 _range;
-    private              DoubleProperty                         range;
-    private              double                                 _threshold;
-    private              DoubleProperty                         threshold;
-    private              double                                 _referenceValue;
-    private              DoubleProperty                         referenceValue;
-    private              boolean                                _autoReferenceValue;
-    private              BooleanProperty                        autoReferenceValue;
-    private              String                                 _title;
-    private              StringProperty                         title;
-    private              TextAlignment                          _titleAlignment;
-    private              ObjectProperty<TextAlignment>          titleAlignment;
-    private              String                                 _description;
-    private              StringProperty                         description;
-    private              Pos                                    _descriptionAlignment;
-    private              ObjectProperty<Pos>                    descriptionAlignment;
-    private              String                                 _unit;
-    private              StringProperty                         unit;
-    private              String                                 _text;
-    private              StringProperty                         text;
-    private              TextAlignment                          _textAlignment;
-    private              ObjectProperty<TextAlignment>          textAlignment;
-    private              boolean                                _selected;
-    private              BooleanProperty                        selected;
-    private              boolean                                _averagingEnabled;
-    private              BooleanProperty                        averagingEnabled;
-    private              int                                    _averagingPeriod;
-    private              IntegerProperty                        averagingPeriod;
-    private              MovingAverage                          movingAverage;
-    private              ObservableList<Section>                sections;
-    private              ObservableList<Series<String, Number>> series;
-    private              Properties                             countryProperties;
-    private              Map<String, List<CountryPath>>         countryPaths;
-    private              List<Stop>                             gradientStops;
-    private              ObjectProperty<ZonedDateTime>          time;
-    private              LongProperty                           currentTime;
-    private              ZoneId                                 zoneId;
-    private              int                                    updateInterval;
-    private              ObservableList<TimeSection>            timeSections;
-    private              LocalTime                              _duration;
-    private              ObjectProperty<LocalTime>              duration;
-    private              ObservableList<BarChartItem>           barChartItems;
-    private              List<LeaderBoardItem>                  leaderBoardItems;
-    private              ObjectProperty<Node>                   graphic;
-    private              Location                               _currentLocation;
-    private              ObjectProperty<Location>               currentLocation;
-    private              ObservableList<Location>               poiList;
-    private              ObservableList<ChartData>              chartDataList;
-    private              List<Location>                         track;
-    private              TileColor                              _trackColor;
-    private              ObjectProperty<TileColor>              trackColor;
-    private              MapProvider                            _mapProvider;
-    private              ObjectProperty<MapProvider>            mapProvider;
-
+    private DoubleProperty value;
+    private DoubleProperty oldValue;      // last value
+    private DoubleProperty currentValue;
+    private DoubleProperty formerValue;   // last current value
+    private double _minValue;
+    private DoubleProperty minValue;
+    private double _maxValue;
+    private DoubleProperty maxValue;
+    private double _range;
+    private DoubleProperty range;
+    private double _threshold;
+    private DoubleProperty threshold;
+    private double _referenceValue;
+    private DoubleProperty referenceValue;
+    private boolean _autoReferenceValue;
+    private BooleanProperty autoReferenceValue;
+    private String _title;
+    private StringProperty title;
+    private TextAlignment _titleAlignment;
+    private ObjectProperty<TextAlignment> titleAlignment;
+    private String _description;
+    private StringProperty description;
+    private Pos _descriptionAlignment;
+    private ObjectProperty<Pos> descriptionAlignment;
+    private String _unit;
+    private StringProperty unit;
+    private String _text;
+    private StringProperty text;
+    private TextAlignment _textAlignment;
+    private ObjectProperty<TextAlignment> textAlignment;
+    private boolean _selected;
+    private BooleanProperty selected;
+    private boolean _averagingEnabled;
+    private BooleanProperty averagingEnabled;
+    private int _averagingPeriod;
+    private IntegerProperty averagingPeriod;
+    private MovingAverage movingAverage;
+    private ObservableList<Section> sections;
+    private ObservableList<Series<String, Number>> series;
+    private Properties countryProperties;
+    private Map<String, List<CountryPath>> countryPaths;
+    private List<Stop> gradientStops;
+    private ObjectProperty<ZonedDateTime> time;
+    private LongProperty currentTime;
+    private ZoneId zoneId;
+    private int updateInterval;
+    private ObservableList<TimeSection> timeSections;
+    private LocalTime _duration;
+    private ObjectProperty<LocalTime> duration;
+    private ObservableList<BarChartItem> barChartItems;
+    private List<LeaderBoardItem> leaderBoardItems;
+    private ObjectProperty<Node> graphic;
+    private Location _currentLocation;
+    private ObjectProperty<Location> currentLocation;
+    private ObservableList<Location> poiList;
+    private ObservableList<ChartData> chartDataList;
+    private List<Location> track;
+    private TileColor _trackColor;
+    private ObjectProperty<TileColor> trackColor;
+    private MapProvider _mapProvider;
+    private ObjectProperty<MapProvider> mapProvider;
     // UI related
-    private              SkinType                               skinType;
-    private              TextSize                               _textSize;
-    private              ObjectProperty<TextSize>               textSize;
-    private              boolean                                _roundedCorners;
-    private              BooleanProperty                        roundedCorners;
-    private              boolean                                _startFromZero;
-    private              BooleanProperty                        startFromZero;
-    private              boolean                                _returnToZero;
-    private              BooleanProperty                        returnToZero;
-    private              double                                 _minMeasuredValue;
-    private              DoubleProperty                         minMeasuredValue;
-    private              double                                 _maxMeasuredValue;
-    private              DoubleProperty                         maxMeasuredValue;
-    private              boolean                                _minMeasuredValueVisible;
-    private              BooleanProperty                        minMeasuredValueVisible;
-    private              boolean                                _maxMeasuredValueVisible;
-    private              BooleanProperty                        maxMeasuredValueVisible;
-    private              boolean                                _oldValueVisible;
-    private              BooleanProperty                        oldValueVisible;
-    private              boolean                                _valueVisible;
-    private              BooleanProperty                        valueVisible;
-    private              Color                                  _foregroundColor;
-    private              ObjectProperty<Color>                  foregroundColor;
-    private              Color                                  _backgroundColor;
-    private              ObjectProperty<Color>                  backgroundColor;
-    private              Color                                  _borderColor;
-    private              ObjectProperty<Color>                  borderColor;
-    private              double                                 _borderWidth;
-    private              DoubleProperty                         borderWidth;
-    private              Color                                  _activeColor;
-    private              ObjectProperty<Color>                  activeColor;
-    private              Color                                  _knobColor;
-    private              ObjectProperty<Color>                  knobColor;
-    private              boolean                                _animated;
-    private              BooleanProperty                        animated;
-    private              long                                   animationDuration;
-    private              double                                 _startAngle;
-    private              DoubleProperty                         startAngle;
-    private              double                                 _angleRange;
-    private              DoubleProperty                         angleRange;
-    private              double                                 _angleStep;
-    private              DoubleProperty                         angleStep;
-    private              boolean                                _autoScale;
-    private              BooleanProperty                        autoScale;
-    private              boolean                                _shadowsEnabled;
-    private              BooleanProperty                        shadowsEnabled;
-    private              Locale                                 _locale;
-    private              ObjectProperty<Locale>                 locale;
-    private              NumberFormat                           _numberFormat;
-    private              ObjectProperty<NumberFormat>           numberFormat;
-    private              int                                    _decimals;
-    private              IntegerProperty                        decimals;
-    private              int                                    _tickLabelDecimals;
-    private              IntegerProperty                        tickLabelDecimals;
-    private              Color                                  _needleColor;
-    private              ObjectProperty<Color>                  needleColor;
-    private              Color                                  _barColor;
-    private              ObjectProperty<Color>                  barColor;
-    private              Color                                  _barBackgroundColor;
-    private              ObjectProperty<Color>                  barBackgroundColor;
-    private              Color                                  _titleColor;
-    private              ObjectProperty<Color>                  titleColor;
-    private              Color                                  _descriptionColor;
-    private              ObjectProperty<Color>                  descriptionColor;
-    private              Color                                  _unitColor;
-    private              ObjectProperty<Color>                  unitColor;
-    private              Color                                  _valueColor;
-    private              ObjectProperty<Color>                  valueColor;
-    private              Color                                  _thresholdColor;
-    private              ObjectProperty<Color>                  thresholdColor;
-    private              boolean                                _checkSectionsForValue;
-    private              BooleanProperty                        checkSectionsForValue;
-    private              boolean                                _checkThreshold;
-    private              BooleanProperty                        checkThreshold;
-    private              boolean                                _innerShadowEnabled;
-    private              BooleanProperty                        innerShadowEnabled;
-    private              boolean                                _thresholdVisible;
-    private              BooleanProperty                        thresholdVisible;
-    private              boolean                                _averageVisible;
-    private              BooleanProperty                        averageVisible;
-    private              boolean                                _sectionsVisible;
-    private              BooleanProperty                        sectionsVisible;
-    private              boolean                                _sectionsAlwaysVisible;
-    private              BooleanProperty                        sectionsAlwaysVisible;
-    private              boolean                                _sectionTextVisible;
-    private              BooleanProperty                        sectionTextVisible;
-    private              boolean                                _sectionIconsVisible;
-    private              BooleanProperty                        sectionIconsVisible;
-    private              boolean                                _highlightSections;
-    private              BooleanProperty                        highlightSections;
-    private              Orientation                            _orientation;
-    private              ObjectProperty<Orientation>            orientation;
-    private              boolean                                _keepAspect;
-    private              BooleanProperty                        keepAspect;
-    private              boolean                                _customFontEnabled;
-    private              BooleanProperty                        customFontEnabled;
-    private              Font                                   _customFont;
-    private              ObjectProperty<Font>                   customFont;
-    private              boolean                                _alert;
-    private              BooleanProperty                        alert;
-    private              String                                 _alertMessage;
-    private              StringProperty                         alertMessage;
-    private              boolean                                _smoothing;
-    private              BooleanProperty                        smoothing;
-    private              double                                 increment;
-    private              double                                 originalMinValue;
-    private              double                                 originalMaxValue;
-    private              double                                 originalThreshold;
-    private              Timeline                               timeline;
-    private              Instant                                lastCall;
-    private              boolean                                withinSpeedLimit;
-    private              boolean                                _discreteSeconds;
-    private              BooleanProperty                        discreteSeconds;
-    private              boolean                                _discreteMinutes;
-    private              BooleanProperty                        discreteMinutes;
-    private              boolean                                _discreteHours;
-    private              BooleanProperty                        discreteHours;
-    private              boolean                                _secondsVisible;
-    private              BooleanProperty                        secondsVisible;
-    private              boolean                                _textVisible;
-    private              BooleanProperty                        textVisible;
-    private              boolean                                _dateVisible;
-    private              BooleanProperty                        dateVisible;
-    private              boolean                                _running;
-    private              BooleanProperty                        running;
-    private              Color                                  _textColor;
-    private              ObjectProperty<Color>                  textColor;
-    private              Color                                  _dateColor;
-    private              ObjectProperty<Color>                  dateColor;
-    private              Color                                  _hourTickMarkColor;
-    private              ObjectProperty<Color>                  hourTickMarkColor;
-    private              Color                                  _minuteTickMarkColor;
-    private              ObjectProperty<Color>                  minuteTickMarkColor;
-    private              Color                                  _alarmColor;
-    private              ObjectProperty<Color>                  alarmColor;
-    private              boolean                                _hourTickMarksVisible;
-    private              BooleanProperty                        hourTickMarksVisible;
-    private              boolean                                _minuteTickMarksVisible;
-    private              BooleanProperty                        minuteTickMarksVisible;
-    private              Color                                  _hourColor;
-    private              ObjectProperty<Color>                  hourColor;
-    private              Color                                  _minuteColor;
-    private              ObjectProperty<Color>                  minuteColor;
-    private              Color                                  _secondColor;
-    private              ObjectProperty<Color>                  secondColor;
-    private              boolean                                _alarmsEnabled;
-    private              BooleanProperty                        alarmsEnabled;
-    private              boolean                                _alarmsVisible;
-    private              BooleanProperty                        alarmsVisible;
-    private              ObservableList<Alarm>                  alarms;
-    private              List<Alarm>                            alarmsToRemove;
-    private              boolean                                _strokeWithGradient;
-    private              BooleanProperty                        strokeWithGradient;
-    private              DarkSky                                darkSky;
-    private              String                                 _tooltipText;
-    private              StringProperty                         tooltipText;
-    private              Tooltip                                tooltip;
-    private              Axis                                   _xAxis;
-    private              ObjectProperty<Axis>                   xAxis;
-    private              Axis                                   _yAxis;
-    private              ObjectProperty<Axis>                   yAxis;
-    private              RadarChart.Mode                        _radarChartMode;
-    private              ObjectProperty<RadarChart.Mode>        radarChartMode;
-    private              Color                                  _chartGridColor;
-    private              ObjectProperty<Color>                  chartGridColor;
-    private              Country                                _country;
-    private              ObjectProperty<Country>                country;
-
-    private volatile     ScheduledFuture<?>                     periodicTickTask;
-    private static       ScheduledExecutorService               periodicTickExecutorService;
-
-
+    private SkinType skinType;
+    private TextSize _textSize;
+    private ObjectProperty<TextSize> textSize;
+    private boolean _roundedCorners;
+    private BooleanProperty roundedCorners;
+    private boolean _startFromZero;
+    private BooleanProperty startFromZero;
+    private boolean _returnToZero;
+    private BooleanProperty returnToZero;
+    private double _minMeasuredValue;
+    private DoubleProperty minMeasuredValue;
+    private double _maxMeasuredValue;
+    private DoubleProperty maxMeasuredValue;
+    private boolean _minMeasuredValueVisible;
+    private BooleanProperty minMeasuredValueVisible;
+    private boolean _maxMeasuredValueVisible;
+    private BooleanProperty maxMeasuredValueVisible;
+    private boolean _oldValueVisible;
+    private BooleanProperty oldValueVisible;
+    private boolean _valueVisible;
+    private BooleanProperty valueVisible;
+    private Color _foregroundColor;
+    private ObjectProperty<Color> foregroundColor;
+    private Color _backgroundColor;
+    private ObjectProperty<Color> backgroundColor;
+    private Color _borderColor;
+    private ObjectProperty<Color> borderColor;
+    private double _borderWidth;
+    private DoubleProperty borderWidth;
+    private Color _activeColor;
+    private ObjectProperty<Color> activeColor;
+    private Color _knobColor;
+    private ObjectProperty<Color> knobColor;
+    private boolean _animated;
+    private BooleanProperty animated;
+    private long animationDuration;
+    private double _startAngle;
+    private DoubleProperty startAngle;
+    private double _angleRange;
+    private DoubleProperty angleRange;
+    private double _angleStep;
+    private DoubleProperty angleStep;
+    private boolean _autoScale;
+    private BooleanProperty autoScale;
+    private boolean _shadowsEnabled;
+    private BooleanProperty shadowsEnabled;
+    private Locale _locale;
+    private ObjectProperty<Locale> locale;
+    private NumberFormat _numberFormat;
+    private ObjectProperty<NumberFormat> numberFormat;
+    private int _decimals;
+    private IntegerProperty decimals;
+    private int _tickLabelDecimals;
+    private IntegerProperty tickLabelDecimals;
+    private Color _needleColor;
+    private ObjectProperty<Color> needleColor;
+    private Color _barColor;
+    private ObjectProperty<Color> barColor;
+    private Color _barBackgroundColor;
+    private ObjectProperty<Color> barBackgroundColor;
+    private Color _titleColor;
+    private ObjectProperty<Color> titleColor;
+    private Color _descriptionColor;
+    private ObjectProperty<Color> descriptionColor;
+    private Color _unitColor;
+    private ObjectProperty<Color> unitColor;
+    private Color _valueColor;
+    private ObjectProperty<Color> valueColor;
+    private Color _thresholdColor;
+    private ObjectProperty<Color> thresholdColor;
+    private boolean _checkSectionsForValue;
+    private BooleanProperty checkSectionsForValue;
+    private boolean _checkThreshold;
+    private BooleanProperty checkThreshold;
+    private boolean _innerShadowEnabled;
+    private BooleanProperty innerShadowEnabled;
+    private boolean _thresholdVisible;
+    private BooleanProperty thresholdVisible;
+    private boolean _averageVisible;
+    private BooleanProperty averageVisible;
+    private boolean _sectionsVisible;
+    private BooleanProperty sectionsVisible;
+    private boolean _sectionsAlwaysVisible;
+    private BooleanProperty sectionsAlwaysVisible;
+    private boolean _sectionTextVisible;
+    private BooleanProperty sectionTextVisible;
+    private boolean _sectionIconsVisible;
+    private BooleanProperty sectionIconsVisible;
+    private boolean _highlightSections;
+    private BooleanProperty highlightSections;
+    private Orientation _orientation;
+    private ObjectProperty<Orientation> orientation;
+    private boolean _keepAspect;
+    private BooleanProperty keepAspect;
+    private boolean _customFontEnabled;
+    private BooleanProperty customFontEnabled;
+    private Font _customFont;
+    private ObjectProperty<Font> customFont;
+    private boolean _alert;
+    private BooleanProperty alert;
+    private String _alertMessage;
+    private StringProperty alertMessage;
+    private boolean _smoothing;
+    private BooleanProperty smoothing;
+    private double increment;
+    private double originalMinValue;
+    private double originalMaxValue;
+    private double originalThreshold;
+    private Timeline timeline;
+    private Instant lastCall;
+    private boolean withinSpeedLimit;
+    private boolean _discreteSeconds;
+    private BooleanProperty discreteSeconds;
+    private boolean _discreteMinutes;
+    private BooleanProperty discreteMinutes;
+    private boolean _discreteHours;
+    private BooleanProperty discreteHours;
+    private boolean _secondsVisible;
+    private BooleanProperty secondsVisible;
+    private boolean _textVisible;
+    private BooleanProperty textVisible;
+    private boolean _dateVisible;
+    private BooleanProperty dateVisible;
+    private boolean _running;
+    private BooleanProperty running;
+    private Color _textColor;
+    private ObjectProperty<Color> textColor;
+    private Color _dateColor;
+    private ObjectProperty<Color> dateColor;
+    private Color _hourTickMarkColor;
+    private ObjectProperty<Color> hourTickMarkColor;
+    private Color _minuteTickMarkColor;
+    private ObjectProperty<Color> minuteTickMarkColor;
+    private Color _alarmColor;
+    private ObjectProperty<Color> alarmColor;
+    private boolean _hourTickMarksVisible;
+    private BooleanProperty hourTickMarksVisible;
+    private boolean _minuteTickMarksVisible;
+    private BooleanProperty minuteTickMarksVisible;
+    private Color _hourColor;
+    private ObjectProperty<Color> hourColor;
+    private Color _minuteColor;
+    private ObjectProperty<Color> minuteColor;
+    private Color _secondColor;
+    private ObjectProperty<Color> secondColor;
+    private boolean _alarmsEnabled;
+    private BooleanProperty alarmsEnabled;
+    private boolean _alarmsVisible;
+    private BooleanProperty alarmsVisible;
+    private ObservableList<Alarm> alarms;
+    private List<Alarm> alarmsToRemove;
+    private boolean _strokeWithGradient;
+    private BooleanProperty strokeWithGradient;
+    private DarkSky darkSky;
+    private String _tooltipText;
+    private StringProperty tooltipText;
+    private Tooltip tooltip;
+    private Axis _xAxis;
+    private ObjectProperty<Axis> xAxis;
+    private Axis _yAxis;
+    private ObjectProperty<Axis> yAxis;
+    private RadarChart.Mode _radarChartMode;
+    private ObjectProperty<RadarChart.Mode> radarChartMode;
+    private Color _chartGridColor;
+    private ObjectProperty<Color> chartGridColor;
+    private Country _country;
+    private ObjectProperty<Country> country;
+    private volatile ScheduledFuture<?> periodicTickTask;
     // ******************** Constructors **************************************
     public Tile() {
         this(SkinType.GAUGE, ZonedDateTime.now());
@@ -449,6 +350,7 @@ public class Tile extends Control {
     public Tile(final SkinType SKIN) {
         this(SKIN, ZonedDateTime.now());
     }
+
     public Tile(final SkinType SKIN_TYPE, final ZonedDateTime TIME) {
         setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
         skinType = SKIN_TYPE;
@@ -458,12 +360,19 @@ public class Tile extends Control {
         registerListeners();
     }
 
+    private static ThreadFactory getThreadFactory(final String THREAD_NAME, final boolean IS_DAEMON) {
+        return runnable -> {
+            Thread thread = new Thread(runnable, THREAD_NAME);
+            thread.setDaemon(IS_DAEMON);
+            return thread;
+        };
+    }
 
     // ******************** Initialization ************************************
     private void init(final ZonedDateTime TIME) {
-        _minValue                           = 0;
-        _maxValue                           = 100;
-        value                               = new DoublePropertyBase(_minValue) {
+        _minValue = 0;
+        _maxValue = 100;
+        value = new DoublePropertyBase(_minValue) {
             private void update() {
                 final double VALUE = get();
                 withinSpeedLimit = !(Instant.now().minusMillis(getAnimationDuration()).isBefore(lastCall));
@@ -480,22 +389,41 @@ public class Tile extends Control {
                     currentValue.set(VALUE);
                     fireTileEvent(FINISHED_EVENT);
                 }
-                if (isAveragingEnabled()) { movingAverage.addData(new TimeData(VALUE)); }
+                if (isAveragingEnabled()) {
+                    movingAverage.addData(new TimeData(VALUE));
+                }
             }
-            @Override protected void invalidated() { update(); }
-            @Override public void set(final double VALUE) {
+
+            @Override
+            protected void invalidated() {
+                update();
+            }
+
+            @Override
+            public void set(final double VALUE) {
                 // ATTENTION There is an optimization in the properties so that properties
                 // only get invalid if the the new value is different from the old value
-                if (Helper.equals(VALUE, getFormerValue())) { update(); }
+                if (Helper.equals(VALUE, getFormerValue())) {
+                    update();
+                }
                 super.set(VALUE);
                 fireTileEvent(VALUE_EVENT);
             }
-            @Override public Object getBean() { return Tile.this; }
-            @Override public String getName() { return "value"; }
+
+            @Override
+            public Object getBean() {
+                return Tile.this;
+            }
+
+            @Override
+            public String getName() {
+                return "value";
+            }
         };
-        oldValue                            = new SimpleDoubleProperty(Tile.this, "oldValue", value.get());
-        currentValue                        = new DoublePropertyBase(value.get()) {
-            @Override protected void invalidated() {
+        oldValue = new SimpleDoubleProperty(Tile.this, "oldValue", value.get());
+        currentValue = new DoublePropertyBase(value.get()) {
+            @Override
+            protected void invalidated() {
                 final double VALUE = get();
                 if (isCheckThreshold()) {
                     double thrshld = getThreshold();
@@ -512,17 +440,30 @@ public class Tile extends Control {
                 }
                 formerValue.set(VALUE);
             }
-            @Override public void set(final double VALUE) { super.set(VALUE); }
-            @Override public Object getBean() { return Tile.this; }
-            @Override public String getName() { return "currentValue";}
+
+            @Override
+            public void set(final double VALUE) {
+                super.set(VALUE);
+            }
+
+            @Override
+            public Object getBean() {
+                return Tile.this;
+            }
+
+            @Override
+            public String getName() {
+                return "currentValue";
+            }
         };
-        formerValue                         = new SimpleDoubleProperty(Tile.this, "formerValue", value.get());
-        _range                              = _maxValue - _minValue;
-        _threshold                          = _maxValue;
-        _referenceValue                     = _minValue;
-        _autoReferenceValue                 = true;
-        time                                = new ObjectPropertyBase<ZonedDateTime>(TIME) {
-            @Override protected void invalidated() {
+        formerValue = new SimpleDoubleProperty(Tile.this, "formerValue", value.get());
+        _range = _maxValue - _minValue;
+        _threshold = _maxValue;
+        _referenceValue = _minValue;
+        _autoReferenceValue = true;
+        time = new ObjectPropertyBase<ZonedDateTime>(TIME) {
+            @Override
+            protected void invalidated() {
                 if (!isRunning() && isAnimated()) {
                     long animationDuration = getAnimationDuration();
                     timeline.stop();
@@ -536,127 +477,145 @@ public class Tile extends Control {
                     fireTileEvent(FINISHED_EVENT);
                 }
             }
-            @Override public Object getBean() { return Tile.this; }
-            @Override public String getName() { return "time"; }
-        };
-        currentTime                         = new LongPropertyBase(time.get().toEpochSecond()) {
-            @Override protected void invalidated() {}
-            @Override public Object getBean() { return Tile.this; }
-            @Override public String getName() { return "currentTime"; }
-        };
-        zoneId                              = time.get().getZone();
-        _title                              = "";
-        _titleAlignment                     = TextAlignment.LEFT;
-        _description                        = "";
-        _descriptionAlignment               = Pos.TOP_RIGHT;
-        _unit                               = "";
-        _selected                           = false;
-        _text                               = "";
-        _textAlignment                      = TextAlignment.LEFT;
-        _averagingEnabled                   = false;
-        _averagingPeriod                    = 10;
-        _duration                           = LocalTime.of(1, 0);
-        _currentLocation                    = new Location(0, 0);
-        poiList                             = FXCollections.observableArrayList();
-        chartDataList                       = FXCollections.observableArrayList();
-        movingAverage                       = new MovingAverage(_averagingPeriod);
-        sections                            = FXCollections.observableArrayList();
-        series                              = FXCollections.observableArrayList();
-        timeSections                        = FXCollections.observableArrayList();
-        alarms                              = FXCollections.observableArrayList();
-        alarmsToRemove                      = new ArrayList<>();
-        barChartItems                       = FXCollections.observableArrayList();
-        track                               = new ArrayList<>();
-        _trackColor                         = TileColor.BLUE;
-        _mapProvider                        = MapProvider.BW;
-        leaderBoardItems                    = new ArrayList<>();
-        gradientStops                       = new ArrayList<>(4);
 
-        _textSize                           = TextSize.NORMAL;
-        _roundedCorners                     = true;
-        _startFromZero                      = false;
-        _returnToZero                       = false;
-        _minMeasuredValue                   = _maxValue;
-        _maxMeasuredValue                   = _minValue;
-        _minMeasuredValueVisible            = false;
-        _maxMeasuredValueVisible            = false;
-        _oldValueVisible                    = false;
-        _valueVisible                       = true;
-        _foregroundColor                    = FOREGROUND;
-        _backgroundColor                    = BACKGROUND;
-        _borderColor                        = Color.TRANSPARENT;
-        _borderWidth                        = 1;
-        _knobColor                          = FOREGROUND;
-        _activeColor                        = BLUE;
-        _animated                           = false;
-        animationDuration                   = 800;
-        _startAngle                         = 0;
-        _angleRange                         = 180;
-        _angleStep                          = _angleRange / _range;
-        _autoScale                          = true;
-        _shadowsEnabled                     = false;
-        _locale                             = Locale.US;
-        _numberFormat                       = NumberFormat.getInstance(_locale);
-        _decimals                           = 1;
-        _tickLabelDecimals                  = 1;
-        _needleColor                        = FOREGROUND;
-        _hourColor                          = FOREGROUND;
-        _minuteColor                        = FOREGROUND;
-        _secondColor                        = FOREGROUND;
-        _barColor                           = BLUE;
-        _barBackgroundColor                 = BACKGROUND;
-        _titleColor                         = FOREGROUND;
-        _descriptionColor                   = FOREGROUND;
-        _unitColor                          = FOREGROUND;
-        _valueColor                         = FOREGROUND;
-        _textColor                          = FOREGROUND;
-        _dateColor                          = FOREGROUND;
-        _hourTickMarkColor                  = FOREGROUND;
-        _minuteTickMarkColor                = FOREGROUND;
-        _alarmColor                         = FOREGROUND;
-        _thresholdColor                     = RED;
-        _checkSectionsForValue              = false;
-        _checkThreshold                     = false;
-        _innerShadowEnabled                 = false;
-        _thresholdVisible                   = false;
-        _averageVisible                     = false;
-        _sectionsVisible                    = false;
-        _sectionsAlwaysVisible              = false;
-        _sectionTextVisible                 = false;
-        _sectionIconsVisible                = false;
-        _highlightSections                  = false;
-        _orientation                        = Orientation.HORIZONTAL;
-        _keepAspect                         = true;
-        _customFontEnabled                  = false;
-        _customFont                         = Fonts.latoRegular(12);
-        _alert                              = false;
-        _alertMessage                       = "";
-        _smoothing                          = false;
-        _secondsVisible                     = false;
-        _discreteSeconds                    = true;
-        _discreteMinutes                    = true;
-        _discreteHours                      = false;
-        _textVisible                        = true;
-        _dateVisible                        = false;
-        _running                            = false;
-        _hourTickMarksVisible               = true;
-        _minuteTickMarksVisible             = true;
-        _alarmsEnabled                      = false;
-        _alarmsVisible                      = false;
-        _strokeWithGradient                 = false;
-        tooltip                             = new Tooltip(null);
-        _xAxis                              = new CategoryAxis();
-        _yAxis                              = new NumberAxis();
-        _radarChartMode                     = Mode.POLYGON;
-        _chartGridColor                     = Tile.GRAY;
-        _country                            = Country.DE;
-        updateInterval                      = LONG_INTERVAL;
-        increment                           = 1;
-        originalMinValue                    = -Double.MAX_VALUE;
-        originalMaxValue                    = Double.MAX_VALUE;
-        originalThreshold                   = Double.MAX_VALUE;
-        lastCall                            = Instant.now();
-        timeline                            = new Timeline();
+            @Override
+            public Object getBean() {
+                return Tile.this;
+            }
+
+            @Override
+            public String getName() {
+                return "time";
+            }
+        };
+        currentTime = new LongPropertyBase(time.get().toEpochSecond()) {
+            @Override
+            protected void invalidated() {
+            }
+
+            @Override
+            public Object getBean() {
+                return Tile.this;
+            }
+
+            @Override
+            public String getName() {
+                return "currentTime";
+            }
+        };
+        zoneId = time.get().getZone();
+        _title = "";
+        _titleAlignment = TextAlignment.LEFT;
+        _description = "";
+        _descriptionAlignment = Pos.TOP_RIGHT;
+        _unit = "";
+        _selected = false;
+        _text = "";
+        _textAlignment = TextAlignment.LEFT;
+        _averagingEnabled = false;
+        _averagingPeriod = 10;
+        _duration = LocalTime.of(1, 0);
+        _currentLocation = new Location(0, 0);
+        poiList = FXCollections.observableArrayList();
+        chartDataList = FXCollections.observableArrayList();
+        movingAverage = new MovingAverage(_averagingPeriod);
+        sections = FXCollections.observableArrayList();
+        series = FXCollections.observableArrayList();
+        timeSections = FXCollections.observableArrayList();
+        alarms = FXCollections.observableArrayList();
+        alarmsToRemove = new ArrayList<>();
+        barChartItems = FXCollections.observableArrayList();
+        track = new ArrayList<>();
+        _trackColor = TileColor.BLUE;
+        _mapProvider = MapProvider.BW;
+        leaderBoardItems = new ArrayList<>();
+        gradientStops = new ArrayList<>(4);
+
+        _textSize = TextSize.NORMAL;
+        _roundedCorners = true;
+        _startFromZero = false;
+        _returnToZero = false;
+        _minMeasuredValue = _maxValue;
+        _maxMeasuredValue = _minValue;
+        _minMeasuredValueVisible = false;
+        _maxMeasuredValueVisible = false;
+        _oldValueVisible = false;
+        _valueVisible = true;
+        _foregroundColor = FOREGROUND;
+        _backgroundColor = BACKGROUND;
+        _borderColor = Color.TRANSPARENT;
+        _borderWidth = 1;
+        _knobColor = FOREGROUND;
+        _activeColor = BLUE;
+        _animated = false;
+        animationDuration = 800;
+        _startAngle = 0;
+        _angleRange = 180;
+        _angleStep = _angleRange / _range;
+        _autoScale = true;
+        _shadowsEnabled = false;
+        _locale = Locale.US;
+        _numberFormat = NumberFormat.getInstance(_locale);
+        _decimals = 1;
+        _tickLabelDecimals = 1;
+        _needleColor = FOREGROUND;
+        _hourColor = FOREGROUND;
+        _minuteColor = FOREGROUND;
+        _secondColor = FOREGROUND;
+        _barColor = BLUE;
+        _barBackgroundColor = BACKGROUND;
+        _titleColor = FOREGROUND;
+        _descriptionColor = FOREGROUND;
+        _unitColor = FOREGROUND;
+        _valueColor = FOREGROUND;
+        _textColor = FOREGROUND;
+        _dateColor = FOREGROUND;
+        _hourTickMarkColor = FOREGROUND;
+        _minuteTickMarkColor = FOREGROUND;
+        _alarmColor = FOREGROUND;
+        _thresholdColor = RED;
+        _checkSectionsForValue = false;
+        _checkThreshold = false;
+        _innerShadowEnabled = false;
+        _thresholdVisible = false;
+        _averageVisible = false;
+        _sectionsVisible = false;
+        _sectionsAlwaysVisible = false;
+        _sectionTextVisible = false;
+        _sectionIconsVisible = false;
+        _highlightSections = false;
+        _orientation = Orientation.HORIZONTAL;
+        _keepAspect = true;
+        _customFontEnabled = false;
+        _customFont = Fonts.latoRegular(12);
+        _alert = false;
+        _alertMessage = "";
+        _smoothing = false;
+        _secondsVisible = false;
+        _discreteSeconds = true;
+        _discreteMinutes = true;
+        _discreteHours = false;
+        _textVisible = true;
+        _dateVisible = false;
+        _running = false;
+        _hourTickMarksVisible = true;
+        _minuteTickMarksVisible = true;
+        _alarmsEnabled = false;
+        _alarmsVisible = false;
+        _strokeWithGradient = false;
+        tooltip = new Tooltip(null);
+        _xAxis = new CategoryAxis();
+        _yAxis = new NumberAxis();
+        _radarChartMode = Mode.POLYGON;
+        _chartGridColor = Tile.GRAY;
+        _country = Country.DE;
+        updateInterval = LONG_INTERVAL;
+        increment = 1;
+        originalMinValue = -Double.MAX_VALUE;
+        originalMaxValue = Double.MAX_VALUE;
+        originalThreshold = Double.MAX_VALUE;
+        lastCall = Instant.now();
+        timeline = new Timeline();
         timeline.setOnFinished(e -> {
             if (isReturnToZero() && !Helper.equals(currentValue.get(), 0.0)) {
                 final KeyValue KEY_VALUE2 = new KeyValue(value, 0, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
@@ -673,9 +632,6 @@ public class Tile extends Control {
         valueProperty().addListener((o, ov, nv) -> oldValue.set(ov.doubleValue()));
     }
 
-
-    // ******************** Data related methods ******************************
-
     /**
      * Returns the value of the Tile. If animated == true this value represents
      * the value at the end of the animation. Where currentValue represents the
@@ -683,15 +639,26 @@ public class Tile extends Control {
      *
      * @return the value of the gauge
      */
-    public double getValue() { return value.get(); }
+    public double getValue() {
+        return value.get();
+    }
+
     /**
      * Sets the value of the Tile to the given double. If animated == true this
      * value will be the end value after the animation is finished.
      *
      * @param VALUE
      */
-    public void setValue(final double VALUE) { value.set(VALUE); }
-    public DoubleProperty valueProperty() { return value; }
+    public void setValue(final double VALUE) {
+        value.set(VALUE);
+    }
+
+    public DoubleProperty valueProperty() {
+        return value;
+    }
+
+
+    // ******************** Data related methods ******************************
 
     /**
      * Returns the current value of the Tile. If animated == true this value
@@ -700,8 +667,13 @@ public class Tile extends Control {
      *
      * @return the current value of the gauge
      */
-    public double getCurrentValue() { return currentValue.get(); }
-    public ReadOnlyDoubleProperty currentValueProperty() { return currentValue; }
+    public double getCurrentValue() {
+        return currentValue.get();
+    }
+
+    public ReadOnlyDoubleProperty currentValueProperty() {
+        return currentValue;
+    }
 
     /**
      * Returns the last value of the Tile. This will not be the last value during
@@ -711,8 +683,13 @@ public class Tile extends Control {
      *
      * @return the last value of the gauge
      */
-    public double getOldValue() { return oldValue.get(); }
-    public ReadOnlyDoubleProperty oldValueProperty() { return oldValue; }
+    public double getOldValue() {
+        return oldValue.get();
+    }
+
+    public ReadOnlyDoubleProperty oldValueProperty() {
+        return oldValue;
+    }
 
     /**
      * Returns the last value of the Tile. This will be the last value during
@@ -723,8 +700,13 @@ public class Tile extends Control {
      *
      * @return the last value of the gauge during an animation
      */
-    public double getFormerValue() { return formerValue.get(); }
-    public ReadOnlyDoubleProperty formerValueProperty() { return formerValue; }
+    public double getFormerValue() {
+        return formerValue.get();
+    }
+
+    public ReadOnlyDoubleProperty formerValueProperty() {
+        return formerValue;
+    }
 
     /**
      * Returns the minimum value of the scale. This value represents the lower
@@ -732,42 +714,65 @@ public class Tile extends Control {
      *
      * @return the minimum value of the gauge scale
      */
-    public double getMinValue() { return null == minValue ? _minValue : minValue.get(); }
+    public double getMinValue() {
+        return null == minValue ? _minValue : minValue.get();
+    }
+
     /**
      * Sets the minimum value of the gauge scale to the given value
      *
      * @param VALUE
      */
     public void setMinValue(final double VALUE) {
-        if (Status.RUNNING == timeline.getStatus()) { timeline.jumpTo(Duration.ONE); }
+        if (Status.RUNNING == timeline.getStatus()) {
+            timeline.jumpTo(Duration.ONE);
+        }
         if (null == minValue) {
-            if (VALUE > getMaxValue()) { setMaxValue(VALUE); }
+            if (VALUE > getMaxValue()) {
+                setMaxValue(VALUE);
+            }
             _minValue = clamp(-Double.MAX_VALUE, getMaxValue(), VALUE);
             setRange(getMaxValue() - _minValue);
             if (Helper.equals(originalMinValue, -Double.MAX_VALUE)) originalMinValue = _minValue;
             if (isStartFromZero() && _minValue < 0) setValue(0);
-            if (Helper.equals(originalThreshold, getThreshold())) { setThreshold(clamp(_minValue, getMaxValue(), originalThreshold)); }
+            if (Helper.equals(originalThreshold, getThreshold())) {
+                setThreshold(clamp(_minValue, getMaxValue(), originalThreshold));
+            }
             fireTileEvent(RECALC_EVENT);
-            if (!valueProperty().isBound()) Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
+            if (!valueProperty().isBound())
+                Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
         } else {
             minValue.set(VALUE);
         }
     }
+
     public DoubleProperty minValueProperty() {
         if (null == minValue) {
             minValue = new DoublePropertyBase(_minValue) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double VALUE = get();
                     if (VALUE > getMaxValue()) setMaxValue(VALUE);
                     setRange(getMaxValue() - VALUE);
                     if (Helper.equals(originalMinValue, -Double.MAX_VALUE)) originalMinValue = VALUE;
                     if (isStartFromZero() && _minValue < 0) Tile.this.setValue(0);
-                    if (Helper.lessThan(originalThreshold, getThreshold())) { setThreshold(clamp(VALUE, getMaxValue(), originalThreshold)); }
+                    if (Helper.lessThan(originalThreshold, getThreshold())) {
+                        setThreshold(clamp(VALUE, getMaxValue(), originalThreshold));
+                    }
                     fireTileEvent(RECALC_EVENT);
-                    if (!valueProperty().isBound()) Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
+                    if (!valueProperty().isBound())
+                        Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "minValue";}
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "minValue";
+                }
             };
         }
         return minValue;
@@ -779,40 +784,63 @@ public class Tile extends Control {
      *
      * @return the maximum value of the gauge scale
      */
-    public double getMaxValue() { return null == maxValue ? _maxValue : maxValue.get(); }
+    public double getMaxValue() {
+        return null == maxValue ? _maxValue : maxValue.get();
+    }
+
     /**
      * Sets the maximum value of the gauge scale to the given value
      *
      * @param VALUE
      */
     public void setMaxValue(final double VALUE) {
-        if (Status.RUNNING == timeline.getStatus()) { timeline.jumpTo(Duration.ONE); }
+        if (Status.RUNNING == timeline.getStatus()) {
+            timeline.jumpTo(Duration.ONE);
+        }
         if (null == maxValue) {
-            if (VALUE < getMinValue()) { setMinValue(VALUE); }
+            if (VALUE < getMinValue()) {
+                setMinValue(VALUE);
+            }
             _maxValue = clamp(getMinValue(), Double.MAX_VALUE, VALUE);
             setRange(_maxValue - getMinValue());
             if (Helper.equals(originalMaxValue, Double.MAX_VALUE)) originalMaxValue = _maxValue;
-            if (Helper.biggerThan(originalThreshold, getThreshold())) { setThreshold(clamp(getMinValue(), _maxValue, originalThreshold)); }
+            if (Helper.biggerThan(originalThreshold, getThreshold())) {
+                setThreshold(clamp(getMinValue(), _maxValue, originalThreshold));
+            }
             fireTileEvent(RECALC_EVENT);
-            if (!valueProperty().isBound()) Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
+            if (!valueProperty().isBound())
+                Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
         } else {
             maxValue.set(VALUE);
         }
     }
+
     public DoubleProperty maxValueProperty() {
         if (null == maxValue) {
             maxValue = new DoublePropertyBase(_maxValue) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double VALUE = get();
                     if (VALUE < getMinValue()) setMinValue(VALUE);
                     setRange(VALUE - getMinValue());
                     if (Helper.equals(originalMaxValue, Double.MAX_VALUE)) originalMaxValue = VALUE;
-                    if (Helper.biggerThan(originalThreshold, getThreshold())) { setThreshold(clamp(getMinValue(), VALUE, originalThreshold)); }
+                    if (Helper.biggerThan(originalThreshold, getThreshold())) {
+                        setThreshold(clamp(getMinValue(), VALUE, originalThreshold));
+                    }
                     fireTileEvent(RECALC_EVENT);
-                    if (!valueProperty().isBound()) Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
+                    if (!valueProperty().isBound())
+                        Tile.this.setValue(clamp(getMinValue(), getMaxValue(), Tile.this.getValue()));
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "maxValue"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "maxValue";
+                }
             };
         }
         return maxValue;
@@ -825,7 +853,10 @@ public class Tile extends Control {
      *
      * @return the range of the gauge scale
      */
-    public double getRange() { return null == range ? _range : range.get(); }
+    public double getRange() {
+        return null == range ? _range : range.get();
+    }
+
     /**
      * This is a private method that sets the range to the given value
      * which is always (maxValue - minValue).
@@ -840,12 +871,24 @@ public class Tile extends Control {
             range.set(RANGE);
         }
     }
+
     public ReadOnlyDoubleProperty rangeProperty() {
         if (null == range) {
             range = new DoublePropertyBase((getMaxValue() - getMinValue())) {
-                @Override protected void invalidated() { setAngleStep(getAngleRange() / get()); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "range"; }
+                @Override
+                protected void invalidated() {
+                    setAngleStep(getAngleRange() / get());
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "range";
+                }
             };
         }
         return range;
@@ -859,7 +902,10 @@ public class Tile extends Control {
      *
      * @return the threshold value of the gauge
      */
-    public double getThreshold() { return null == threshold ? _threshold : threshold.get(); }
+    public double getThreshold() {
+        return null == threshold ? _threshold : threshold.get();
+    }
+
     /**
      * Sets the threshold of the gauge to the given value. The value
      * will be clamped to the range of the gauge.
@@ -875,16 +921,27 @@ public class Tile extends Control {
             threshold.set(THRESHOLD);
         }
     }
+
     public DoubleProperty tresholdProperty() {
         if (null == threshold) {
             threshold = new DoublePropertyBase(_threshold) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double THRESHOLD = get();
-                    if (THRESHOLD < getMinValue() || THRESHOLD > getMaxValue()) set(clamp(getMinValue(), getMaxValue(), THRESHOLD));
+                    if (THRESHOLD < getMinValue() || THRESHOLD > getMaxValue())
+                        set(clamp(getMinValue(), getMaxValue(), THRESHOLD));
                     fireTileEvent(RESIZE_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "threshold"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "threshold";
+                }
             };
         }
         return threshold;
@@ -894,11 +951,16 @@ public class Tile extends Control {
      * Returns the reference value that will be used in the HighLowTileSkin
      * to visualize the increase or decrease of the current value compared
      * to the reference value;
+     *
      * @return the reference value that will be used in the HighLowTileSkin
      */
-    public double getReferenceValue() { return null == referenceValue ? _referenceValue : referenceValue.get(); }
+    public double getReferenceValue() {
+        return null == referenceValue ? _referenceValue : referenceValue.get();
+    }
+
     /**
      * Defines the reference value that will be used in the HighLowTileSkin
+     *
      * @param VALUE
      */
     public void setReferenceValue(final double VALUE) {
@@ -909,12 +971,24 @@ public class Tile extends Control {
             referenceValue.set(VALUE);
         }
     }
+
     public DoubleProperty referenceValueProperty() {
         if (null == referenceValue) {
             referenceValue = new DoublePropertyBase(_referenceValue) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "referenceValue"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "referenceValue";
+                }
             };
         }
         return referenceValue;
@@ -922,11 +996,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the reference value for the StockTileSkin will be calculated automatically
+     *
      * @return true if the reference value for the StockTileSkin will be calculated automatically
      */
-    public boolean isAutoReferenceValue() { return null == autoReferenceValue ? _autoReferenceValue : autoReferenceValue.get(); }
+    public boolean isAutoReferenceValue() {
+        return null == autoReferenceValue ? _autoReferenceValue : autoReferenceValue.get();
+    }
+
     /**
      * Defines if the reference value for the StockTileSkin should be calculated automatically
+     *
      * @param AUTO_REFERENCE_VALUE
      */
     public void setAutoReferenceValue(final boolean AUTO_REFERENCE_VALUE) {
@@ -936,11 +1015,19 @@ public class Tile extends Control {
             autoReferenceValue.set(AUTO_REFERENCE_VALUE);
         }
     }
+
     public BooleanProperty autoReferenceValueProperty() {
         if (null == autoReferenceValue) {
             autoReferenceValue = new BooleanPropertyBase(_autoReferenceValue) {
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "autoReferenceValue"; }
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "autoReferenceValue";
+                }
             };
         }
         return autoReferenceValue;
@@ -952,7 +1039,10 @@ public class Tile extends Control {
      *
      * @return the title of the gauge
      */
-    public String getTitle() { return null == title ? _title : title.get(); }
+    public String getTitle() {
+        return null == title ? _title : title.get();
+    }
+
     /**
      * Sets the title of the gauge. This title will only be visible
      * if it is not empty.
@@ -967,12 +1057,24 @@ public class Tile extends Control {
             title.set(TITLE);
         }
     }
+
     public StringProperty titleProperty() {
         if (null == title) {
-            title  = new StringPropertyBase(_title) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "title"; }
+            title = new StringPropertyBase(_title) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "title";
+                }
             };
             _title = null;
         }
@@ -983,13 +1085,18 @@ public class Tile extends Control {
      * Returns the alignment that will be used to align the title
      * in the Tile. Keep in mind that this property will not be used
      * by every skin
+     *
      * @return the alignment of the title
      */
-    public TextAlignment getTitleAlignment() { return null == titleAlignment ? _titleAlignment : titleAlignment.get(); }
+    public TextAlignment getTitleAlignment() {
+        return null == titleAlignment ? _titleAlignment : titleAlignment.get();
+    }
+
     /**
      * Defines the alignment that will be used to align the title
      * in the Tile. Keep in mind that this property will not be used
      * by every skin.
+     *
      * @param ALIGNMENT
      */
     public void setTitleAlignment(final TextAlignment ALIGNMENT) {
@@ -1000,18 +1107,29 @@ public class Tile extends Control {
             titleAlignment.set(ALIGNMENT);
         }
     }
+
     public ObjectProperty<TextAlignment> titleAlignmentProperty() {
         if (null == titleAlignment) {
             titleAlignment = new ObjectPropertyBase<TextAlignment>(_titleAlignment) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "titleAlignment"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "titleAlignment";
+                }
             };
             _titleAlignment = null;
         }
         return titleAlignment;
     }
-
 
     /**
      * Returns the description text of the gauge. This description text will usually
@@ -1019,7 +1137,10 @@ public class Tile extends Control {
      *
      * @return the description text of the gauge
      */
-    public String getDescription() { return null == description ? _description : description.get(); }
+    public String getDescription() {
+        return null == description ? _description : description.get();
+    }
+
     /**
      * Sets the description text of the gauge. This description text will usually
      * only be visible if it is not empty.
@@ -1034,12 +1155,24 @@ public class Tile extends Control {
             description.set(DESCRIPTION);
         }
     }
+
     public StringProperty descriptionProperty() {
         if (null == description) {
             description = new StringPropertyBase(_description) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "description"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "description";
+                }
             };
             _description = null;
         }
@@ -1048,12 +1181,17 @@ public class Tile extends Control {
 
     /**
      * Returns the current alignment of the description text (esp. in TextTileSkin)
+     *
      * @return the current alignment of the description text (esp. in TextTileSkin)
      */
-    public Pos getDescriptionAlignment() { return null == descriptionAlignment ? _descriptionAlignment : descriptionAlignment.get(); }
+    public Pos getDescriptionAlignment() {
+        return null == descriptionAlignment ? _descriptionAlignment : descriptionAlignment.get();
+    }
+
     /**
      * Defines the alignment of the description text (esp. for the TextTileSkin).
      * Valid values are TOP_LEFT and TOP_RIGHT
+     *
      * @param ALIGNMENT
      */
     public void setDescriptionAlignment(final Pos ALIGNMENT) {
@@ -1064,12 +1202,24 @@ public class Tile extends Control {
             descriptionAlignment.set(ALIGNMENT);
         }
     }
+
     public ObjectProperty<Pos> descriptionAlignmentProperty() {
         if (null == descriptionAlignment) {
             descriptionAlignment = new ObjectPropertyBase<Pos>(_descriptionAlignment) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "descriptionAlignment"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "descriptionAlignment";
+                }
             };
             _descriptionAlignment = null;
         }
@@ -1082,7 +1232,10 @@ public class Tile extends Control {
      *
      * @return the unit of the gauge
      */
-    public String getUnit() { return null == unit ? _unit : unit.get(); }
+    public String getUnit() {
+        return null == unit ? _unit : unit.get();
+    }
+
     /**
      * Sets the unit of the gauge. This unit will usually only be
      * visible if it is not empty.
@@ -1098,12 +1251,24 @@ public class Tile extends Control {
             unit.set(UNIT);
         }
     }
+
     public StringProperty unitProperty() {
         if (null == unit) {
-            unit  = new StringPropertyBase(_unit) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "unit"; }
+            unit = new StringPropertyBase(_unit) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "unit";
+                }
             };
             _unit = null;
         }
@@ -1112,11 +1277,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the switch in the SwitchTileSkin is selected
+     *
      * @return true if the switch in the SwitchTileSkin is selected
      */
-    public boolean isSelected() { return null == selected ? _selected : selected.get(); }
+    public boolean isSelected() {
+        return null == selected ? _selected : selected.get();
+    }
+
     /**
      * Defines if the switch in the SwitchTileSkin is selected
+     *
      * @param SELECTED
      */
     public void setSelected(final boolean SELECTED) {
@@ -1127,12 +1297,24 @@ public class Tile extends Control {
             selected.set(SELECTED);
         }
     }
+
     public BooleanProperty selectedProperty() {
         if (null == selected) {
             selected = new BooleanPropertyBase(_selected) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "selected"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "selected";
+                }
             };
         }
         return selected;
@@ -1140,15 +1322,22 @@ public class Tile extends Control {
 
     /**
      * Returns the moving average object
+     *
      * @return the moving average object
      */
-    public MovingAverage getMovingAverage() { return movingAverage; }
+    public MovingAverage getMovingAverage() {
+        return movingAverage;
+    }
 
     /**
      * Returns true if the averaging functionality is enabled.
+     *
      * @return true if the averaging functionality is enabled
      */
-    public boolean isAveragingEnabled() { return null == averagingEnabled ? _averagingEnabled : averagingEnabled.get(); }
+    public boolean isAveragingEnabled() {
+        return null == averagingEnabled ? _averagingEnabled : averagingEnabled.get();
+    }
+
     /**
      * Defines if the averaging functionality will be enabled.
      */
@@ -1160,12 +1349,24 @@ public class Tile extends Control {
             averagingEnabled.set(ENABLED);
         }
     }
+
     public BooleanProperty averagingEnabledProperty() {
         if (null == averagingEnabled) {
             averagingEnabled = new BooleanPropertyBase(_averagingEnabled) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "averagingEnabled"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "averagingEnabled";
+                }
             };
         }
         return averagingEnabled;
@@ -1175,13 +1376,18 @@ public class Tile extends Control {
      * Returns the number of values that should be used for
      * the averaging of values. The value must be in the
      * range of 1 - 1000.
+     *
      * @return the number of values used for averaging
      */
-    public int getAveragingPeriod() { return null == averagingPeriod ? _averagingPeriod : averagingPeriod.get(); }
+    public int getAveragingPeriod() {
+        return null == averagingPeriod ? _averagingPeriod : averagingPeriod.get();
+    }
+
     /**
      * Defines the number values that should be used for
      * the averaging of values. The value must be in the
      * range of 1 - 1000.
+     *
      * @param PERIOD
      */
     public void setAveragingPeriod(final int PERIOD) {
@@ -1193,15 +1399,25 @@ public class Tile extends Control {
             averagingPeriod.set(Helper.clamp(0, MAX_PERIOD, PERIOD));
         }
     }
+
     public IntegerProperty averagingPeriodProperty() {
         if (null == averagingPeriod) {
             averagingPeriod = new IntegerPropertyBase(_averagingPeriod) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     movingAverage.setPeriod(get());
                     fireTileEvent(AVERAGING_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "averagingPeriod"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "averagingPeriod";
+                }
             };
         }
         return averagingPeriod;
@@ -1210,30 +1426,45 @@ public class Tile extends Control {
     /**
      * Returns a deep copy of the current list of Data objects that will
      * be used to calculate the moving average.
+     *
      * @return the current list of Data objects used for the moving average
      */
-    public Queue<TimeData> getAveragingWindow() { return movingAverage.getWindow(); }
+    public Queue<TimeData> getAveragingWindow() {
+        return movingAverage.getWindow();
+    }
 
     /**
      * Returns the moving average over the number of values
      * defined by averagingPeriod.
+     *
      * @return the moving the average over the number of values defined by averagingPeriod
      */
-    public double getAverage() { return movingAverage.getAverage(); }
+    public double getAverage() {
+        return movingAverage.getAverage();
+    }
+
     /**
      * Returns the moving average over the given duration.
+     *
      * @param DURATION
      * @return the moving average over the given duration
      */
-    public double getTimeBasedAverageOf(final java.time.Duration DURATION) { return movingAverage.getTimeBasedAverageOf(DURATION); }
+    public double getTimeBasedAverageOf(final java.time.Duration DURATION) {
+        return movingAverage.getTimeBasedAverageOf(DURATION);
+    }
 
     /**
      * Returns a duration that will be used in the TimeTileSkin
+     *
      * @return a duration that will be used in the TimeTileSkin
      */
-    public LocalTime getDuration() { return null == duration ? _duration : duration.get(); }
+    public LocalTime getDuration() {
+        return null == duration ? _duration : duration.get();
+    }
+
     /**
      * Defines a duration that is used in the TimeTileSkin
+     *
      * @param DURATION
      */
     public void setDuration(final LocalTime DURATION) {
@@ -1244,11 +1475,19 @@ public class Tile extends Control {
             duration.set(DURATION);
         }
     }
+
     public ObjectProperty<LocalTime> durationProperty() {
         if (null == duration) {
             duration = new ObjectPropertyBase<LocalTime>(_duration) {
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "duration"; }
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "duration";
+                }
             };
             _duration = null;
         }
@@ -1263,7 +1502,21 @@ public class Tile extends Control {
      *
      * @return an observable list of Section objects
      */
-    public ObservableList<Section> getSections() { return sections; }
+    public ObservableList<Section> getSections() {
+        return sections;
+    }
+
+    /**
+     * Sets the sections to the given array of Section objects. The
+     * sections will be used to colorize areas with a special
+     * meaning such as the red area in a rpm gauge.
+     *
+     * @param SECTIONS
+     */
+    public void setSections(final Section... SECTIONS) {
+        setSections(Arrays.asList(SECTIONS));
+    }
+
     /**
      * Sets the sections to the given list of Section objects. The
      * sections will be used to colorize areas with a special
@@ -1278,14 +1531,7 @@ public class Tile extends Control {
         sections.sort(new SectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
-    /**
-     * Sets the sections to the given array of Section objects. The
-     * sections will be used to colorize areas with a special
-     * meaning such as the red area in a rpm gauge.
-     *
-     * @param SECTIONS
-     */
-    public void setSections(final Section... SECTIONS) { setSections(Arrays.asList(SECTIONS)); }
+
     /**
      * Adds the given Section to the list of sections.
      * Sections in the Medusa library
@@ -1299,6 +1545,7 @@ public class Tile extends Control {
         sections.sort(new SectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
+
     /**
      * Removes the given Section from the list of sections.
      * Sections in the Medusa library
@@ -1312,6 +1559,7 @@ public class Tile extends Control {
         sections.sort(new SectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
+
     /**
      * Clears the list of sections.
      */
@@ -1320,107 +1568,158 @@ public class Tile extends Control {
         fireTileEvent(SECTION_EVENT);
     }
 
-    public Collection<Series<String, Number>> getSeries() { return series; }
+    public Collection<Series<String, Number>> getSeries() {
+        return series;
+    }
+
+    public void setSeries(final Series<String, Number>... SERIES) {
+        setSeries(Arrays.asList(SERIES));
+    }
+
     public void setSeries(final List<Series<String, Number>> SERIES) {
         series.setAll(SERIES);
         fireTileEvent(SERIES_EVENT);
     }
-    public void setSeries(final Series<String, Number>... SERIES) { setSeries(Arrays.asList(SERIES)); }
+
     public void addSeries(final Series<String, Number> SERIES) {
         if (null == SERIES) return;
         series.add(SERIES);
         fireTileEvent(SERIES_EVENT);
     }
+
     public void removeSeries(final Series<String, Number> SERIES) {
         if (null == SERIES) return;
         series.remove(SERIES);
         fireTileEvent(SERIES_EVENT);
     }
+
     public void clearSeries() {
         series.clear();
         fireTileEvent(SERIES_EVENT);
     }
 
-    public ObservableList<BarChartItem> getBarChartItems() { return barChartItems; }
+    public ObservableList<BarChartItem> getBarChartItems() {
+        return barChartItems;
+    }
+
+    public void setBarChartItems(final BarChartItem... ITEMS) {
+        setBarChartItems(Arrays.asList(ITEMS));
+    }
+
     public void setBarChartItems(final List<BarChartItem> ITEMS) {
         barChartItems.setAll(ITEMS);
         fireTileEvent(DATA_EVENT);
     }
-    public void setBarChartItems(final BarChartItem... ITEMS) { setBarChartItems(Arrays.asList(ITEMS)); }
+
     public void addBarChartItem(final BarChartItem ITEM) {
         if (null == ITEM) return;
         barChartItems.add(ITEM);
         fireTileEvent(DATA_EVENT);
     }
+
     public void removeBarChartItem(final BarChartItem ITEM) {
         if (null == ITEM) return;
         barChartItems.remove(ITEM);
         fireTileEvent(DATA_EVENT);
     }
+
     public void clearBarChartItems() {
         barChartItems.clear();
         fireTileEvent(DATA_EVENT);
     }
 
-    public List<LeaderBoardItem> getLeaderBoardItems() { return leaderBoardItems; }
+    public List<LeaderBoardItem> getLeaderBoardItems() {
+        return leaderBoardItems;
+    }
+
+    public void setLeaderBoardItems(final LeaderBoardItem... ITEMS) {
+        setLeaderBoardItems(Arrays.asList(ITEMS));
+    }
+
     public void setLeaderBoardItems(final List<LeaderBoardItem> ITEMS) {
         leaderBoardItems.clear();
         leaderBoardItems.addAll(ITEMS);
         fireTileEvent(DATA_EVENT);
     }
-    public void setLeaderBoardItems(final LeaderBoardItem... ITEMS) { setLeaderBoardItems(Arrays.asList(ITEMS)); }
+
     public void addLeaderBoardItem(final LeaderBoardItem ITEM) {
         if (null == ITEM) return;
         leaderBoardItems.add(ITEM);
         fireTileEvent(DATA_EVENT);
     }
+
     public void removeLeaderBoardItem(final LeaderBoardItem ITEM) {
         if (null == ITEM) return;
         leaderBoardItems.remove(ITEM);
         fireTileEvent(DATA_EVENT);
     }
+
     public void clearLeaderBoardItems() {
         leaderBoardItems.clear();
         fireTileEvent(DATA_EVENT);
     }
 
-    public List<Stop> getGradientStops() { return gradientStops; }
-    public void setGradientStops(final Stop... STOPS) {
-        setGradientStops(Arrays.asList(STOPS));
+    public List<Stop> getGradientStops() {
+        return gradientStops;
     }
+
     public void setGradientStops(final List<Stop> STOPS) {
         gradientStops.clear();
         gradientStops.addAll(STOPS);
         fireTileEvent(REDRAW_EVENT);
     }
 
+    public void setGradientStops(final Stop... STOPS) {
+        setGradientStops(Arrays.asList(STOPS));
+    }
+
     /**
      * Returns an optional node that can be used in combination with the
      * CustomTileSkin
+     *
      * @return an optional node that can be used in combination with the CustomTileSkin
      */
-    public Node getGraphic() { return null == graphic ? null : graphic.get(); }
+    public Node getGraphic() {
+        return null == graphic ? null : graphic.get();
+    }
+
     /**
      * Defines an optional node that can be used in combination with the
      * CustomTileSkin.
+     *
      * @param GRAPHIC
      */
-    public void setGraphic(final Node GRAPHIC) { graphicProperty().set(GRAPHIC); }
+    public void setGraphic(final Node GRAPHIC) {
+        graphicProperty().set(GRAPHIC);
+    }
+
     public ObjectProperty<Node> graphicProperty() {
         if (null == graphic) {
             graphic = new ObjectPropertyBase<Node>() {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     fireTileEvent(GRAPHIC_EVENT);
                     fireTileEvent(RESIZE_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "graphic"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "graphic";
+                }
             };
         }
         return graphic;
     }
 
-    public Location getCurrentLocation() { return null == currentLocation ? _currentLocation : currentLocation.get(); }
+    public Location getCurrentLocation() {
+        return null == currentLocation ? _currentLocation : currentLocation.get();
+    }
+
     public void setCurrentLocation(final Location LOCATION) {
         if (null == currentLocation) {
             _currentLocation = LOCATION;
@@ -1429,59 +1728,89 @@ public class Tile extends Control {
             currentLocation.set(LOCATION);
         }
     }
+
     public ObjectProperty<Location> currentLocationProperty() {
         if (null == currentLocation) {
             currentLocation = new ObjectPropertyBase<Location>(_currentLocation) {
-                @Override protected void invalidated() { fireTileEvent(LOCATION_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "currentLocation"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(LOCATION_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "currentLocation";
+                }
             };
             _currentLocation = null;
         }
         return currentLocation;
     }
+
     public void updateLocation(final double LATITUDE, final double LONGITUDE) {
         getCurrentLocation().set(LATITUDE, LONGITUDE);
         fireTileEvent(LOCATION_EVENT);
     }
 
-    public ObservableList<Location> getPoiList() { return poiList; }
+    public ObservableList<Location> getPoiList() {
+        return poiList;
+    }
+
     public void setPoiList(final List<Location> POI_LIST) {
         poiList.clear();
         poiList.addAll(POI_LIST);
         fireTileEvent(LOCATION_EVENT);
     }
-    public void setPoiLocations(final Location... LOCATIONS) { setPoiList(Arrays.asList(LOCATIONS)); }
+
+    public void setPoiLocations(final Location... LOCATIONS) {
+        setPoiList(Arrays.asList(LOCATIONS));
+    }
+
     public void addPoiLocation(final Location LOCATION) {
         if (null == LOCATION) return;
         poiList.add(LOCATION);
         fireTileEvent(LOCATION_EVENT);
     }
+
     public void removePoiLocation(final Location LOCATION) {
         if (null == LOCATION) return;
         poiList.remove(LOCATION);
         fireTileEvent(LOCATION_EVENT);
     }
+
     public void clearPoiLocations() {
         poiList.clear();
         fireTileEvent(DATA_EVENT);
     }
 
-    public List<Location> getTrack() { return track; }
-    public void setTrack(final Location... LOCATIONS) {
-        setTrack(Arrays.asList(LOCATIONS));
+    public List<Location> getTrack() {
+        return track;
     }
+
     public void setTrack(final List<Location> LOCATIONS) {
         track.clear();
         track.addAll(LOCATIONS);
         fireTileEvent(TRACK_EVENT);
     }
+
+    public void setTrack(final Location... LOCATIONS) {
+        setTrack(Arrays.asList(LOCATIONS));
+    }
+
     public void clearTrack() {
         track.clear();
         fireTileEvent(TRACK_EVENT);
     }
 
-    public TileColor getTrackColor() { return null == trackColor ? _trackColor : trackColor.get(); }
+    public TileColor getTrackColor() {
+        return null == trackColor ? _trackColor : trackColor.get();
+    }
+
     public void setTrackColor(final TileColor COLOR) {
         if (null == trackColor) {
             _trackColor = COLOR;
@@ -1490,19 +1819,34 @@ public class Tile extends Control {
             trackColor.set(COLOR);
         }
     }
+
     public ObjectProperty<TileColor> trackColorProperty() {
         if (null == trackColor) {
             trackColor = new ObjectPropertyBase<TileColor>(_trackColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "trackColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "trackColor";
+                }
             };
             _trackColor = null;
         }
         return trackColor;
     }
 
-    public MapProvider getMapProvider() { return null == mapProvider ? _mapProvider : mapProvider.get(); }
+    public MapProvider getMapProvider() {
+        return null == mapProvider ? _mapProvider : mapProvider.get();
+    }
+
     public void setMapProvider(final MapProvider PROVIDER) {
         if (null == mapProvider) {
             _mapProvider = PROVIDER;
@@ -1511,25 +1855,57 @@ public class Tile extends Control {
             mapProvider.set(PROVIDER);
         }
     }
+
     public ObjectProperty<MapProvider> mapProviderProperty() {
         if (null == mapProvider) {
             mapProvider = new ObjectPropertyBase<MapProvider>(_mapProvider) {
-                @Override protected void invalidated() { fireTileEvent(MAP_PROVIDER_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "mapProvider"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(MAP_PROVIDER_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "mapProvider";
+                }
             };
             _mapProvider = null;
         }
         return mapProvider;
     }
 
-    public ObservableList<ChartData> getChartData() { return chartDataList; }
-    public void addChartData(final ChartData... DATA) { chartDataList.addAll(DATA); }
-    public void addChartData(final List<ChartData> DATA) { chartDataList.addAll(DATA); }
-    public void setChartData(final ChartData... DATA) { chartDataList.setAll(DATA); }
-    public void setChartData(final List<ChartData> DATA) { chartDataList.setAll(DATA); }
-    public void removeChartData(final ChartData DATA) { chartDataList.remove(DATA); }
-    public void clearChartData() { chartDataList.clear(); }
+    public ObservableList<ChartData> getChartData() {
+        return chartDataList;
+    }
+
+    public void setChartData(final List<ChartData> DATA) {
+        chartDataList.setAll(DATA);
+    }
+
+    public void addChartData(final ChartData... DATA) {
+        chartDataList.addAll(DATA);
+    }
+
+    public void addChartData(final List<ChartData> DATA) {
+        chartDataList.addAll(DATA);
+    }
+
+    public void setChartData(final ChartData... DATA) {
+        chartDataList.setAll(DATA);
+    }
+
+    public void removeChartData(final ChartData DATA) {
+        chartDataList.remove(DATA);
+    }
+
+    public void clearChartData() {
+        chartDataList.clear();
+    }
 
     /**
      * A convenient method to set the color of foreground elements like
@@ -1539,12 +1915,36 @@ public class Tile extends Control {
      * @param COLOR
      */
     public void setForegroundBaseColor(final Color COLOR) {
-        if (null == titleColor) { _titleColor = COLOR; } else { titleColor.set(COLOR); }
-        if (null == descriptionColor) { _descriptionColor = COLOR; } else { descriptionColor.set(COLOR); }
-        if (null == unitColor) { _unitColor = COLOR; } else { unitColor.set(COLOR); }
-        if (null == valueColor) { _valueColor = COLOR; } else { valueColor.set(COLOR); }
-        if (null == textColor) { _textColor = COLOR; } else { textColor.set(COLOR); }
-        if (null == foregroundColor) { _foregroundColor = COLOR; } else { foregroundColor.set(COLOR); }
+        if (null == titleColor) {
+            _titleColor = COLOR;
+        } else {
+            titleColor.set(COLOR);
+        }
+        if (null == descriptionColor) {
+            _descriptionColor = COLOR;
+        } else {
+            descriptionColor.set(COLOR);
+        }
+        if (null == unitColor) {
+            _unitColor = COLOR;
+        } else {
+            unitColor.set(COLOR);
+        }
+        if (null == valueColor) {
+            _valueColor = COLOR;
+        } else {
+            valueColor.set(COLOR);
+        }
+        if (null == textColor) {
+            _textColor = COLOR;
+        } else {
+            textColor.set(COLOR);
+        }
+        if (null == foregroundColor) {
+            _foregroundColor = COLOR;
+        } else {
+            foregroundColor.set(COLOR);
+        }
         fireTileEvent(REDRAW_EVENT);
     }
 
@@ -1553,12 +1953,17 @@ public class Tile extends Control {
      * subtitle and text in the different skins.
      * The factor in the text size will be used to calculate the
      * height of the font.
+     *
      * @return the text size that will be used for the title, subtitle and text
      */
-    public TextSize getTextSize() { return null == textSize ? _textSize : textSize.get(); }
+    public TextSize getTextSize() {
+        return null == textSize ? _textSize : textSize.get();
+    }
+
     /**
      * Defines the text size that will be used for the title,
      * subtitle and text in the different skins.
+     *
      * @param SIZE
      */
     public void setTextSize(final TextSize SIZE) {
@@ -1569,12 +1974,24 @@ public class Tile extends Control {
             textSize.set(SIZE);
         }
     }
+
     public ObjectProperty<TextSize> textSizeProperty() {
         if (null == textSize) {
             textSize = new ObjectPropertyBase<TextSize>(_textSize) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT);}
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "textSize"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "textSize";
+                }
             };
         }
         return textSize;
@@ -1582,11 +1999,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the corners of the Tiles are rounded
+     *
      * @return true if the corners of the Tiles are rounded
      */
-    public boolean getRoundedCorners() { return null == roundedCorners ? _roundedCorners : roundedCorners.get(); }
+    public boolean getRoundedCorners() {
+        return null == roundedCorners ? _roundedCorners : roundedCorners.get();
+    }
+
     /**
      * Switches the corners of the Tiles between rounded and rectangular
+     *
      * @param ROUNDED
      */
     public void setRoundedCorners(final boolean ROUNDED) {
@@ -1597,12 +2019,24 @@ public class Tile extends Control {
             roundedCorners.set(ROUNDED);
         }
     }
+
     public BooleanProperty roundedCornersProperty() {
         if (null == roundedCorners) {
             roundedCorners = new BooleanPropertyBase(_roundedCorners) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "roundedCorners"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "roundedCorners";
+                }
             };
         }
         return roundedCorners;
@@ -1615,7 +2049,10 @@ public class Tile extends Control {
      *
      * @return true if the visualization of the value should start from 0
      */
-    public boolean isStartFromZero() { return null == startFromZero ? _startFromZero : startFromZero.get(); }
+    public boolean isStartFromZero() {
+        return null == startFromZero ? _startFromZero : startFromZero.get();
+    }
+
     /**
      * Defines the behavior of the visualization where the needle/bar should
      * start from 0 instead of the minValue. This is especially useful when
@@ -1632,15 +2069,25 @@ public class Tile extends Control {
             startFromZero.set(IS_TRUE);
         }
     }
+
     public BooleanProperty startFromZeroProperty() {
         if (null == startFromZero) {
             startFromZero = new BooleanPropertyBase(_startFromZero) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     Tile.this.setValue((get() && getMinValue() < 0) ? 0 : getMinValue());
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "startFromZero"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "startFromZero";
+                }
             };
         }
         return startFromZero;
@@ -1653,7 +2100,10 @@ public class Tile extends Control {
      *
      * @return true if the needle/bar should always return to zero.
      */
-    public boolean isReturnToZero() { return null == returnToZero ? _returnToZero : returnToZero.get(); }
+    public boolean isReturnToZero() {
+        return null == returnToZero ? _returnToZero : returnToZero.get();
+    }
+
     /**
      * Defines the behavior of the visualization where the needle/bar should
      * always return to 0 after it reached the final value. This setting only makes
@@ -1670,15 +2120,25 @@ public class Tile extends Control {
             returnToZero.set(IS_TRUE);
         }
     }
+
     public BooleanProperty returnToZeroProperty() {
         if (null == returnToZero) {
             returnToZero = new BooleanPropertyBase(_returnToZero) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     if (Helper.biggerThan(getMaxValue(), 0.0)) set(false);
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "returnToZero"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "returnToZero";
+                }
             };
         }
         return returnToZero;
@@ -1690,7 +2150,10 @@ public class Tile extends Control {
      *
      * @return the smallest value that was measured after the last reset
      */
-    public double getMinMeasuredValue() { return null == minMeasuredValue ? _minMeasuredValue : minMeasuredValue.get(); }
+    public double getMinMeasuredValue() {
+        return null == minMeasuredValue ? _minMeasuredValue : minMeasuredValue.get();
+    }
+
     /**
      * Sets the minMeasuredValue to the given value.
      *
@@ -1703,8 +2166,11 @@ public class Tile extends Control {
             minMeasuredValue.set(MIN_MEASURED_VALUE);
         }
     }
+
     public ReadOnlyDoubleProperty minMeasuredValueProperty() {
-        if (null == minMeasuredValue) { minMeasuredValue = new SimpleDoubleProperty(this, "minMeasuredValue", _minMeasuredValue); }
+        if (null == minMeasuredValue) {
+            minMeasuredValue = new SimpleDoubleProperty(this, "minMeasuredValue", _minMeasuredValue);
+        }
         return minMeasuredValue;
     }
 
@@ -1717,6 +2183,7 @@ public class Tile extends Control {
     public double getMaxMeasuredValue() {
         return null == maxMeasuredValue ? _maxMeasuredValue : maxMeasuredValue.get();
     }
+
     /**
      * Sets the maxMeasuredVAlue to the given value.
      *
@@ -1729,8 +2196,11 @@ public class Tile extends Control {
             maxMeasuredValue.set(MAX_MEASURED_VALUE);
         }
     }
+
     public ReadOnlyDoubleProperty maxMeasuredValueProperty() {
-        if (null == maxMeasuredValue) { maxMeasuredValue = new SimpleDoubleProperty(this, "maxMeasuredValue", _maxMeasuredValue); }
+        if (null == maxMeasuredValue) {
+            maxMeasuredValue = new SimpleDoubleProperty(this, "maxMeasuredValue", _maxMeasuredValue);
+        }
         return maxMeasuredValue;
     }
 
@@ -1747,7 +2217,10 @@ public class Tile extends Control {
      *
      * @return true if the indicator of the minMeasuredValue is visible
      */
-    public boolean isMinMeasuredValueVisible() { return null == minMeasuredValueVisible ? _minMeasuredValueVisible : minMeasuredValueVisible.get(); }
+    public boolean isMinMeasuredValueVisible() {
+        return null == minMeasuredValueVisible ? _minMeasuredValueVisible : minMeasuredValueVisible.get();
+    }
+
     /**
      * Defines if the indicator of the minMeasuredValue should be visible.
      *
@@ -1761,12 +2234,24 @@ public class Tile extends Control {
             minMeasuredValueVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty minMeasuredValueVisibleProperty() {
         if (null == minMeasuredValueVisible) {
             minMeasuredValueVisible = new BooleanPropertyBase(_minMeasuredValueVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "minMeasuredValueVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "minMeasuredValueVisible";
+                }
             };
         }
         return minMeasuredValueVisible;
@@ -1777,7 +2262,10 @@ public class Tile extends Control {
      *
      * @return true if the indicator of the maxMeasuredValue is visible
      */
-    public boolean isMaxMeasuredValueVisible() { return null == maxMeasuredValueVisible ? _maxMeasuredValueVisible : maxMeasuredValueVisible.get(); }
+    public boolean isMaxMeasuredValueVisible() {
+        return null == maxMeasuredValueVisible ? _maxMeasuredValueVisible : maxMeasuredValueVisible.get();
+    }
+
     /**
      * Defines if the indicator of the maxMeasuredValue should be visible.
      *
@@ -1791,12 +2279,24 @@ public class Tile extends Control {
             maxMeasuredValueVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty maxMeasuredValueVisibleProperty() {
         if (null == maxMeasuredValueVisible) {
             maxMeasuredValueVisible = new BooleanPropertyBase(_maxMeasuredValueVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "maxMeasuredValueVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "maxMeasuredValueVisible";
+                }
             };
         }
         return maxMeasuredValueVisible;
@@ -1807,7 +2307,10 @@ public class Tile extends Control {
      *
      * @return true if the old value of the gauge is visible (not implemented)
      */
-    public boolean isOldValueVisible() { return null == oldValueVisible ? _oldValueVisible : oldValueVisible.get(); }
+    public boolean isOldValueVisible() {
+        return null == oldValueVisible ? _oldValueVisible : oldValueVisible.get();
+    }
+
     /**
      * Defines if the old value of the gauge should be visible (not implemented)
      *
@@ -1821,12 +2324,24 @@ public class Tile extends Control {
             oldValueVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty oldValueVisibleProperty() {
         if (null == oldValueVisible) {
             oldValueVisible = new BooleanPropertyBase(_oldValueVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "oldValueVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "oldValueVisible";
+                }
             };
         }
         return oldValueVisible;
@@ -1838,7 +2353,10 @@ public class Tile extends Control {
      *
      * @return true if the visualization of the gauge value is visible
      */
-    public boolean isValueVisible() { return null == valueVisible ? _valueVisible : valueVisible.get(); }
+    public boolean isValueVisible() {
+        return null == valueVisible ? _valueVisible : valueVisible.get();
+    }
+
     /**
      * Defines if the visualization of the gauge value should be visible.
      *
@@ -1852,12 +2370,24 @@ public class Tile extends Control {
             valueVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty valueVisibleProperty() {
         if (null == valueVisible) {
             valueVisible = new BooleanPropertyBase(_valueVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "valueVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "valueVisible";
+                }
             };
         }
         return valueVisible;
@@ -1869,7 +2399,10 @@ public class Tile extends Control {
      *
      * @return the Paint object that will be used to fill the gauge foreground
      */
-    public Color getForegroundColor() { return null == foregroundColor ? _foregroundColor : foregroundColor.get(); }
+    public Color getForegroundColor() {
+        return null == foregroundColor ? _foregroundColor : foregroundColor.get();
+    }
+
     /**
      * Defines the Paint object that will be used to fill the gauge foreground.
      *
@@ -1883,12 +2416,24 @@ public class Tile extends Control {
             foregroundColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> foregroundColorProperty() {
         if (null == foregroundColor) {
             foregroundColor = new ObjectPropertyBase<Color>(_foregroundColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "foregroundColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "foregroundColor";
+                }
             };
             _foregroundColor = null;
         }
@@ -1901,7 +2446,10 @@ public class Tile extends Control {
      *
      * @return the Paint object that will be used to fill the gauge background
      */
-    public Color getBackgroundColor() { return null == backgroundColor ? _backgroundColor : backgroundColor.get(); }
+    public Color getBackgroundColor() {
+        return null == backgroundColor ? _backgroundColor : backgroundColor.get();
+    }
+
     /**
      * Defines the Paint object that will be used to fill the gauge background.
      *
@@ -1915,12 +2463,24 @@ public class Tile extends Control {
             backgroundColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> backgroundColorProperty() {
         if (null == backgroundColor) {
             backgroundColor = new ObjectPropertyBase<Color>(_backgroundColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "backgroundColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "backgroundColor";
+                }
             };
             _backgroundColor = null;
         }
@@ -1933,7 +2493,10 @@ public class Tile extends Control {
      *
      * @return the Paint object that will be used to draw the border of the gauge
      */
-    public Color getBorderColor() { return null == borderColor ? _borderColor : borderColor.get(); }
+    public Color getBorderColor() {
+        return null == borderColor ? _borderColor : borderColor.get();
+    }
+
     /**
      * Defines the Paint object that will be used to draw the border of the gauge.
      *
@@ -1947,12 +2510,24 @@ public class Tile extends Control {
             borderColor.set(PAINT);
         }
     }
+
     public ObjectProperty<Color> borderColorProperty() {
         if (null == borderColor) {
             borderColor = new ObjectPropertyBase<Color>(_borderColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "borderColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "borderColor";
+                }
             };
             _borderColor = null;
         }
@@ -1965,7 +2540,10 @@ public class Tile extends Control {
      *
      * @return the width in pixels that will be used to draw the border of the gauge
      */
-    public double getBorderWidth() { return null == borderWidth ? _borderWidth : borderWidth.get(); }
+    public double getBorderWidth() {
+        return null == borderWidth ? _borderWidth : borderWidth.get();
+    }
+
     /**
      * Defines the width in pixels that will be used to draw the border of the gauge.
      * The value will be clamped between 0 and 50 pixels.
@@ -1980,16 +2558,26 @@ public class Tile extends Control {
             borderWidth.set(WIDTH);
         }
     }
+
     public DoubleProperty borderWidthProperty() {
         if (null == borderWidth) {
             borderWidth = new DoublePropertyBase(_borderWidth) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double WIDTH = get();
                     if (WIDTH < 0 || WIDTH > 50) set(clamp(0.0, 50.0, WIDTH));
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "borderWidth"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "borderWidth";
+                }
             };
         }
         return borderWidth;
@@ -2001,7 +2589,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the knob of the radial gauges
      */
-    public Color getKnobColor() { return null == knobColor ? _knobColor : knobColor.get(); }
+    public Color getKnobColor() {
+        return null == knobColor ? _knobColor : knobColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the knob of
      * the radial gauges.
@@ -2016,19 +2607,33 @@ public class Tile extends Control {
             knobColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> knobColorProperty() {
         if (null == knobColor) {
-            knobColor  = new ObjectPropertyBase<Color>(_knobColor) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "knobColor"; }
+            knobColor = new ObjectPropertyBase<Color>(_knobColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "knobColor";
+                }
             };
             _knobColor = null;
         }
         return knobColor;
     }
 
-    public Color getActiveColor() { return null == activeColor ? _activeColor : activeColor.get(); }
+    public Color getActiveColor() {
+        return null == activeColor ? _activeColor : activeColor.get();
+    }
 
     public void setActiveColor(final Color COLOR) {
         if (null == activeColor) {
@@ -2038,12 +2643,24 @@ public class Tile extends Control {
             activeColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> activeColorProperty() {
         if (null == activeColor) {
             activeColor = new ObjectPropertyBase<Color>(_activeColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "activeColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "activeColor";
+                }
             };
             _activeColor = null;
         }
@@ -2059,7 +2676,10 @@ public class Tile extends Control {
      *
      * @return true if setting the value of the gauge will be animated
      */
-    public boolean isAnimated() { return null == animated ? _animated : animated.get(); }
+    public boolean isAnimated() {
+        return null == animated ? _animated : animated.get();
+    }
+
     /**
      * Defines if setting the value of the gauge should be animated using
      * the duration defined in animationDuration [ms].
@@ -2076,8 +2696,11 @@ public class Tile extends Control {
             animated.set(ANIMATED);
         }
     }
+
     public BooleanProperty animatedProperty() {
-        if (null == animated) { animated = new SimpleBooleanProperty(Tile.this, "animated", _animated); }
+        if (null == animated) {
+            animated = new SimpleBooleanProperty(Tile.this, "animated", _animated);
+        }
         return animated;
     }
 
@@ -2089,7 +2712,10 @@ public class Tile extends Control {
      *
      * @return the duration in ms that will be used to animate the needle/bar
      */
-    public long getAnimationDuration() { return animationDuration; }
+    public long getAnimationDuration() {
+        return animationDuration;
+    }
+
     /**
      * Defines the duration ín milliseconds that will be used to animate
      * the needle/bar of the gauge from the last value to the next value.
@@ -2098,7 +2724,9 @@ public class Tile extends Control {
      *
      * @param ANIMATION_DURATION
      */
-    public void setAnimationDuration(final long ANIMATION_DURATION) { animationDuration = clamp(10, 10000, ANIMATION_DURATION); }
+    public void setAnimationDuration(final long ANIMATION_DURATION) {
+        animationDuration = clamp(10, 10000, ANIMATION_DURATION);
+    }
 
     /**
      * Returns the angle in degree that defines the start of the scale with
@@ -2110,7 +2738,10 @@ public class Tile extends Control {
      *
      * @return the angle in degree that defines the start of the scale
      */
-    public double getStartAngle() { return null == startAngle ? _startAngle : startAngle.get(); }
+    public double getStartAngle() {
+        return null == startAngle ? _startAngle : startAngle.get();
+    }
+
     /**
      * Defines the angle in degree that defines the start of the scale with
      * it's minValue in a radial gauge. If set to 0 the scale will start at
@@ -2129,16 +2760,26 @@ public class Tile extends Control {
             startAngle.set(ANGLE);
         }
     }
+
     public DoubleProperty startAngleProperty() {
         if (null == startAngle) {
             startAngle = new DoublePropertyBase(_startAngle) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double ANGLE = get();
-                    if (ANGLE < 0 || ANGLE > 360 ) set(clamp(0.0, 360.0, ANGLE));
+                    if (ANGLE < 0 || ANGLE > 360) set(clamp(0.0, 360.0, ANGLE));
                     fireTileEvent(RECALC_EVENT);
                 }
-                @Override public Object getBean() { return this; }
-                @Override public String getName() { return "startAngle"; }
+
+                @Override
+                public Object getBean() {
+                    return this;
+                }
+
+                @Override
+                public String getName() {
+                    return "startAngle";
+                }
             };
         }
         return startAngle;
@@ -2152,7 +2793,10 @@ public class Tile extends Control {
      *
      * @return the angle range in degree that will be used to draw the scale
      */
-    public double getAngleRange() { return null == angleRange ? _angleRange : angleRange.get(); }
+    public double getAngleRange() {
+        return null == angleRange ? _angleRange : angleRange.get();
+    }
+
     /**
      * Defines the angle range in degree that will be used to draw the scale
      * of the radial gauge. The given range will be clamped in the range of
@@ -2166,24 +2810,38 @@ public class Tile extends Control {
         if (null == angleRange) {
             _angleRange = tmpAngleRange;
             setAngleStep(tmpAngleRange / getRange());
-            if (isAutoScale()) { calcAutoScale(); }
+            if (isAutoScale()) {
+                calcAutoScale();
+            }
             fireTileEvent(RECALC_EVENT);
         } else {
             angleRange.set(tmpAngleRange);
         }
     }
+
     public DoubleProperty angleRangeProperty() {
         if (null == angleRange) {
             angleRange = new DoublePropertyBase(_angleRange) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final double ANGLE_RANGE = get();
                     if (ANGLE_RANGE < 0 || ANGLE_RANGE > 360) set(clamp(0.0, 360.0, ANGLE_RANGE));
                     setAngleStep(get() / getRange());
-                    if (isAutoScale()) { calcAutoScale(); }
+                    if (isAutoScale()) {
+                        calcAutoScale();
+                    }
                     fireTileEvent(RECALC_EVENT);
                 }
-                @Override public Object getBean() { return this; }
-                @Override public String getName() { return "angleRange"; }
+
+                @Override
+                public Object getBean() {
+                    return this;
+                }
+
+                @Override
+                public String getName() {
+                    return "angleRange";
+                }
             };
         }
         return angleRange;
@@ -2197,7 +2855,10 @@ public class Tile extends Control {
      *
      * @return the value that is calculated by dividing the angleRange by the range
      */
-    public double getAngleStep() { return null == angleStep ? _angleStep : angleStep.get(); }
+    public double getAngleStep() {
+        return null == angleStep ? _angleStep : angleStep.get();
+    }
+
     /**
      * Private method that will be used to set the angleStep
      *
@@ -2210,8 +2871,11 @@ public class Tile extends Control {
             angleStep.set(STEP);
         }
     }
+
     public ReadOnlyDoubleProperty angleStepProperty() {
-        if (null == angleStep) { angleStep = new SimpleDoubleProperty(Tile.this, "angleStep", _angleStep); }
+        if (null == angleStep) {
+            angleStep = new SimpleDoubleProperty(Tile.this, "angleStep", _angleStep);
+        }
         return angleStep;
     }
 
@@ -2224,7 +2888,10 @@ public class Tile extends Control {
      *
      * @return true if the scale will be calculated automatically
      */
-    public boolean isAutoScale() { return null == autoScale ? _autoScale : autoScale.get(); }
+    public boolean isAutoScale() {
+        return null == autoScale ? _autoScale : autoScale.get();
+    }
+
     /**
      * Defines if the scale should be calculated automatically based on
      * the defined values for min- and maxValue.
@@ -2250,10 +2917,12 @@ public class Tile extends Control {
             autoScale.set(AUTO_SCALE);
         }
     }
+
     public BooleanProperty autoScaleProperty() {
         if (null == autoScale) {
             autoScale = new BooleanPropertyBase(_autoScale) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     if (get()) {
                         calcAutoScale();
                     } else {
@@ -2262,8 +2931,16 @@ public class Tile extends Control {
                     }
                     fireTileEvent(RECALC_EVENT);
                 }
-                @Override public Object getBean() { return this; }
-                @Override public String getName() { return "autoScale"; }
+
+                @Override
+                public Object getBean() {
+                    return this;
+                }
+
+                @Override
+                public String getName() {
+                    return "autoScale";
+                }
             };
         }
         return autoScale;
@@ -2276,7 +2953,10 @@ public class Tile extends Control {
      *
      * @return true if effects like shadows will be drawn
      */
-    public boolean isShadowsEnabled() { return null == shadowsEnabled ? _shadowsEnabled : shadowsEnabled.get(); }
+    public boolean isShadowsEnabled() {
+        return null == shadowsEnabled ? _shadowsEnabled : shadowsEnabled.get();
+    }
+
     /**
      * Defines if effects like shadows should be drawn.
      * In some gauges inner- and dropshadows will be used which will be
@@ -2292,18 +2972,33 @@ public class Tile extends Control {
             shadowsEnabled.set(ENABLED);
         }
     }
+
     public BooleanProperty shadowsEnabledProperty() {
         if (null == shadowsEnabled) {
             shadowsEnabled = new BooleanPropertyBase(_shadowsEnabled) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "shadowsEnabled"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "shadowsEnabled";
+                }
             };
         }
         return shadowsEnabled;
     }
 
-    public Locale getLocale() { return null == locale ? _locale : locale.get(); }
+    public Locale getLocale() {
+        return null == locale ? _locale : locale.get();
+    }
+
     public void setLocale(final Locale LOCALE) {
         if (null == locale) {
             _locale = null == LOCALE ? Locale.US : LOCALE;
@@ -2312,15 +3007,25 @@ public class Tile extends Control {
             locale.set(LOCALE);
         }
     }
+
     public ObjectProperty<Locale> localeProperty() {
         if (null == locale) {
-            locale  = new ObjectPropertyBase<Locale>(_locale) {
-                @Override protected void invalidated() {
+            locale = new ObjectPropertyBase<Locale>(_locale) {
+                @Override
+                protected void invalidated() {
                     if (null == get()) set(Locale.US);
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "locale"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "locale";
+                }
             };
             _locale = null;
         }
@@ -2333,7 +3038,10 @@ public class Tile extends Control {
      *
      * @return the number format that will bused to format the value
      */
-    public NumberFormat getNumberFormat() { return null == numberFormat ? _numberFormat : numberFormat.get(); }
+    public NumberFormat getNumberFormat() {
+        return null == numberFormat ? _numberFormat : numberFormat.get();
+    }
+
     /**
      * Defines the number format that will be used to format the value
      * in the gauge (NOT USED AT THE MOMENT)
@@ -2348,15 +3056,25 @@ public class Tile extends Control {
             numberFormat.set(FORMAT);
         }
     }
+
     public ObjectProperty<NumberFormat> numberFormatProperty() {
         if (null == numberFormat) {
-            numberFormat  = new ObjectPropertyBase<NumberFormat>(_numberFormat) {
-                @Override protected void invalidated() {
+            numberFormat = new ObjectPropertyBase<NumberFormat>(_numberFormat) {
+                @Override
+                protected void invalidated() {
                     if (null == get()) set(NumberFormat.getInstance(getLocale()));
                     fireTileEvent(RESIZE_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "numberFormat"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "numberFormat";
+                }
             };
             _numberFormat = null;
         }
@@ -2370,7 +3088,10 @@ public class Tile extends Control {
      *
      * @return the number of decimals that will be used to format the value
      */
-    public int getDecimals() { return null == decimals ? _decimals : decimals.get(); }
+    public int getDecimals() {
+        return null == decimals ? _decimals : decimals.get();
+    }
+
     /**
      * Defines the number of decimals that will be used to format the
      * value of the gauge. The number of decimals will be clamped to
@@ -2386,16 +3107,26 @@ public class Tile extends Control {
             decimals.set(DECIMALS);
         }
     }
+
     public IntegerProperty decimalsProperty() {
         if (null == decimals) {
             decimals = new IntegerPropertyBase(_decimals) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final int VALUE = get();
                     if (VALUE < 0 || VALUE > MAX_NO_OF_DECIMALS) set(clamp(0, MAX_NO_OF_DECIMALS, VALUE));
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "decimals"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "decimals";
+                }
             };
         }
         return decimals;
@@ -2408,7 +3139,10 @@ public class Tile extends Control {
      *
      * @return the number of tickLabelDecimals that will be used to format the ticklabels
      */
-    public int getTickLabelDecimals() { return null == tickLabelDecimals ? _tickLabelDecimals : tickLabelDecimals.get(); }
+    public int getTickLabelDecimals() {
+        return null == tickLabelDecimals ? _tickLabelDecimals : tickLabelDecimals.get();
+    }
+
     /**
      * Defines the number of tickLabelDecimals that will be used to format the
      * ticklabels of the gauge. The number of tickLabelDecimals will be clamped to
@@ -2424,16 +3158,26 @@ public class Tile extends Control {
             tickLabelDecimals.set(DECIMALS);
         }
     }
+
     public IntegerProperty tickLabelDecimalsProperty() {
         if (null == tickLabelDecimals) {
             tickLabelDecimals = new IntegerPropertyBase(_tickLabelDecimals) {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final int VALUE = get();
                     if (VALUE < 0 || VALUE > MAX_NO_OF_DECIMALS) set(clamp(0, MAX_NO_OF_DECIMALS, VALUE));
                     fireTileEvent(REDRAW_EVENT);
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "tickLabelDecimals"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "tickLabelDecimals";
+                }
             };
         }
         return tickLabelDecimals;
@@ -2445,7 +3189,10 @@ public class Tile extends Control {
      *
      * @return the color that wil be used to colorize the needle
      */
-    public Color getNeedleColor() { return null == needleColor ? _needleColor : needleColor.get(); }
+    public Color getNeedleColor() {
+        return null == needleColor ? _needleColor : needleColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the needle of
      * the radial gauges.
@@ -2460,12 +3207,24 @@ public class Tile extends Control {
             needleColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> needleColorProperty() {
         if (null == needleColor) {
-            needleColor  = new ObjectPropertyBase<Color>(_needleColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "needleColor"; }
+            needleColor = new ObjectPropertyBase<Color>(_needleColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "needleColor";
+                }
             };
             _needleColor = null;
         }
@@ -2478,7 +3237,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorized the bar (if available)
      */
-    public Color getBarColor() { return null == barColor ? _barColor : barColor.get(); }
+    public Color getBarColor() {
+        return null == barColor ? _barColor : barColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the bar of
      * the gauge (if it has a bar).
@@ -2493,12 +3255,24 @@ public class Tile extends Control {
             barColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> barColorProperty() {
         if (null == barColor) {
-            barColor  = new ObjectPropertyBase<Color>(_barColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "barColor"; }
+            barColor = new ObjectPropertyBase<Color>(_barColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "barColor";
+                }
             };
             _barColor = null;
         }
@@ -2511,7 +3285,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the bar background
      */
-    public Color getBarBackgroundColor() { return null == barBackgroundColor ? _barBackgroundColor : barBackgroundColor.get(); }
+    public Color getBarBackgroundColor() {
+        return null == barBackgroundColor ? _barBackgroundColor : barBackgroundColor.get();
+    }
+
     /**
      * Returns the color that will be used to colorize the bar background of
      * the gauge (if it has a bar).
@@ -2526,12 +3303,24 @@ public class Tile extends Control {
             barBackgroundColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> barBackgroundColorProperty() {
         if (null == barBackgroundColor) {
-            barBackgroundColor  = new ObjectPropertyBase<Color>(_barBackgroundColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "barBackgroundColor"; }
+            barBackgroundColor = new ObjectPropertyBase<Color>(_barBackgroundColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "barBackgroundColor";
+                }
             };
             _barBackgroundColor = null;
         }
@@ -2544,7 +3333,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the title
      */
-    public Color getTitleColor() { return null == titleColor ? _titleColor : titleColor.get(); }
+    public Color getTitleColor() {
+        return null == titleColor ? _titleColor : titleColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the title
      * of the gauge.
@@ -2559,12 +3351,24 @@ public class Tile extends Control {
             titleColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> titleColorProperty() {
         if (null == titleColor) {
-            titleColor  = new ObjectPropertyBase<Color>(_titleColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "titleColor"; }
+            titleColor = new ObjectPropertyBase<Color>(_titleColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "titleColor";
+                }
             };
             _titleColor = null;
         }
@@ -2577,7 +3381,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the description
      */
-    public Color getDescriptionColor() { return null == descriptionColor ? _descriptionColor : descriptionColor.get(); }
+    public Color getDescriptionColor() {
+        return null == descriptionColor ? _descriptionColor : descriptionColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the description text
      * of the gauge.
@@ -2592,12 +3399,24 @@ public class Tile extends Control {
             descriptionColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> descriptionColorProperty() {
         if (null == descriptionColor) {
             descriptionColor = new ObjectPropertyBase<Color>(_descriptionColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "descriptionColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "descriptionColor";
+                }
             };
             _descriptionColor = null;
         }
@@ -2610,7 +3429,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the unit
      */
-    public Color getUnitColor() { return null == unitColor ? _unitColor : unitColor.get(); }
+    public Color getUnitColor() {
+        return null == unitColor ? _unitColor : unitColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the unit
      * of the gauge.
@@ -2625,12 +3447,24 @@ public class Tile extends Control {
             unitColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> unitColorProperty() {
         if (null == unitColor) {
-            unitColor  = new ObjectPropertyBase<Color>(_unitColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "unitColor"; }
+            unitColor = new ObjectPropertyBase<Color>(_unitColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "unitColor";
+                }
             };
             _unitColor = null;
         }
@@ -2643,7 +3477,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the value
      */
-    public Color getValueColor() { return null == valueColor ? _valueColor : valueColor.get(); }
+    public Color getValueColor() {
+        return null == valueColor ? _valueColor : valueColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the value
      * of the gauge.
@@ -2658,12 +3495,24 @@ public class Tile extends Control {
             valueColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> valueColorProperty() {
         if (null == valueColor) {
-            valueColor  = new ObjectPropertyBase<Color>(_valueColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "valueColor"; }
+            valueColor = new ObjectPropertyBase<Color>(_valueColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "valueColor";
+                }
             };
             _valueColor = null;
         }
@@ -2676,7 +3525,10 @@ public class Tile extends Control {
      *
      * @return the color that will be used to colorize the threshold indicator
      */
-    public Color getThresholdColor() { return null == thresholdColor ? _thresholdColor : thresholdColor.get(); }
+    public Color getThresholdColor() {
+        return null == thresholdColor ? _thresholdColor : thresholdColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the threshold
      * indicator of the gauge.
@@ -2691,12 +3543,24 @@ public class Tile extends Control {
             thresholdColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> thresholdColorProperty() {
         if (null == thresholdColor) {
-            thresholdColor  = new ObjectPropertyBase<Color>(_thresholdColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "thresholdColor"; }
+            thresholdColor = new ObjectPropertyBase<Color>(_thresholdColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "thresholdColor";
+                }
             };
             _thresholdColor = null;
         }
@@ -2711,7 +3575,10 @@ public class Tile extends Control {
      *
      * @return true if the value of the gauge should be checked against all sections
      */
-    public boolean getCheckSectionsForValue() { return null == checkSectionsForValue ? _checkSectionsForValue : checkSectionsForValue.get(); }
+    public boolean getCheckSectionsForValue() {
+        return null == checkSectionsForValue ? _checkSectionsForValue : checkSectionsForValue.get();
+    }
+
     /**
      * Defines if the value of the gauge should be checked against
      * all sections (if sections not empty). If a value enters a section
@@ -2721,10 +3588,17 @@ public class Tile extends Control {
      * @param CHECK
      */
     public void setCheckSectionsForValue(final boolean CHECK) {
-        if (null == checkSectionsForValue) { _checkSectionsForValue = CHECK; } else { checkSectionsForValue.set(CHECK); }
+        if (null == checkSectionsForValue) {
+            _checkSectionsForValue = CHECK;
+        } else {
+            checkSectionsForValue.set(CHECK);
+        }
     }
+
     public BooleanProperty checkSectionsForValueProperty() {
-        if (null == checkSectionsForValue) { checkSectionsForValue = new SimpleBooleanProperty(Tile.this, "checkSectionsForValue", _checkSectionsForValue); }
+        if (null == checkSectionsForValue) {
+            checkSectionsForValue = new SimpleBooleanProperty(Tile.this, "checkSectionsForValue", _checkSectionsForValue);
+        }
         return checkSectionsForValue;
     }
 
@@ -2736,7 +3610,10 @@ public class Tile extends Control {
      *
      * @return true if the value of the gauge should be checked against the threshold
      */
-    public boolean isCheckThreshold() { return null == checkThreshold ? _checkThreshold : checkThreshold.get(); }
+    public boolean isCheckThreshold() {
+        return null == checkThreshold ? _checkThreshold : checkThreshold.get();
+    }
+
     /**
      * Defines if the value of the gauge should be checked against
      * the threshold. If a value crosses the threshold it will fire an
@@ -2752,8 +3629,11 @@ public class Tile extends Control {
             checkThreshold.set(CHECK);
         }
     }
+
     public BooleanProperty checkThresholdProperty() {
-        if (null == checkThreshold) { checkThreshold = new SimpleBooleanProperty(Tile.this, "checkThreshold", _checkThreshold); }
+        if (null == checkThreshold) {
+            checkThreshold = new SimpleBooleanProperty(Tile.this, "checkThreshold", _checkThreshold);
+        }
         return checkThreshold;
     }
 
@@ -2763,7 +3643,10 @@ public class Tile extends Control {
      *
      * @return true if an inner shadow should be drawn on the gauge background
      */
-    public boolean isInnerShadowEnabled() { return null == innerShadowEnabled ? _innerShadowEnabled : innerShadowEnabled.get(); }
+    public boolean isInnerShadowEnabled() {
+        return null == innerShadowEnabled ? _innerShadowEnabled : innerShadowEnabled.get();
+    }
+
     /**
      * Defines if an inner shadow should be drawn on the gauge
      * background.
@@ -2778,12 +3661,24 @@ public class Tile extends Control {
             innerShadowEnabled.set(ENABLED);
         }
     }
+
     public BooleanProperty innerShadowEnabledProperty() {
         if (null == innerShadowEnabled) {
             innerShadowEnabled = new BooleanPropertyBase(_innerShadowEnabled) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "innerShadowEnabled"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "innerShadowEnabled";
+                }
             };
         }
         return innerShadowEnabled;
@@ -2794,7 +3689,10 @@ public class Tile extends Control {
      *
      * @return true if the threshold indicator should be drawn
      */
-    public boolean isThresholdVisible() { return null == thresholdVisible ? _thresholdVisible : thresholdVisible.get(); }
+    public boolean isThresholdVisible() {
+        return null == thresholdVisible ? _thresholdVisible : thresholdVisible.get();
+    }
+
     /**
      * Defines if the threshold indicator should be drawn
      *
@@ -2808,12 +3706,24 @@ public class Tile extends Control {
             thresholdVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty thresholdVisibleProperty() {
         if (null == thresholdVisible) {
             thresholdVisible = new BooleanPropertyBase(_thresholdVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "thresholdVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "thresholdVisible";
+                }
             };
         }
         return thresholdVisible;
@@ -2824,7 +3734,10 @@ public class Tile extends Control {
      *
      * @return true if the average indicator should be drawn
      */
-    public boolean isAverageVisible() { return null == averageVisible ? _averageVisible : averageVisible.get(); }
+    public boolean isAverageVisible() {
+        return null == averageVisible ? _averageVisible : averageVisible.get();
+    }
+
     /**
      * Defines if the average indicator should be drawn
      *
@@ -2838,12 +3751,24 @@ public class Tile extends Control {
             averageVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty averageVisibleProperty() {
         if (null == averageVisible) {
             averageVisible = new BooleanPropertyBase() {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "averageVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "averageVisible";
+                }
             };
         }
         return averageVisible;
@@ -2854,7 +3779,10 @@ public class Tile extends Control {
      *
      * @return true if the sections will be drawn
      */
-    public boolean getSectionsVisible() { return null == sectionsVisible ? _sectionsVisible : sectionsVisible.get(); }
+    public boolean getSectionsVisible() {
+        return null == sectionsVisible ? _sectionsVisible : sectionsVisible.get();
+    }
+
     /**
      * Defines if the sections will be drawn
      *
@@ -2868,12 +3796,24 @@ public class Tile extends Control {
             sectionsVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty sectionsVisibleProperty() {
         if (null == sectionsVisible) {
             sectionsVisible = new BooleanPropertyBase(_sectionsVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "sectionsVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "sectionsVisible";
+                }
             };
         }
         return sectionsVisible;
@@ -2882,12 +3822,17 @@ public class Tile extends Control {
     /**
      * Returns true if the sections in the IndicatorSkin
      * will always be visible
+     *
      * @return
      */
-    public boolean getSectionsAlwaysVisible() { return null == sectionsAlwaysVisible ? _sectionsAlwaysVisible : sectionsAlwaysVisible.get(); }
+    public boolean getSectionsAlwaysVisible() {
+        return null == sectionsAlwaysVisible ? _sectionsAlwaysVisible : sectionsAlwaysVisible.get();
+    }
+
     /**
      * Defines if the sections will always be visible.
      * This is currently only used in the IndicatorSkin
+     *
      * @param VISIBLE
      */
     public void setSectionsAlwaysVisible(final boolean VISIBLE) {
@@ -2898,12 +3843,24 @@ public class Tile extends Control {
             sectionsAlwaysVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty sectionsAlwaysVisibleProperty() {
         if (null == sectionsAlwaysVisible) {
             sectionsAlwaysVisible = new BooleanPropertyBase(_sectionsAlwaysVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "sectionsAlwaysVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "sectionsAlwaysVisible";
+                }
             };
         }
         return sectionsAlwaysVisible;
@@ -2915,7 +3872,10 @@ public class Tile extends Control {
      *
      * @return true if the text of the sections should be drawn
      */
-    public boolean isSectionTextVisible() { return null == sectionTextVisible ? _sectionTextVisible : sectionTextVisible.get(); }
+    public boolean isSectionTextVisible() {
+        return null == sectionTextVisible ? _sectionTextVisible : sectionTextVisible.get();
+    }
+
     /**
      * Defines if the text of the sections should be drawn inside
      * the sections. This is currently only used in the SimpleSkin.
@@ -2930,12 +3890,24 @@ public class Tile extends Control {
             sectionTextVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty sectionTextVisibleProperty() {
         if (null == sectionTextVisible) {
             sectionTextVisible = new BooleanPropertyBase(_sectionTextVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "sectionTextVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "sectionTextVisible";
+                }
             };
         }
         return sectionTextVisible;
@@ -2947,7 +3919,10 @@ public class Tile extends Control {
      *
      * @return true if the icon of the sections should be drawn
      */
-    public boolean getSectionIconsVisible() { return null == sectionIconsVisible ? _sectionIconsVisible : sectionIconsVisible.get(); }
+    public boolean getSectionIconsVisible() {
+        return null == sectionIconsVisible ? _sectionIconsVisible : sectionIconsVisible.get();
+    }
+
     /**
      * Defines if the icon of the sections should be drawn inside
      * the sections. This is currently only used in the SimpleSkin.
@@ -2962,12 +3937,24 @@ public class Tile extends Control {
             sectionIconsVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty sectionIconsVisibleProperty() {
         if (null == sectionIconsVisible) {
             sectionIconsVisible = new BooleanPropertyBase(_sectionIconsVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "sectionIconsVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "sectionIconsVisible";
+                }
             };
         }
         return sectionIconsVisible;
@@ -2979,7 +3966,10 @@ public class Tile extends Control {
      *
      * @return true if sections should be highlighted
      */
-    public boolean isHighlightSections() { return null == highlightSections ? _highlightSections : highlightSections.get(); }
+    public boolean isHighlightSections() {
+        return null == highlightSections ? _highlightSections : highlightSections.get();
+    }
+
     /**
      * Defines if sections should be highlighted in case they
      * contain the current value
@@ -2994,12 +3984,24 @@ public class Tile extends Control {
             highlightSections.set(HIGHLIGHT);
         }
     }
+
     public BooleanProperty highlightSectionsProperty() {
         if (null == highlightSections) {
             highlightSections = new BooleanPropertyBase(_highlightSections) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "highlightSections"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "highlightSections";
+                }
             };
         }
         return highlightSections;
@@ -3012,7 +4014,10 @@ public class Tile extends Control {
      *
      * @return the orientation of the control
      */
-    public Orientation getOrientation() { return null == orientation ? _orientation : orientation.get(); }
+    public Orientation getOrientation() {
+        return null == orientation ? _orientation : orientation.get();
+    }
+
     /**
      * Defines the orientation of the control. This feature
      * will only be used in the BulletChartSkin and LinearSkin.
@@ -3028,12 +4033,24 @@ public class Tile extends Control {
             orientation.set(ORIENTATION);
         }
     }
+
     public ObjectProperty<Orientation> orientationProperty() {
         if (null == orientation) {
-            orientation  = new ObjectPropertyBase<Orientation>(_orientation) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "orientation"; }
+            orientation = new ObjectPropertyBase<Orientation>(_orientation) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "orientation";
+                }
             };
             _orientation = null;
         }
@@ -3047,7 +4064,10 @@ public class Tile extends Control {
      *
      * @return true if the control should keep it's aspect
      */
-    public boolean isKeepAspect() { return null == keepAspect ? _keepAspect : keepAspect.get(); }
+    public boolean isKeepAspect() {
+        return null == keepAspect ? _keepAspect : keepAspect.get();
+    }
+
     /**
      * Defines if the control should keep it's aspect. This is
      * in principle only needed if the control has different width and
@@ -3062,8 +4082,11 @@ public class Tile extends Control {
             keepAspect.set(KEEP);
         }
     }
+
     public BooleanProperty keepAspectProperty() {
-        if (null == keepAspect) { keepAspect = new SimpleBooleanProperty(Tile.this, "keepAspect", _keepAspect); }
+        if (null == keepAspect) {
+            keepAspect = new SimpleBooleanProperty(Tile.this, "keepAspect", _keepAspect);
+        }
         return keepAspect;
     }
 
@@ -3071,13 +4094,18 @@ public class Tile extends Control {
      * Returns true if the alert property was set.
      * This property can be used to visualize an alert
      * situation in a skin.
+     *
      * @return true if the alert property was set
      */
-    public boolean isAlert() { return null == alert ? _alert : alert.get(); }
+    public boolean isAlert() {
+        return null == alert ? _alert : alert.get();
+    }
+
     /**
      * Defines if the alert property should be set. This
      * property can be used to visualize an alert situation
      * in the skin.
+     *
      * @param ALERT
      */
     public void setAlert(final boolean ALERT) {
@@ -3088,12 +4116,24 @@ public class Tile extends Control {
             alert.set(ALERT);
         }
     }
+
     public BooleanProperty alertProperty() {
         if (null == alert) {
             alert = new BooleanPropertyBase(_alert) {
-                @Override protected void invalidated() { fireTileEvent(ALERT_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "alert"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(ALERT_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "alert";
+                }
             };
         }
         return alert;
@@ -3102,12 +4142,17 @@ public class Tile extends Control {
     /**
      * Returns the alert message text that could be used in a tooltip
      * in case of an alert.
+     *
      * @return the alert message text
      */
-    public String getAlertMessage() { return null == alertMessage ? _alertMessage : alertMessage.get(); }
+    public String getAlertMessage() {
+        return null == alertMessage ? _alertMessage : alertMessage.get();
+    }
+
     /**
      * Defines the text that could be used in a tooltip as an
      * alert message.
+     *
      * @param MESSAGE
      */
     public void setAlertMessage(final String MESSAGE) {
@@ -3118,12 +4163,24 @@ public class Tile extends Control {
             alertMessage.set(MESSAGE);
         }
     }
+
     public StringProperty alertMessageProperty() {
         if (null == alertMessage) {
             alertMessage = new StringPropertyBase(_alertMessage) {
-                @Override protected void invalidated() { fireTileEvent(ALERT_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "alertMessage"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(ALERT_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "alertMessage";
+                }
             };
             _alertMessage = null;
         }
@@ -3134,12 +4191,17 @@ public class Tile extends Control {
      * Returns true when smoothing is enabled. This property is only used
      * in the TileSparklineSkin to smooth the path. In a custom skin it
      * could be also used for other things.
+     *
      * @return true when smoothing is enabled
      */
-    public boolean isSmoothing() { return null == smoothing ? _smoothing : smoothing.get(); }
+    public boolean isSmoothing() {
+        return null == smoothing ? _smoothing : smoothing.get();
+    }
+
     /**
      * Defines if the smoothing property should be enabled/disabled.
      * At the moment this is only used in the TileSparklineSkin.
+     *
      * @param SMOOTHING
      */
     public void setSmoothing(final boolean SMOOTHING) {
@@ -3150,12 +4212,24 @@ public class Tile extends Control {
             smoothing.set(SMOOTHING);
         }
     }
+
     public BooleanProperty smoothingProperty() {
         if (null == smoothing) {
             smoothing = new BooleanPropertyBase(_smoothing) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "smoothing"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "smoothing";
+                }
             };
         }
         return smoothing;
@@ -3167,50 +4241,72 @@ public class Tile extends Control {
     public void calcAutoScale() {
         double maxNoOfMajorTicks = 10;
         //double maxNoOfMinorTicks = 10;
-        double niceRange         = (Helper.calcNiceNumber(getRange(), false));
-        double majorTickSpace    = Helper.calcNiceNumber(niceRange / (maxNoOfMajorTicks - 1), true);
-        double niceMinValue      = (Math.floor(getMinValue() / majorTickSpace) * majorTickSpace);
-        double niceMaxValue      = (Math.ceil(getMaxValue() / majorTickSpace) * majorTickSpace);
+        double niceRange = (Helper.calcNiceNumber(getRange(), false));
+        double majorTickSpace = Helper.calcNiceNumber(niceRange / (maxNoOfMajorTicks - 1), true);
+        double niceMinValue = (Math.floor(getMinValue() / majorTickSpace) * majorTickSpace);
+        double niceMaxValue = (Math.ceil(getMaxValue() / majorTickSpace) * majorTickSpace);
         //double minorTickSpace    = Helper.calcNiceNumber(majorTickSpace / (maxNoOfMinorTicks - 1), true);
         setMinValue(niceMinValue);
         setMaxValue(niceMaxValue);
     }
 
-
     /**
      * Returns the current time of the clock.
+     *
      * @return the current time of the clock
      */
-    public ZonedDateTime getTime() { return time.get(); }
-    /**
-     * Defines the current time of the clock.
-     * @param TIME
-     */
-    public void setTime(final ZonedDateTime TIME) { time.set(TIME); }
+    public ZonedDateTime getTime() {
+        return time.get();
+    }
+
     public void setTime(final long EPOCH_SECONDS) {
         time.set(ZonedDateTime.ofInstant(Instant.ofEpochSecond(EPOCH_SECONDS), getZoneId()));
     }
-    public ObjectProperty<ZonedDateTime> timeProperty() { return time; }
+
+    /**
+     * Defines the current time of the clock.
+     *
+     * @param TIME
+     */
+    public void setTime(final ZonedDateTime TIME) {
+        time.set(TIME);
+    }
+
+    public ObjectProperty<ZonedDateTime> timeProperty() {
+        return time;
+    }
 
     /**
      * Returns the current time in epoch seconds
+     *
      * @return the current time in epoch seconds
      */
-    public long getCurrentTime() { return currentTime.get(); }
-    public ReadOnlyLongProperty currentTimeProperty() { return currentTime; }
+    public long getCurrentTime() {
+        return currentTime.get();
+    }
 
-    public ZoneId getZoneId() { return zoneId; }
+    public ReadOnlyLongProperty currentTimeProperty() {
+        return currentTime;
+    }
 
+    public ZoneId getZoneId() {
+        return zoneId;
+    }
 
     /**
      * Returns the text that was defined for the clock.
      * This text could be used for additional information.
+     *
      * @return the text that was defined for the clock
      */
-    public String getText() { return null == text ? _text : text.get(); }
+    public String getText() {
+        return null == text ? _text : text.get();
+    }
+
     /**
      * Define the text for the clock.
      * This text could be used for additional information.
+     *
      * @param TEXT
      */
     public void setText(final String TEXT) {
@@ -3221,12 +4317,24 @@ public class Tile extends Control {
             text.set(TEXT);
         }
     }
+
     public StringProperty textProperty() {
         if (null == text) {
-            text  = new StringPropertyBase(_text) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "text"; }
+            text = new StringPropertyBase(_text) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "text";
+                }
             };
             _text = null;
         }
@@ -3237,13 +4345,18 @@ public class Tile extends Control {
      * Returns the alignment that will be used to align the text
      * in the Tile. Keep in mind that this property will not be used
      * by every skin
+     *
      * @return the alignment of the text
      */
-    public TextAlignment getTextAlignment() { return null == textAlignment ? _textAlignment : textAlignment.get(); }
+    public TextAlignment getTextAlignment() {
+        return null == textAlignment ? _textAlignment : textAlignment.get();
+    }
+
     /**
      * Defines the alignment that will be used to align the text
      * in the Tile. Keep in mind that this property will not be used
      * by every skin.
+     *
      * @param ALIGNMENT
      */
     public void setTextAlignment(final TextAlignment ALIGNMENT) {
@@ -3254,12 +4367,24 @@ public class Tile extends Control {
             textAlignment.set(ALIGNMENT);
         }
     }
+
     public ObjectProperty<TextAlignment> textAlignmentProperty() {
         if (null == textAlignment) {
             textAlignment = new ObjectPropertyBase<TextAlignment>(_textAlignment) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "textAlignment"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "textAlignment";
+                }
             };
             _textAlignment = null;
         }
@@ -3271,14 +4396,31 @@ public class Tile extends Control {
      * will be used to colorize areas with a special meaning.
      * TimeSections in the Medusa library usually are less eye-catching than
      * Areas.
+     *
      * @return an observable list of TimeSection objects
      */
-    public ObservableList<TimeSection> getTimeSections() { return timeSections; }
+    public ObservableList<TimeSection> getTimeSections() {
+        return timeSections;
+    }
+
+    /**
+     * Sets the sections to the given array of TimeSection objects. The
+     * sections will be used to colorize areas with a special
+     * meaning. Sections in the Medusa library usually are less eye-catching
+     * than Areas.
+     *
+     * @param SECTIONS
+     */
+    public void setTimeSections(final TimeSection... SECTIONS) {
+        setTimeSections(Arrays.asList(SECTIONS));
+    }
+
     /**
      * Sets the sections to the given list of TimeSection objects. The
      * sections will be used to colorize areas with a special
      * meaning. Sections in the Medusa library usually are less eye-catching
      * than Areas.
+     *
      * @param SECTIONS
      */
     public void setTimeSections(final List<TimeSection> SECTIONS) {
@@ -3286,18 +4428,12 @@ public class Tile extends Control {
         timeSections.sort(new TimeSectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
-    /**
-     * Sets the sections to the given array of TimeSection objects. The
-     * sections will be used to colorize areas with a special
-     * meaning. Sections in the Medusa library usually are less eye-catching
-     * than Areas.
-     * @param SECTIONS
-     */
-    public void setTimeSections(final TimeSection... SECTIONS) { setTimeSections(Arrays.asList(SECTIONS)); }
+
     /**
      * Adds the given TimeSection to the list of sections.
      * Sections in the Medusa library usually are less eye-catching
      * than Areas.
+     *
      * @param SECTION
      */
     public void addTimeSection(final TimeSection SECTION) {
@@ -3306,10 +4442,12 @@ public class Tile extends Control {
         timeSections.sort(new TimeSectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
+
     /**
      * Removes the given TimeSection from the list of sections.
      * Sections in the Medusa library usually are less eye-catching
      * than Areas.
+     *
      * @param SECTION
      */
     public void removeTimeSection(final TimeSection SECTION) {
@@ -3318,6 +4456,7 @@ public class Tile extends Control {
         timeSections.sort(new TimeSectionComparator());
         fireTileEvent(SECTION_EVENT);
     }
+
     /**
      * Clears the list of sections.
      */
@@ -3330,13 +4469,18 @@ public class Tile extends Control {
      * Returns true if the second hand of the clock should move
      * in discrete steps of 1 second. Otherwise it will move continuously like
      * in an automatic clock.
+     *
      * @return true if the second hand of the clock should move in discrete steps of 1 second
      */
-    public boolean isDiscreteSeconds() { return null == discreteSeconds ? _discreteSeconds : discreteSeconds.get(); }
+    public boolean isDiscreteSeconds() {
+        return null == discreteSeconds ? _discreteSeconds : discreteSeconds.get();
+    }
+
     /**
      * Defines if the second hand of the clock should move in
      * discrete steps of 1 second. Otherwise it will move continuously like
      * in an automatic clock.
+     *
      * @param DISCRETE
      */
     public void setDiscreteSeconds(boolean DISCRETE) {
@@ -3349,16 +4493,26 @@ public class Tile extends Control {
             discreteSeconds.set(DISCRETE);
         }
     }
+
     public BooleanProperty discreteSecondsProperty() {
         if (null == discreteSeconds) {
             discreteSeconds = new BooleanPropertyBase() {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     stopTask(periodicTickTask);
                     if (isAnimated()) return;
                     scheduleTickTask();
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "discreteSeconds"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "discreteSeconds";
+                }
             };
         }
         return discreteSeconds;
@@ -3368,13 +4522,18 @@ public class Tile extends Control {
      * Returns true if the minute hand of the clock should move in
      * discrete steps of 1 minute. Otherwise it will move continuously like
      * in an automatic clock.
+     *
      * @return true if the minute hand of the clock should move in discrete steps of 1 minute
      */
-    public boolean isDiscreteMinutes() { return null == discreteMinutes ? _discreteMinutes : discreteMinutes.get(); }
+    public boolean isDiscreteMinutes() {
+        return null == discreteMinutes ? _discreteMinutes : discreteMinutes.get();
+    }
+
     /**
      * Defines if the minute hand of the clock should move in
      * discrete steps of 1 minute. Otherwise it will move continuously like
      * in an automatic clock.
+     *
      * @param DISCRETE
      */
     public void setDiscreteMinutes(boolean DISCRETE) {
@@ -3387,16 +4546,26 @@ public class Tile extends Control {
             discreteMinutes.set(DISCRETE);
         }
     }
+
     public BooleanProperty discreteMinutesProperty() {
         if (null == discreteMinutes) {
             discreteMinutes = new BooleanPropertyBase() {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     stopTask(periodicTickTask);
                     if (isAnimated()) return;
                     scheduleTickTask();
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "discreteMinutes"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "discreteMinutes";
+                }
             };
         }
         return discreteMinutes;
@@ -3407,14 +4576,19 @@ public class Tile extends Control {
      * discrete steps of 1 hour. This behavior was more or less
      * implemented to realize the clock of clocks and should usually
      * be false.
+     *
      * @return true if the hour hand of the clock should move in discrete steps of 1 hour
      */
-    public boolean isDiscreteHours() { return null == discreteHours ? _discreteHours : discreteHours.get(); }
+    public boolean isDiscreteHours() {
+        return null == discreteHours ? _discreteHours : discreteHours.get();
+    }
+
     /**
      * Defines if the hour hand of the clock should move in
      * discrete steps of 1 hour. This behavior was more or less
      * implemented to realize the clock of clocks and should usually
      * be false.
+     *
      * @param DISCRETE
      */
     public void setDiscreteHours(final boolean DISCRETE) {
@@ -3424,18 +4598,26 @@ public class Tile extends Control {
             discreteHours.set(DISCRETE);
         }
     }
+
     public BooleanProperty discreteHoursProperty() {
-        if (null == discreteHours) { discreteHours = new SimpleBooleanProperty(Tile.this, "discreteHours", _discreteHours); }
+        if (null == discreteHours) {
+            discreteHours = new SimpleBooleanProperty(Tile.this, "discreteHours", _discreteHours);
+        }
         return discreteHours;
     }
 
     /**
      * Returns true if the second hand of the clock will be drawn.
+     *
      * @return true if the second hand of the clock will be drawn.
      */
-    public boolean isSecondsVisible() { return null == secondsVisible ? _secondsVisible : secondsVisible.get(); }
+    public boolean isSecondsVisible() {
+        return null == secondsVisible ? _secondsVisible : secondsVisible.get();
+    }
+
     /**
      * Defines if the second hand of the clock will be drawn.
+     *
      * @param VISIBLE
      */
     public void setSecondsVisible(boolean VISIBLE) {
@@ -3446,12 +4628,24 @@ public class Tile extends Control {
             secondsVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty secondsVisibleProperty() {
         if (null == secondsVisible) {
             secondsVisible = new BooleanPropertyBase(_secondsVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "secondsVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "secondsVisible";
+                }
             };
         }
         return secondsVisible;
@@ -3459,11 +4653,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the text of the clock will be drawn.
+     *
      * @return true if the text of the clock will be drawn
      */
-    public boolean isTextVisible() { return null == textVisible ? _textVisible : textVisible.get(); }
+    public boolean isTextVisible() {
+        return null == textVisible ? _textVisible : textVisible.get();
+    }
+
     /**
      * Defines if the text of the clock will be drawn.
+     *
      * @param VISIBLE
      */
     public void setTextVisible(final boolean VISIBLE) {
@@ -3474,12 +4673,24 @@ public class Tile extends Control {
             textVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty textVisibleProperty() {
         if (null == textVisible) {
             textVisible = new BooleanPropertyBase(_textVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "textVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "textVisible";
+                }
             };
         }
         return textVisible;
@@ -3487,11 +4698,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the date of the clock will be drawn.
+     *
      * @return true if the date of the clock will be drawn
      */
-    public boolean isDateVisible() { return null == dateVisible ? _dateVisible : dateVisible.get(); }
+    public boolean isDateVisible() {
+        return null == dateVisible ? _dateVisible : dateVisible.get();
+    }
+
     /**
      * Defines if the date of the clock will be drawn.
+     *
      * @param VISIBLE
      */
     public void setDateVisible(final boolean VISIBLE) {
@@ -3503,12 +4719,24 @@ public class Tile extends Control {
         }
 
     }
+
     public BooleanProperty dateVisibleProperty() {
         if (null == dateVisible) {
             dateVisible = new BooleanPropertyBase(_dateVisible) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "dateVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "dateVisible";
+                }
             };
         }
         return dateVisible;
@@ -3517,41 +4745,70 @@ public class Tile extends Control {
     /**
      * Returns true if the clock is running and shows the current time.
      * The clock will only start running if animated == false.
+     *
      * @return true if the clock is running
      */
-    public boolean isRunning() { return null == running ? _running : running.get(); }
+    public boolean isRunning() {
+        return null == running ? _running : running.get();
+    }
+
     /**
      * Defines if the clock is running.
      * The clock will only start running if animated == false;
+     *
      * @param RUNNING
      */
     public void setRunning(boolean RUNNING) {
         if (null == running) {
             _running = RUNNING;
-            if (RUNNING && !isAnimated()) { scheduleTickTask(); } else { stopTask(periodicTickTask); }
+            if (RUNNING && !isAnimated()) {
+                scheduleTickTask();
+            } else {
+                stopTask(periodicTickTask);
+            }
         } else {
             running.set(RUNNING);
         }
     }
+
     public BooleanProperty runningProperty() {
         if (null == running) {
             running = new BooleanPropertyBase(_running) {
-                @Override protected void invalidated() {
-                    if (get() && !isAnimated()) { scheduleTickTask(); } else { stopTask(periodicTickTask); }
+                @Override
+                protected void invalidated() {
+                    if (get() && !isAnimated()) {
+                        scheduleTickTask();
+                    } else {
+                        stopTask(periodicTickTask);
+                    }
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "running"; }
-            }; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "running";
+                }
+            };
+        }
         return running;
     }
 
     /**
      * Returns the color that will be used to colorize the text of the clock.
+     *
      * @return the color that will be used to colorize the text of the clock
      */
-    public Color getTextColor() { return null == textColor ? _textColor : textColor.get(); }
+    public Color getTextColor() {
+        return null == textColor ? _textColor : textColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the text of the clock.
+     *
      * @param COLOR
      */
     public void setTextColor(final Color COLOR) {
@@ -3562,12 +4819,24 @@ public class Tile extends Control {
             textColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> textColorProperty() {
         if (null == textColor) {
-            textColor  = new ObjectPropertyBase<Color>(_textColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "textColor"; }
+            textColor = new ObjectPropertyBase<Color>(_textColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "textColor";
+                }
             };
             _textColor = null;
         }
@@ -3576,11 +4845,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the date of the clock.
+     *
      * @return the color that will be used to colorize the date of the clock
      */
-    public Color getDateColor() { return null == dateColor ? _dateColor : dateColor.get(); }
+    public Color getDateColor() {
+        return null == dateColor ? _dateColor : dateColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the date of the clock
+     *
      * @param COLOR
      */
     public void setDateColor(final Color COLOR) {
@@ -3591,12 +4865,24 @@ public class Tile extends Control {
             dateColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> dateColorProperty() {
         if (null == dateColor) {
-            dateColor  = new ObjectPropertyBase<Color>(_dateColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "dateColor"; }
+            dateColor = new ObjectPropertyBase<Color>(_dateColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "dateColor";
+                }
             };
             _dateColor = null;
         }
@@ -3605,11 +4891,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the hour tickmarks of the clock.
+     *
      * @return the color that will be used to colorize the hour tickmarks of the clock
      */
-    public Color getHourTickMarkColor() { return null == hourTickMarkColor ? _hourTickMarkColor : hourTickMarkColor.get(); }
+    public Color getHourTickMarkColor() {
+        return null == hourTickMarkColor ? _hourTickMarkColor : hourTickMarkColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the hour tickmarks of the clock.
+     *
      * @param COLOR
      */
     public void setHourTickMarkColor(final Color COLOR) {
@@ -3620,12 +4911,24 @@ public class Tile extends Control {
             hourTickMarkColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> hourTickMarkColorProperty() {
         if (null == hourTickMarkColor) {
-            hourTickMarkColor  = new ObjectPropertyBase<Color>(_hourTickMarkColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "hourTickMarkColor"; }
+            hourTickMarkColor = new ObjectPropertyBase<Color>(_hourTickMarkColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "hourTickMarkColor";
+                }
             };
             _hourTickMarkColor = null;
         }
@@ -3634,11 +4937,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the minute tickmarks of the clock.
+     *
      * @return the color that will be used to colorize the minute tickmarks of the clock
      */
-    public Color getMinuteTickMarkColor() { return null == minuteTickMarkColor ? _minuteTickMarkColor : minuteTickMarkColor.get(); }
+    public Color getMinuteTickMarkColor() {
+        return null == minuteTickMarkColor ? _minuteTickMarkColor : minuteTickMarkColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the minute tickmarks of the clock.
+     *
      * @param COLOR
      */
     public void setMinuteTickMarkColor(final Color COLOR) {
@@ -3649,12 +4957,24 @@ public class Tile extends Control {
             minuteTickMarkColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> minuteTickMarkColorProperty() {
         if (null == minuteTickMarkColor) {
-            minuteTickMarkColor  = new ObjectPropertyBase<Color>(_minuteTickMarkColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "minuteTickMarkColor"; }
+            minuteTickMarkColor = new ObjectPropertyBase<Color>(_minuteTickMarkColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "minuteTickMarkColor";
+                }
             };
             _minuteTickMarkColor = null;
         }
@@ -3663,11 +4983,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the alarm icon.
+     *
      * @return the color that will be used to colorize the alarm icon
      */
-    public Color getAlarmColor() { return null == alarmColor ? _alarmColor : alarmColor.get(); }
+    public Color getAlarmColor() {
+        return null == alarmColor ? _alarmColor : alarmColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the alarm icon
+     *
      * @param COLOR
      */
     public void setAlarmColor(final Color COLOR) {
@@ -3678,12 +5003,24 @@ public class Tile extends Control {
             alarmColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> alarmColorProperty() {
         if (null == alarmColor) {
-            alarmColor  = new ObjectPropertyBase<Color>(_alarmColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "alarmColor"; }
+            alarmColor = new ObjectPropertyBase<Color>(_alarmColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "alarmColor";
+                }
             };
             _alarmColor = null;
         }
@@ -3692,11 +5029,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the hour tickmarks will be drawn.
+     *
      * @return true if the hour tickmarks will be drawn
      */
-    public boolean isHourTickMarksVisible() { return null == hourTickMarksVisible ? _hourTickMarksVisible : hourTickMarksVisible.get(); }
+    public boolean isHourTickMarksVisible() {
+        return null == hourTickMarksVisible ? _hourTickMarksVisible : hourTickMarksVisible.get();
+    }
+
     /**
      * Defines if the hour tickmarks will be drawn.
+     *
      * @param VISIBLE
      */
     public void setHourTickMarksVisible(final boolean VISIBLE) {
@@ -3707,12 +5049,24 @@ public class Tile extends Control {
             hourTickMarksVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty hourTickMarksVisibleProperty() {
         if (null == hourTickMarksVisible) {
             hourTickMarksVisible = new BooleanPropertyBase(_hourTickMarksVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "hourTickMarksVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "hourTickMarksVisible";
+                }
             };
         }
         return hourTickMarksVisible;
@@ -3720,11 +5074,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if the minute tickmarks will be drawn.
+     *
      * @return true if the minute tickmarks will be drawn
      */
-    public boolean isMinuteTickMarksVisible() { return null == minuteTickMarksVisible ? _minuteTickMarksVisible : minuteTickMarksVisible.get(); }
+    public boolean isMinuteTickMarksVisible() {
+        return null == minuteTickMarksVisible ? _minuteTickMarksVisible : minuteTickMarksVisible.get();
+    }
+
     /**
      * Defines if the minute tickmarks will be drawn.
+     *
      * @param VISIBLE
      */
     public void setMinuteTickMarksVisible(final boolean VISIBLE) {
@@ -3735,12 +5094,24 @@ public class Tile extends Control {
             minuteTickMarksVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty minuteTickMarksVisibleProperty() {
         if (null == minuteTickMarksVisible) {
             minuteTickMarksVisible = new BooleanPropertyBase(_minuteTickMarksVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "minuteTickMarksVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "minuteTickMarksVisible";
+                }
             };
         }
         return minuteTickMarksVisible;
@@ -3748,11 +5119,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the hour hand of the clock.
+     *
      * @return the color that will be used to colorize the hour hand of the clock
      */
-    public Color getHourColor() { return null == hourColor ? _hourColor : hourColor.get(); }
+    public Color getHourColor() {
+        return null == hourColor ? _hourColor : hourColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the hour hand of the clock
+     *
      * @param COLOR
      */
     public void setHourColor(final Color COLOR) {
@@ -3763,12 +5139,24 @@ public class Tile extends Control {
             hourColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> hourColorProperty() {
         if (null == hourColor) {
-            hourColor  = new ObjectPropertyBase<Color>(_hourColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "hourColor"; }
+            hourColor = new ObjectPropertyBase<Color>(_hourColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "hourColor";
+                }
             };
             _hourColor = null;
         }
@@ -3777,11 +5165,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the minute hand of the clock.
+     *
      * @return the color that will be used to colorize the minute hand of the clock
      */
-    public Color getMinuteColor() { return null == minuteColor ? _minuteColor : minuteColor.get(); }
+    public Color getMinuteColor() {
+        return null == minuteColor ? _minuteColor : minuteColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the minute hand of the clock.
+     *
      * @param COLOR
      */
     public void setMinuteColor(final Color COLOR) {
@@ -3792,12 +5185,24 @@ public class Tile extends Control {
             minuteColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> minuteColorProperty() {
         if (null == minuteColor) {
-            minuteColor  = new ObjectPropertyBase<Color>(_minuteColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "minuteColor"; }
+            minuteColor = new ObjectPropertyBase<Color>(_minuteColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "minuteColor";
+                }
             };
             _minuteColor = null;
         }
@@ -3806,11 +5211,16 @@ public class Tile extends Control {
 
     /**
      * Returns the color that will be used to colorize the second hand of the clock.
+     *
      * @return the color that will be used to colorize the second hand of the clock
      */
-    public Color getSecondColor() { return null == secondColor ? _secondColor : secondColor.get(); }
+    public Color getSecondColor() {
+        return null == secondColor ? _secondColor : secondColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize the second hand of the clock
+     *
      * @param COLOR
      */
     public void setSecondColor(final Color COLOR) {
@@ -3821,12 +5231,24 @@ public class Tile extends Control {
             secondColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> secondColorProperty() {
         if (null == secondColor) {
-            secondColor  = new ObjectPropertyBase<Color>(_secondColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "secondColor"; }
+            secondColor = new ObjectPropertyBase<Color>(_secondColor) {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "secondColor";
+                }
             };
             _secondColor = null;
         }
@@ -3836,12 +5258,17 @@ public class Tile extends Control {
     /**
      * Returns true if alarms are enabled.
      * If false then no alarms will be triggered
+     *
      * @return true if alarms are enabled
      */
-    public boolean isAlarmsEnabled() { return null == alarmsEnabled ? _alarmsEnabled : alarmsEnabled.get(); }
+    public boolean isAlarmsEnabled() {
+        return null == alarmsEnabled ? _alarmsEnabled : alarmsEnabled.get();
+    }
+
     /**
      * Defines if alarms are enabled.
      * If false then no alarms will be triggered.
+     *
      * @param CHECK
      */
     public void setAlarmsEnabled(final boolean CHECK) {
@@ -3852,12 +5279,24 @@ public class Tile extends Control {
             alarmsEnabled.set(CHECK);
         }
     }
+
     public BooleanProperty alarmsEnabledProperty() {
         if (null == alarmsEnabled) {
             alarmsEnabled = new BooleanPropertyBase(_alarmsEnabled) {
-                @Override protected void invalidated() { fireTileEvent(VISIBILITY_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "alarmsEnabled"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(VISIBILITY_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "alarmsEnabled";
+                }
             };
         }
         return alarmsEnabled;
@@ -3865,11 +5304,16 @@ public class Tile extends Control {
 
     /**
      * Returns true if alarm markers should be drawn.
+     *
      * @return true if alarm markers should be drawn
      */
-    public boolean isAlarmsVisible() { return null == alarmsVisible ? _alarmsVisible : alarmsVisible.get(); }
+    public boolean isAlarmsVisible() {
+        return null == alarmsVisible ? _alarmsVisible : alarmsVisible.get();
+    }
+
     /**
      * Defines if alarm markers should be drawn.
+     *
      * @param VISIBLE
      */
     public void setAlarmsVisible(final boolean VISIBLE) {
@@ -3880,12 +5324,24 @@ public class Tile extends Control {
             alarmsVisible.set(VISIBLE);
         }
     }
+
     public BooleanProperty alarmsVisibleProperty() {
         if (null == alarmsVisible) {
             alarmsVisible = new BooleanPropertyBase(_alarmsVisible) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "alarmsVisible"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "alarmsVisible";
+                }
             };
         }
         return alarmsVisible;
@@ -3893,41 +5349,68 @@ public class Tile extends Control {
 
     /**
      * Returns an observable list of Alarm objects.
+     *
      * @return an observable list of Alarm objects
      */
-    public ObservableList<Alarm> getAlarms() { return alarms; }
-    /**
-     * Sets the alarms to the given list of Alarm objects.
-     * @param ALARMS
-     */
-    public void setAlarms(final List<Alarm> ALARMS) { alarms.setAll(ALARMS); }
+    public ObservableList<Alarm> getAlarms() {
+        return alarms;
+    }
+
     /**
      * Sets the alarms to the given array of Alarm objects.
+     *
      * @param ALARMS
      */
-    public void setAlarms(final Alarm... ALARMS) { setAlarms(Arrays.asList(ALARMS)); }
+    public void setAlarms(final Alarm... ALARMS) {
+        setAlarms(Arrays.asList(ALARMS));
+    }
+
+    /**
+     * Sets the alarms to the given list of Alarm objects.
+     *
+     * @param ALARMS
+     */
+    public void setAlarms(final List<Alarm> ALARMS) {
+        alarms.setAll(ALARMS);
+    }
+
     /**
      * Adds the given Alarm object from the list of alarms.
+     *
      * @param ALARM
      */
-    public void addAlarm(final Alarm ALARM) { if (!alarms.contains(ALARM)) alarms.add(ALARM); }
+    public void addAlarm(final Alarm ALARM) {
+        if (!alarms.contains(ALARM)) alarms.add(ALARM);
+    }
+
     /**
      * Removes the given Alarm object from the list of alarms.
+     *
      * @param ALARM
      */
-    public void removeAlarm(final Alarm ALARM) { if (alarms.contains(ALARM)) alarms.remove(ALARM); }
+    public void removeAlarm(final Alarm ALARM) {
+        if (alarms.contains(ALARM)) alarms.remove(ALARM);
+    }
+
     /**
      * Clears the list of alarms.
      */
-    public void clearAlarms() { alarms.clear(); }
+    public void clearAlarms() {
+        alarms.clear();
+    }
 
     /**
      * Returns the text that will be shown in the Tile tooltip
+     *
      * @return the text that will be shown in the Tile tooltip
      */
-    public String getTooltipText() { return null == tooltipText ? _tooltipText : tooltipText.get(); }
+    public String getTooltipText() {
+        return null == tooltipText ? _tooltipText : tooltipText.get();
+    }
+
     /**
      * Defines the text that will be shown in the Tile tooltip
+     *
      * @param TEXT
      */
     public void setTooltipText(final String TEXT) {
@@ -3943,10 +5426,12 @@ public class Tile extends Control {
         }
 
     }
+
     public StringProperty tooltipTextProperty() {
         if (null == tooltipText) {
             tooltipText = new StringPropertyBase() {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     tooltip.setText(get());
                     if (null == get() || get().isEmpty()) {
                         setTooltip(null);
@@ -3954,15 +5439,26 @@ public class Tile extends Control {
                         setTooltip(tooltip);
                     }
                 }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "tooltipText"; }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "tooltipText";
+                }
             };
             _tooltipText = null;
         }
         return tooltipText;
     }
 
-    public Axis getXAxis() { return null == xAxis ? _xAxis : xAxis.get(); }
+    public Axis getXAxis() {
+        return null == xAxis ? _xAxis : xAxis.get();
+    }
+
     public void setXAxis(final Axis AXIS) {
         if (null == xAxis) {
             _xAxis = AXIS;
@@ -3971,12 +5467,22 @@ public class Tile extends Control {
             xAxis.set(AXIS);
         }
     }
+
     public ObjectProperty<Axis> xAxisProperty() {
         if (null == xAxis) {
             xAxis = new ObjectPropertyBase<Axis>(_xAxis) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() {
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
                     return "xAxis";
                 }
             };
@@ -3985,7 +5491,10 @@ public class Tile extends Control {
         return xAxis;
     }
 
-    public Axis getYAxis() { return null == yAxis ? _yAxis : yAxis.get(); }
+    public Axis getYAxis() {
+        return null == yAxis ? _yAxis : yAxis.get();
+    }
+
     public void setYAxis(final Axis AXIS) {
         if (null == yAxis) {
             _yAxis = AXIS;
@@ -3994,12 +5503,24 @@ public class Tile extends Control {
             yAxis.set(AXIS);
         }
     }
+
     public ObjectProperty<Axis> yAxisProperty() {
         if (null == yAxis) {
             yAxis = new ObjectPropertyBase<Axis>(_yAxis) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "yAxis"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "yAxis";
+                }
             };
             _yAxis = null;
         }
@@ -4009,13 +5530,18 @@ public class Tile extends Control {
     /**
      * Returns the mode of the RadarChartTileSkin.
      * There are Mode.POLYGON and Mode.SECTOR.
+     *
      * @return the mode of the RadarChartTileSkin
      */
-    public RadarChart.Mode getRadarChartMode() { return null == radarChartMode ? _radarChartMode : radarChartMode.get(); }
+    public RadarChart.Mode getRadarChartMode() {
+        return null == radarChartMode ? _radarChartMode : radarChartMode.get();
+    }
+
     /**
      * Defines the mode that is used in the RadarChartTileSkin
      * to visualize the data in the RadarChart.
      * There are Mode.POLYGON and Mode.SECTOR.
+     *
      * @param MODE
      */
     public void setRadarChartMode(final RadarChart.Mode MODE) {
@@ -4026,12 +5552,24 @@ public class Tile extends Control {
             radarChartMode.set(MODE);
         }
     }
+
     public ObjectProperty<RadarChart.Mode> radarChartModeProperty() {
         if (null == radarChartMode) {
             radarChartMode = new ObjectPropertyBase<Mode>(_radarChartMode) {
-                @Override protected void invalidated() { fireTileEvent(RECALC_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "radarChartMode"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RECALC_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "radarChartMode";
+                }
             };
             _radarChartMode = null;
         }
@@ -4041,12 +5579,17 @@ public class Tile extends Control {
     /**
      * Returns the color that will be used to colorize lines in
      * charts e.g. the grid in the RadarChartTileSkin
+     *
      * @return the color that will be used to colorize lines in charts
      */
-    public Color getChartGridColor() { return null == chartGridColor ? _chartGridColor : chartGridColor.get(); }
+    public Color getChartGridColor() {
+        return null == chartGridColor ? _chartGridColor : chartGridColor.get();
+    }
+
     /**
      * Defines the color that will be used to colorize lines in
      * charts e.g. the grid in the RadarChartTileSkin
+     *
      * @param COLOR
      */
     public void setChartGridColor(final Color COLOR) {
@@ -4057,12 +5600,24 @@ public class Tile extends Control {
             chartGridColor.set(COLOR);
         }
     }
+
     public ObjectProperty<Color> chartGridColorProperty() {
         if (null == chartGridColor) {
             chartGridColor = new ObjectPropertyBase<Color>(_chartGridColor) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "chartGridColor"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "chartGridColor";
+                }
             };
             _chartGridColor = null;
         }
@@ -4072,12 +5627,17 @@ public class Tile extends Control {
     /**
      * Returns the Locale that will be used to visualize the country
      * in the CountryTileSkin
+     *
      * @return the Locale that will be used to visualize the country in the CountryTileSkin
      */
-    public Country getCountry() { return null == country ? _country : country.get(); }
+    public Country getCountry() {
+        return null == country ? _country : country.get();
+    }
+
     /**
      * Defines the Locale that will be used to visualize the country
      * in the CountryTileSkin
+     *
      * @param COUNTRY
      */
     public void setCountry(final Country COUNTRY) {
@@ -4088,30 +5648,52 @@ public class Tile extends Control {
             country.set(COUNTRY);
         }
     }
+
     public ObjectProperty<Country> countryProperty() {
         if (null == country) {
             country = new ObjectPropertyBase<Country>(_country) {
-                @Override protected void invalidated() { fireTileEvent(RECALC_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "country"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RECALC_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "country";
+                }
             };
             _country = null;
         }
         return country;
     }
 
-    public double getIncrement() { return increment; }
-    public void setIncrement(final double INCREMENT) { increment = clamp(0, 10, INCREMENT); }
+    public double getIncrement() {
+        return increment;
+    }
+
+    public void setIncrement(final double INCREMENT) {
+        increment = clamp(0, 10, INCREMENT);
+    }
 
     /**
      * Returns true if the control uses the given customFont to
      * render all text elements.
+     *
      * @return true if the control uses the given customFont
      */
-    public boolean isCustomFontEnabled() { return null == customFontEnabled ? _customFontEnabled : customFontEnabled.get(); }
+    public boolean isCustomFontEnabled() {
+        return null == customFontEnabled ? _customFontEnabled : customFontEnabled.get();
+    }
+
     /**
      * Defines if the control should use the given customFont
      * to render all text elements
+     *
      * @param ENABLED
      */
     public void setCustomFontEnabled(final boolean ENABLED) {
@@ -4122,12 +5704,24 @@ public class Tile extends Control {
             customFontEnabled.set(ENABLED);
         }
     }
+
     public BooleanProperty customFontEnabledProperty() {
         if (null == customFontEnabled) {
             customFontEnabled = new BooleanPropertyBase(_customFontEnabled) {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "customFontEnabled"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "customFontEnabled";
+                }
             };
         }
         return customFontEnabled;
@@ -4137,13 +5731,18 @@ public class Tile extends Control {
      * Returns the given custom Font that can be used to render
      * all text elements. To enable the custom font one has to set
      * customFontEnabled = true
+     *
      * @return the given custom Font
      */
-    public Font getCustomFont() { return null == customFont ? _customFont : customFont.get(); }
+    public Font getCustomFont() {
+        return null == customFont ? _customFont : customFont.get();
+    }
+
     /**
      * Defines the custom font that can be used to render all
      * text elements. To enable the custom font one has to set
      * customFontEnabled = true
+     *
      * @param FONT
      */
     public void setCustomFont(final Font FONT) {
@@ -4154,12 +5753,24 @@ public class Tile extends Control {
             customFont.set(FONT);
         }
     }
+
     public ObjectProperty<Font> customFontProperty() {
         if (null == customFont) {
             customFont = new ObjectPropertyBase<Font>() {
-                @Override protected void invalidated() { fireTileEvent(RESIZE_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "customFont"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(RESIZE_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "customFont";
+                }
             };
             _customFont = null;
         }
@@ -4168,16 +5779,21 @@ public class Tile extends Control {
 
     /**
      * Returns a list of path elements that define the countries
+     *
      * @return a list of path elements that define the countries
      */
     public Map<String, List<CountryPath>> getCountryPaths() {
-        if (null == countryProperties) { countryProperties = readProperties(COUNTRY_PROPERTIES); }
+        if (null == countryProperties) {
+            countryProperties = readProperties(COUNTRY_PROPERTIES);
+        }
         if (null == countryPaths) {
             countryPaths = new HashMap<>();
             countryProperties.forEach((key, value) -> {
-                String            name     = key.toString();
+                String name = key.toString();
                 List<CountryPath> pathList = new ArrayList<>();
-                for (String path : value.toString().split(";")) { pathList.add(new CountryPath(name, path)); }
+                for (String path : value.toString().split(";")) {
+                    pathList.add(new CountryPath(name, path));
+                }
                 countryPaths.put(name, pathList);
             });
         }
@@ -4187,12 +5803,17 @@ public class Tile extends Control {
     /**
      * Returns true if a gradient defined by gradientStops will be
      * used to stroke the line in the SparklineTileSkin.
+     *
      * @return true if a gradient defined by gradientStops will be used to stroke the line in the SparklineTileSkin
      */
-    public boolean isStrokeWithGradient() { return null == strokeWithGradient ? _strokeWithGradient : strokeWithGradient.get(); }
+    public boolean isStrokeWithGradient() {
+        return null == strokeWithGradient ? _strokeWithGradient : strokeWithGradient.get();
+    }
+
     /**
      * Defines the usage of a gradient defined by gradientStops to stroke the line
      * in the SparklineTileSkin
+     *
      * @param STROKE_WITH_GRADIENT
      */
     public void setStrokeWithGradient(final boolean STROKE_WITH_GRADIENT) {
@@ -4203,18 +5824,33 @@ public class Tile extends Control {
             strokeWithGradient.set(STROKE_WITH_GRADIENT);
         }
     }
+
     public BooleanProperty strokeWithGradientProperty() {
         if (null == strokeWithGradient) {
             strokeWithGradient = new BooleanPropertyBase(_strokeWithGradient) {
-                @Override protected void invalidated() { fireTileEvent(REDRAW_EVENT); }
-                @Override public Object getBean() { return Tile.this; }
-                @Override public String getName() { return "strokeWithGradient"; }
+                @Override
+                protected void invalidated() {
+                    fireTileEvent(REDRAW_EVENT);
+                }
+
+                @Override
+                public Object getBean() {
+                    return Tile.this;
+                }
+
+                @Override
+                public String getName() {
+                    return "strokeWithGradient";
+                }
             };
         }
-        return  strokeWithGradient;
+        return strokeWithGradient;
     }
 
-    public DarkSky getDarkSky() { return darkSky; }
+    public DarkSky getDarkSky() {
+        return darkSky;
+    }
+
     public void setDarkSky(final DarkSky DARK_SKY) {
         darkSky = DARK_SKY;
         fireTileEvent(REDRAW_EVENT);
@@ -4231,9 +5867,9 @@ public class Tile extends Control {
     }
 
     private Properties readProperties(final String FILE_NAME) {
-        final ClassLoader LOADER     = Thread.currentThread().getContextClassLoader();
-        final Properties  PROPERTIES = new Properties();
-        try(InputStream resourceStream = LOADER.getResourceAsStream(FILE_NAME)) {
+        final ClassLoader LOADER = Thread.currentThread().getContextClassLoader();
+        final Properties PROPERTIES = new Properties();
+        try (InputStream resourceStream = LOADER.getResourceAsStream(FILE_NAME)) {
             PROPERTIES.load(resourceStream);
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -4245,6 +5881,7 @@ public class Tile extends Control {
      * Calling this method will check the current time against all Alarm
      * objects in alarms. The Alarm object will fire events in case the
      * time is after the alarm time.
+     *
      * @param TIME
      */
     private void checkAlarms(final ZonedDateTime TIME) {
@@ -4281,7 +5918,7 @@ public class Tile extends Control {
                     }
                     break;
                 case DAILY:
-                    if (ALARM_TIME.getHour()   == TIME.getHour() &&
+                    if (ALARM_TIME.getHour() == TIME.getHour() &&
                             ALARM_TIME.getMinute() == TIME.getMinute() &&
                             ALARM_TIME.getSecond() == TIME.getSecond()) {
                         if (alarm.isArmed()) {
@@ -4292,9 +5929,9 @@ public class Tile extends Control {
                     break;
                 case WEEKLY:
                     if (ALARM_TIME.getDayOfWeek() == TIME.getDayOfWeek() &&
-                            ALARM_TIME.getHour()      == TIME.getHour() &&
-                            ALARM_TIME.getMinute()    == TIME.getMinute() &&
-                            ALARM_TIME.getSecond()    == TIME.getSecond()) {
+                            ALARM_TIME.getHour() == TIME.getHour() &&
+                            ALARM_TIME.getMinute() == TIME.getMinute() &&
+                            ALARM_TIME.getSecond() == TIME.getSecond()) {
                         if (alarm.isArmed()) {
                             fireAlarmEvent(new AlarmEvent(alarm));
                             alarm.executeCommand();
@@ -4308,24 +5945,29 @@ public class Tile extends Control {
         }
     }
 
-    private void tick() { Platform.runLater(() -> {
-        if (isAnimated()) return;
-        ZonedDateTime oldTime = getTime();
-        setTime(getTime().plus(java.time.Duration.ofMillis(updateInterval)));
-        ZonedDateTime now = time.get();
-        if (isAlarmsEnabled()) checkAlarms(now);
-        if (getCheckSectionsForValue()) {
-            int listSize = timeSections.size();
-            for (TimeSection timeSection : timeSections) { timeSection.checkForTimeAndDate(now); }
-        }
+    private void tick() {
+        Platform.runLater(() -> {
+            if (isAnimated()) return;
+            ZonedDateTime oldTime = getTime();
+            setTime(getTime().plus(java.time.Duration.ofMillis(updateInterval)));
+            ZonedDateTime now = time.get();
+            if (isAlarmsEnabled()) checkAlarms(now);
+            if (getCheckSectionsForValue()) {
+                int listSize = timeSections.size();
+                for (TimeSection timeSection : timeSections) {
+                    timeSection.checkForTimeAndDate(now);
+                }
+            }
 
-        if (timeEventListenerList.isEmpty()) return;
-        // Fire TimeEvents
-        if (oldTime.getSecond() != now.getSecond()) fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.SECOND));
-        if (oldTime.getMinute() != now.getMinute()) fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.MINUTE));
-        if (oldTime.getHour() != now.getHour()) fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.HOUR));
-    }); }
-
+            if (timeEventListenerList.isEmpty()) return;
+            // Fire TimeEvents
+            if (oldTime.getSecond() != now.getSecond())
+                fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.SECOND));
+            if (oldTime.getMinute() != now.getMinute())
+                fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.MINUTE));
+            if (oldTime.getHour() != now.getHour()) fireTimeEvent(new TimeEvent(Tile.this, now, TimeEventType.HOUR));
+        });
+    }
 
     // ******************** Scheduled tasks ***********************************
     private synchronized void enableTickExecutorService() {
@@ -4333,20 +5975,13 @@ public class Tile extends Control {
             periodicTickExecutorService = new ScheduledThreadPoolExecutor(1, getThreadFactory("TileTick", true));
         }
     }
+
     private synchronized void scheduleTickTask() {
         enableTickExecutorService();
         stopTask(periodicTickTask);
 
         updateInterval = (isDiscreteMinutes() && isDiscreteSeconds()) ? LONG_INTERVAL : SHORT_INTERVAL;
         periodicTickTask = periodicTickExecutorService.scheduleAtFixedRate(() -> tick(), 0, updateInterval, TimeUnit.MILLISECONDS);
-    }
-
-    private static ThreadFactory getThreadFactory(final String THREAD_NAME, final boolean IS_DAEMON) {
-        return runnable -> {
-            Thread thread = new Thread(runnable, THREAD_NAME);
-            thread.setDaemon(IS_DAEMON);
-            return thread;
-        };
     }
 
     private void stopTask(ScheduledFuture<?> task) {
@@ -4360,84 +5995,158 @@ public class Tile extends Control {
      * JavaFX on mobile devices when the device goes to sleep mode.
      */
     public void stop() {
-        if (null != periodicTickTask) { stopTask(periodicTickTask); }
-        if (null != periodicTickExecutorService) { periodicTickExecutorService.shutdownNow(); }
-    }
-
-    private void createShutdownHook() { Runtime.getRuntime().addShutdownHook(new Thread(() -> stop())); }
-
-
-    // ******************** Event handling ************************************
-    public void setOnTileEvent(final TileEventListener LISTENER) { addTileEventListener(LISTENER); }
-    public void addTileEventListener(final TileEventListener LISTENER) { if (!listenerList.contains(LISTENER)) listenerList.add(LISTENER); }
-    public void removeTileEventListener(final TileEventListener LISTENER) { if (listenerList.contains(LISTENER)) listenerList.remove(LISTENER); }
-
-    public void fireTileEvent(final TileEvent EVENT) {
-        for (TileEventListener listener : listenerList) { listener.onTileEvent(EVENT); }
-    }
-
-
-    public void setOnAlarm(final AlarmEventListener LISTENER) { addAlarmEventListener(LISTENER); }
-    public void addAlarmEventListener(final AlarmEventListener LISTENER) { if (!alarmListenerList.contains(LISTENER)) alarmListenerList.add(LISTENER); }
-    public void removeAlarmEventListener(final AlarmEventListener LISTENER) { if (alarmListenerList.contains(LISTENER)) alarmListenerList.remove(LISTENER); }
-
-    public void fireAlarmEvent(final AlarmEvent EVENT) {
-        for (AlarmEventListener listener : alarmListenerList) { listener.onAlarmEvent(EVENT); }
-    }
-
-
-    public void setOnTimeEvent(final TimeEventListener LISTENER) { addTimeEventListener(LISTENER); }
-    public void addTimeEventListener(final TimeEventListener LISTENER) { if (!timeEventListenerList.contains(LISTENER)) timeEventListenerList.add(LISTENER); }
-    public void removeTimeEventListener(final TimeEventListener LISTENER) { if (timeEventListenerList.contains(LISTENER)) timeEventListenerList.remove(LISTENER); }
-
-    public void fireTimeEvent(final TimeEvent EVENT) {
-        for (TimeEventListener listener : timeEventListenerList) { listener.onTimeEvent(EVENT); }
-    }
-
-
-    public void setOnSwitchPressed(final EventHandler<SwitchEvent> HANDLER) { addEventHandler(SwitchEvent.SWITCH_PRESSED, HANDLER); }
-    public void removeOnSwitchPressed(final EventHandler<SwitchEvent> HANDLER) { removeEventHandler(SwitchEvent.SWITCH_PRESSED, HANDLER); }
-
-    public void setOnSwitchReleased(final EventHandler<SwitchEvent> HANDLER) { addEventHandler(SwitchEvent.SWITCH_RELEASED, HANDLER); }
-    public void removeOnSwitchReleased(final EventHandler<SwitchEvent> HANDLER) { removeEventHandler(SwitchEvent.SWITCH_RELEASED, HANDLER); }
-
-
-    // ******************** Style related *************************************
-    @Override protected Skin createDefaultSkin() {
-        switch (skinType) {
-            case AREA_CHART       : return new AreaChartTileSkin(Tile.this);
-            case BAR_CHART        : return new BarChartTileSkin(Tile.this);
-            case LINE_CHART       : return new LineChartTileSkin(Tile.this);
-            case CLOCK            : return new ClockTileSkin(Tile.this);
-            case GAUGE            : return new GaugeTileSkin(Tile.this);
-            case HIGH_LOW         : return new HighLowTileSkin(Tile.this);
-            case PERCENTAGE       : return new PercentageTileSkin(Tile.this);
-            case PLUS_MINUS       : return new PlusMinusTileSkin(Tile.this);
-            case SLIDER           : return new SliderTileSkin(Tile.this);
-            case SPARK_LINE       : return new SparkLineTileSkin(Tile.this);
-            case SWITCH           : return new SwitchTileSkin(Tile.this);
-            case WORLDMAP         : return new WorldMapTileSkin(Tile.this);
-            case TIMER_CONTROL    : return new TimerControlTileSkin(Tile.this);
-            case NUMBER           : return new NumberTileSkin(Tile.this);
-            case TEXT             : return new TextTileSkin(Tile.this);
-            case WEATHER          : return new WeatherTileSkin(Tile.this);
-            case TIME             : return new TimeTileSkin(Tile.this);
-            case CUSTOM           : return new CustomTileSkin(Tile.this);
-            case LEADER_BOARD     : return new LeaderBoardTileSkin(Tile.this);
-            case MAP              : return new MapTileSkin(Tile.this);
-            case RADIAL_CHART     : return new RadialChartTileSkin(Tile.this);
-            case DONUT_CHART      : return new DonutChartTileSkin(Tile.this);
-            case CIRCULAR_PROGRESS: return new CircularProgressTileSkin(Tile.this);
-            case STOCK            : return new StockTileSkin(Tile.this);
-            case GAUGE_SPARK_LINE : return new GaugeSparkLineTileSkin(Tile.this);
-            case SMOOTH_AREA_CHART: return new SmoothAreaChartTileSkin(Tile.this);
-            case RADAR_CHART      : return new RadarChartTileSkin(Tile.this);
-            case COUNTRY          : return new CountryTileSkin(Tile.this);
-            default               : return new TileSkin(Tile.this);
+        if (null != periodicTickTask) {
+            stopTask(periodicTickTask);
+        }
+        if (null != periodicTickExecutorService) {
+            periodicTickExecutorService.shutdownNow();
         }
     }
 
-    @Override public String getUserAgentStylesheet() { return getClass().getResource("tilesfx.css").toExternalForm(); }
+    private void createShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> stop()));
+    }
+
+    // ******************** Event handling ************************************
+    public void setOnTileEvent(final TileEventListener LISTENER) {
+        addTileEventListener(LISTENER);
+    }
+
+    public void addTileEventListener(final TileEventListener LISTENER) {
+        if (!listenerList.contains(LISTENER)) listenerList.add(LISTENER);
+    }
+
+    public void removeTileEventListener(final TileEventListener LISTENER) {
+        if (listenerList.contains(LISTENER)) listenerList.remove(LISTENER);
+    }
+
+    public void fireTileEvent(final TileEvent EVENT) {
+        for (TileEventListener listener : listenerList) {
+            listener.onTileEvent(EVENT);
+        }
+    }
+
+    public void setOnAlarm(final AlarmEventListener LISTENER) {
+        addAlarmEventListener(LISTENER);
+    }
+
+    public void addAlarmEventListener(final AlarmEventListener LISTENER) {
+        if (!alarmListenerList.contains(LISTENER)) alarmListenerList.add(LISTENER);
+    }
+
+    public void removeAlarmEventListener(final AlarmEventListener LISTENER) {
+        if (alarmListenerList.contains(LISTENER)) alarmListenerList.remove(LISTENER);
+    }
+
+    public void fireAlarmEvent(final AlarmEvent EVENT) {
+        for (AlarmEventListener listener : alarmListenerList) {
+            listener.onAlarmEvent(EVENT);
+        }
+    }
+
+    public void setOnTimeEvent(final TimeEventListener LISTENER) {
+        addTimeEventListener(LISTENER);
+    }
+
+    public void addTimeEventListener(final TimeEventListener LISTENER) {
+        if (!timeEventListenerList.contains(LISTENER)) timeEventListenerList.add(LISTENER);
+    }
+
+    public void removeTimeEventListener(final TimeEventListener LISTENER) {
+        if (timeEventListenerList.contains(LISTENER)) timeEventListenerList.remove(LISTENER);
+    }
+
+    public void fireTimeEvent(final TimeEvent EVENT) {
+        for (TimeEventListener listener : timeEventListenerList) {
+            listener.onTimeEvent(EVENT);
+        }
+    }
+
+    public void setOnSwitchPressed(final EventHandler<SwitchEvent> HANDLER) {
+        addEventHandler(SwitchEvent.SWITCH_PRESSED, HANDLER);
+    }
+
+    public void removeOnSwitchPressed(final EventHandler<SwitchEvent> HANDLER) {
+        removeEventHandler(SwitchEvent.SWITCH_PRESSED, HANDLER);
+    }
+
+    public void setOnSwitchReleased(final EventHandler<SwitchEvent> HANDLER) {
+        addEventHandler(SwitchEvent.SWITCH_RELEASED, HANDLER);
+    }
+
+    public void removeOnSwitchReleased(final EventHandler<SwitchEvent> HANDLER) {
+        removeEventHandler(SwitchEvent.SWITCH_RELEASED, HANDLER);
+    }
+
+    // ******************** Style related *************************************
+    @Override
+    protected Skin createDefaultSkin() {
+        switch (skinType) {
+            case AREA_CHART:
+                return new AreaChartTileSkin(Tile.this);
+            case BAR_CHART:
+                return new BarChartTileSkin(Tile.this);
+            case LINE_CHART:
+                return new LineChartTileSkin(Tile.this);
+            case CLOCK:
+                return new ClockTileSkin(Tile.this);
+            case GAUGE:
+                return new GaugeTileSkin(Tile.this);
+            case HIGH_LOW:
+                return new HighLowTileSkin(Tile.this);
+            case PERCENTAGE:
+                return new PercentageTileSkin(Tile.this);
+            case PLUS_MINUS:
+                return new PlusMinusTileSkin(Tile.this);
+            case SLIDER:
+                return new SliderTileSkin(Tile.this);
+            case SPARK_LINE:
+                return new SparkLineTileSkin(Tile.this);
+            case SWITCH:
+                return new SwitchTileSkin(Tile.this);
+            case WORLDMAP:
+                return new WorldMapTileSkin(Tile.this);
+            case TIMER_CONTROL:
+                return new TimerControlTileSkin(Tile.this);
+            case NUMBER:
+                return new NumberTileSkin(Tile.this);
+            case TEXT:
+                return new TextTileSkin(Tile.this);
+            case WEATHER:
+                return new WeatherTileSkin(Tile.this);
+            case TIME:
+                return new TimeTileSkin(Tile.this);
+            case CUSTOM:
+                return new CustomTileSkin(Tile.this);
+            case LEADER_BOARD:
+                return new LeaderBoardTileSkin(Tile.this);
+            case MAP:
+                return new MapTileSkin(Tile.this);
+            case RADIAL_CHART:
+                return new RadialChartTileSkin(Tile.this);
+            case DONUT_CHART:
+                return new DonutChartTileSkin(Tile.this);
+            case CIRCULAR_PROGRESS:
+                return new CircularProgressTileSkin(Tile.this);
+            case STOCK:
+                return new StockTileSkin(Tile.this);
+            case GAUGE_SPARK_LINE:
+                return new GaugeSparkLineTileSkin(Tile.this);
+            case SMOOTH_AREA_CHART:
+                return new SmoothAreaChartTileSkin(Tile.this);
+            case RADAR_CHART:
+                return new RadarChartTileSkin(Tile.this);
+            case COUNTRY:
+                return new CountryTileSkin(Tile.this);
+            default:
+                return new TileSkin(Tile.this);
+        }
+    }
+
+    @Override
+    public String getUserAgentStylesheet() {
+        return getClass().getResource("tilesfx.css").toExternalForm();
+    }
 
     private void presetTileParameters(final SkinType SKIN_TYPE) {
         switch (SKIN_TYPE) {
@@ -4537,40 +6246,171 @@ public class Tile extends Control {
         }
     }
 
-    public SkinType getSkinType() { return skinType; }
+    public SkinType getSkinType() {
+        return skinType;
+    }
+
     public void setSkinType(final SkinType SKIN_TYPE) {
         skinType = SKIN_TYPE;
         switch (SKIN_TYPE) {
-            case AREA_CHART       : setSkin(new AreaChartTileSkin(Tile.this)); break;
-            case BAR_CHART        : setSkin(new BarChartTileSkin(Tile.this)); break;
-            case LINE_CHART       : setSkin(new LineChartTileSkin(Tile.this)); break;
-            case CLOCK            : setSkin(new ClockTileSkin(Tile.this)); break;
-            case GAUGE            : setSkin(new GaugeTileSkin(Tile.this)); break;
-            case HIGH_LOW         : setSkin(new HighLowTileSkin(Tile.this)); break;
-            case PERCENTAGE       : setSkin(new PercentageTileSkin(Tile.this)); break;
-            case PLUS_MINUS       : setSkin(new PlusMinusTileSkin(Tile.this)); break;
-            case SLIDER           : setSkin(new SliderTileSkin(Tile.this)); break;
-            case SPARK_LINE       : setSkin(new SparkLineTileSkin(Tile.this)); break;
-            case SWITCH           : setSkin(new SwitchTileSkin(Tile.this)); break;
-            case WORLDMAP         : setSkin(new WorldMapTileSkin(Tile.this)); break;
-            case TIMER_CONTROL    : setSkin(new TimerControlTileSkin(Tile.this)); break;
-            case NUMBER           : setSkin(new NumberTileSkin(Tile.this)); break;
-            case TEXT             : setSkin(new TextTileSkin(Tile.this)); break;
-            case WEATHER          : setSkin(new WeatherTileSkin(Tile.this)); break;
-            case TIME             : setSkin(new TimeTileSkin(Tile.this)); break;
-            case CUSTOM           : setSkin(new CustomTileSkin(Tile.this)); break;
-            case LEADER_BOARD     : setSkin(new LeaderBoardTileSkin(Tile.this)); break;
-            case RADIAL_CHART     : setSkin(new RadialChartTileSkin(Tile.this)); break;
-            case DONUT_CHART      : setSkin(new DonutChartTileSkin(Tile.this)); break;
-            case CIRCULAR_PROGRESS: setSkin(new CircularProgressTileSkin(Tile.this)); break;
-            case STOCK            : setSkin(new StockTileSkin(Tile.this)); break;
-            case GAUGE_SPARK_LINE : setSkin(new GaugeSparkLineTileSkin(Tile.this)); break;
-            case SMOOTH_AREA_CHART: setSkin(new SmoothAreaChartTileSkin(Tile.this)); break;
-            case RADAR_CHART      : setSkin(new RadarChartTileSkin(Tile.this)); break;
-            case COUNTRY          : setSkin(new CountryTileSkin(Tile.this)); break;
-            default               : setSkin(new TileSkin(Tile.this)); break;
+            case AREA_CHART:
+                setSkin(new AreaChartTileSkin(Tile.this));
+                break;
+            case BAR_CHART:
+                setSkin(new BarChartTileSkin(Tile.this));
+                break;
+            case LINE_CHART:
+                setSkin(new LineChartTileSkin(Tile.this));
+                break;
+            case CLOCK:
+                setSkin(new ClockTileSkin(Tile.this));
+                break;
+            case GAUGE:
+                setSkin(new GaugeTileSkin(Tile.this));
+                break;
+            case HIGH_LOW:
+                setSkin(new HighLowTileSkin(Tile.this));
+                break;
+            case PERCENTAGE:
+                setSkin(new PercentageTileSkin(Tile.this));
+                break;
+            case PLUS_MINUS:
+                setSkin(new PlusMinusTileSkin(Tile.this));
+                break;
+            case SLIDER:
+                setSkin(new SliderTileSkin(Tile.this));
+                break;
+            case SPARK_LINE:
+                setSkin(new SparkLineTileSkin(Tile.this));
+                break;
+            case SWITCH:
+                setSkin(new SwitchTileSkin(Tile.this));
+                break;
+            case WORLDMAP:
+                setSkin(new WorldMapTileSkin(Tile.this));
+                break;
+            case TIMER_CONTROL:
+                setSkin(new TimerControlTileSkin(Tile.this));
+                break;
+            case NUMBER:
+                setSkin(new NumberTileSkin(Tile.this));
+                break;
+            case TEXT:
+                setSkin(new TextTileSkin(Tile.this));
+                break;
+            case WEATHER:
+                setSkin(new WeatherTileSkin(Tile.this));
+                break;
+            case TIME:
+                setSkin(new TimeTileSkin(Tile.this));
+                break;
+            case CUSTOM:
+                setSkin(new CustomTileSkin(Tile.this));
+                break;
+            case LEADER_BOARD:
+                setSkin(new LeaderBoardTileSkin(Tile.this));
+                break;
+            case RADIAL_CHART:
+                setSkin(new RadialChartTileSkin(Tile.this));
+                break;
+            case DONUT_CHART:
+                setSkin(new DonutChartTileSkin(Tile.this));
+                break;
+            case CIRCULAR_PROGRESS:
+                setSkin(new CircularProgressTileSkin(Tile.this));
+                break;
+            case STOCK:
+                setSkin(new StockTileSkin(Tile.this));
+                break;
+            case GAUGE_SPARK_LINE:
+                setSkin(new GaugeSparkLineTileSkin(Tile.this));
+                break;
+            case SMOOTH_AREA_CHART:
+                setSkin(new SmoothAreaChartTileSkin(Tile.this));
+                break;
+            case RADAR_CHART:
+                setSkin(new RadarChartTileSkin(Tile.this));
+                break;
+            case COUNTRY:
+                setSkin(new CountryTileSkin(Tile.this));
+                break;
+            default:
+                setSkin(new TileSkin(Tile.this));
+                break;
         }
         fireTileEvent(RESIZE_EVENT);
         presetTileParameters(SKIN_TYPE);
+    }
+
+    public enum SkinType {
+        AREA_CHART("AreaChartTileSkin"), BAR_CHART("BarChartTileSkin"),
+        LINE_CHART("LineChartTileSkin"), CLOCK("ClockTileSkin"), GAUGE("GaugeTileSkin"),
+        HIGH_LOW("HighLowTileSkin)"), PERCENTAGE("PercentageTileSkin"),
+        PLUS_MINUS("PlusMinusTileSkin"), SLIDER("SliderTileSkin"),
+        SPARK_LINE("SparkLineTileSkin"), SWITCH("SwitchTileSkin"),
+        WORLDMAP("WorldMapTileSkin"), TIMER_CONTROL("TimerControlTileSkin"),
+        NUMBER("NumberTileSkin"), TEXT("TextTileSkin"),
+        WEATHER("WeatherTileSkin"), TIME("TimeTileSkin"),
+        CUSTOM("CustomTileSkin"), LEADER_BOARD("LeaderBoardTileSkin"),
+        MAP("MapTileSkin"), RADIAL_CHART("RadialChart"), DONUT_CHART("DonutChart"),
+        CIRCULAR_PROGRESS("CircularProgress"), STOCK("Stock"),
+        GAUGE_SPARK_LINE("GaugeSparkLine"), SMOOTH_AREA_CHART("SmoothAreaChartTileSkin"),
+        RADAR_CHART("RadarChart"), COUNTRY("Country");
+
+        public final String CLASS_NAME;
+
+        SkinType(final String CLASS_NAME) {
+            this.CLASS_NAME = CLASS_NAME;
+        }
+    }
+
+    public enum TextSize {
+        SHORTER(0.04),
+        NORMAL(0.06),
+        BIGGER(0.08);
+
+        public final double factor;
+
+        TextSize(final double FACTOR) {
+            factor = FACTOR;
+        }
+    }
+
+    public enum TileColor {
+        TILEFRGCOL(Color.rgb(new Double(FRG.getRed()).intValue(), new Double(FRG.getGreen()).intValue(), new Double(FRG.getBlue()).intValue()), "foregourd"),
+        GRAY(Color.rgb(139, 144, 146), "GRAY"),
+        RED(Color.rgb(229, 80, 76), "RED"),
+        LIGHT_RED(Color.rgb(255, 84, 56), "LIGHT_RED"),
+        GREEN(Color.rgb(143, 198, 94), "GREEN"),
+        LIGHT_GREEN(Color.rgb(132, 228, 50), "LIGHT_GREEN"),
+        BLUE(Color.rgb(55, 179, 252), "BLUE"),
+        DARK_BLUE(Color.rgb(55, 94, 252), "DARK_BLUE"),
+        ORANGE(Color.rgb(237, 162, 57), "ORANGE"),
+        YELLOW_ORANGE(Color.rgb(229, 198, 76), "YELLOW_ORANGE"),
+        YELLOW(Color.rgb(229, 229, 76), "YELLOW"),
+        MAGENTA(Color.rgb(198, 75, 232), "MAGENTA");
+
+        public final Color color;
+        public final String styleName;
+
+        TileColor(final Color COLOR, final String STYLE_NAME) {
+            color = COLOR;
+            styleName = STYLE_NAME;
+        }
+    }
+
+    public enum MapProvider {
+        BW("blackwhite"),
+        STREET("street"),
+        BRIGHT("bright"),
+        DARK("dark"),
+        SAT("sat"),
+        TOPO("topo");
+
+        public final String name;
+
+        MapProvider(final String NAME) {
+            name = NAME;
+        }
     }
 }

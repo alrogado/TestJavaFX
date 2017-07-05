@@ -46,7 +46,7 @@ public class IconSVGButtonResizeGraph extends Application {
                 }
         );
 
-        Scene scene = new Scene(hBox,400,300);
+        Scene scene = new Scene(hBox, 400, 300);
         scene.getStylesheets().addAll(GuiApp.class.getResource("/org/testjfx/css/button-icon.css").toExternalForm());
 
         stage.setScene(scene);

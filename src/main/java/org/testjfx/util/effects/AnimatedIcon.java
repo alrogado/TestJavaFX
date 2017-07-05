@@ -17,17 +17,15 @@ import java.util.Random;
  * Created by alvaro.lopez on 12/06/2017.
  */
 public class AnimatedIcon extends WritableImage {
+    private static final int DURATION = 5000;
+    private static final Random rand = new Random();
+    private static final int ICON_WIDTH = 32;
+    private static final int ICON_HEIGHT = 32;
     private ObjectProperty<Color> topColor = new SimpleObjectProperty();
     private ObjectProperty<Color> bottomColor = new SimpleObjectProperty();
     private Color oldTopColor;
     private Color oldBottomColor;
     private Timeline timeline;
-    private static final int DURATION = 5000;
-    private static final Random rand = new Random();
-
-    private static final int ICON_WIDTH = 32;
-    private static final int ICON_HEIGHT = 32;
-
     private Stage primaryStage;
 
     public AnimatedIcon(Stage primaryStage) {

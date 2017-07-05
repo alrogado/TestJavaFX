@@ -20,7 +20,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -52,6 +55,7 @@ import org.kordamp.ikonli.websymbols.Websymbols;
 
 import java.net.URL;
 import java.util.*;
+
 import static java.util.EnumSet.allOf;
 
 /**
@@ -59,7 +63,7 @@ import static java.util.EnumSet.allOf;
  */
 public class SearchIconsApp extends Application {
 
-    List<Class> allIkonClasses = new ArrayList<Class>(){{
+    List<Class> allIkonClasses = new ArrayList<Class>() {{
         add(Devicons.class);
         add(Elusive.class);
         add(Feather.class);
@@ -86,6 +90,52 @@ public class SearchIconsApp extends Application {
 
     public static void main(String[] args) {
         launch(SearchIconsApp.class);
+    }
+
+    public static ScrollPane createPaneForIcons(String simpleName, Set<? extends Ikon> enumSet) {
+        GridPane pane = new GridPane();
+        ScrollPane scrollPane = new ScrollPane(pane);
+
+        int column = 0;
+        int row = 0;
+        int index = 0;
+        for (Ikon value : enumSet) {
+            FontIcon icon = new FontIcon(value);
+            icon.getStyleClass().setAll("font-icon");
+
+            Color randomColor = new Color(Math.random(), Math.random(), Math.random(), 1);
+            icon.setIconColor(randomColor);
+
+            /*Glyph graphic = Glyph.create( simpleName+"|" + value.getDescription()).sizeFactor(2).color(randomColor).useGradientEffect();
+            Button button = new Button(value.getDescription(), graphic);
+            //Esto va en la demo
+            //Glyph graphic = Glyph.create( "FontAwesome|" + glyph.name()).sizeFactor(2).color(randomColor).useGradientEffect();
+            button.setContentDisplay(ContentDisplay.TOP);
+            button.setMaxWidth(Double.MAX_VALUE);
+            pane.add(button, column++, row);
+            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
+            if (++index % 10 == 0) {
+                column = 0;
+                row++;
+            }*/
+
+            pane.add(icon, column++, row);
+            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
+            if (++index % 10 == 0) {
+                column = 0;
+                row++;
+            }
+
+            //SelectableText decriptionLabel = new SelectableText(value.getDescription()+ " "+icon.getIconCode()+ " "+ Integer.toHexString(value.getCode() | 0x10000).substring(1));
+            SelectableText decriptionLabel = new SelectableText(value.getClass().getSimpleName() + "." + icon.getIconCode() + " " + value.getDescription());
+            pane.add(decriptionLabel, column++, row);
+            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
+            if (++index % 10 == 0) {
+                column = 0;
+                row++;
+            }
+        }
+        return scrollPane;
     }
 
     @Override
@@ -118,7 +168,15 @@ public class SearchIconsApp extends Application {
             super(iconFontClass.getSimpleName());
             setClosable(false);
 
-            setContent(createPaneForIcons(iconFontClass.getSimpleName(),enumSet));
+            setContent(createPaneForIcons(iconFontClass.getSimpleName(), enumSet));
+        }
+    }
+
+    static class SelectableText extends TextField {
+        SelectableText(String text) {
+            super(text);
+            setEditable(false);
+            setPrefColumnCount(20);
         }
     }
 
@@ -133,7 +191,7 @@ public class SearchIconsApp extends Application {
             controlsBox.getChildren().add(textField);
             JFXButton jfxButton = new JFXButton("Pincha para buscar");
             controlsBox.getChildren().add(jfxButton);
-            Map<String,Set<Ikon>> classAndIkonsSet = new HashMap<>();
+            Map<String, Set<Ikon>> classAndIkonsSet = new HashMap<>();
             jfxButton.setOnMouseClicked((e) -> {
                 Set<Ikon> ikonsSet = new HashSet<>();
                 allIkonClasses.forEach(aClass -> {
@@ -150,60 +208,6 @@ public class SearchIconsApp extends Application {
             });
             borderPane.setTop(controlsBox);
             setContent(borderPane);
-        }
-    }
-
-    public static ScrollPane createPaneForIcons(String simpleName, Set<? extends Ikon> enumSet) {
-        GridPane pane = new GridPane();
-        ScrollPane scrollPane = new ScrollPane(pane);
-
-        int column = 0;
-        int row = 0;
-        int index = 0;
-        for (Ikon value : enumSet) {
-            FontIcon icon = new FontIcon(value);
-            icon.getStyleClass().setAll("font-icon");
-
-            Color randomColor = new Color( Math.random(), Math.random(), Math.random(), 1);
-            icon.setIconColor(randomColor);
-
-            /*Glyph graphic = Glyph.create( simpleName+"|" + value.getDescription()).sizeFactor(2).color(randomColor).useGradientEffect();
-            Button button = new Button(value.getDescription(), graphic);
-            //Esto va en la demo
-            //Glyph graphic = Glyph.create( "FontAwesome|" + glyph.name()).sizeFactor(2).color(randomColor).useGradientEffect();
-            button.setContentDisplay(ContentDisplay.TOP);
-            button.setMaxWidth(Double.MAX_VALUE);
-            pane.add(button, column++, row);
-            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
-            if (++index % 10 == 0) {
-                column = 0;
-                row++;
-            }*/
-
-            pane.add(icon, column++, row);
-            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
-            if (++index % 10 == 0) {
-                column = 0;
-                row++;
-            }
-
-            //SelectableText decriptionLabel = new SelectableText(value.getDescription()+ " "+icon.getIconCode()+ " "+ Integer.toHexString(value.getCode() | 0x10000).substring(1));
-            SelectableText decriptionLabel = new SelectableText(value.getClass().getSimpleName()+ "."+icon.getIconCode()+ " "+ value.getDescription());
-            pane.add(decriptionLabel, column++, row);
-            GridPane.setMargin(icon, new Insets(10, 10, 10, 10));
-            if (++index % 10 == 0) {
-                column = 0;
-                row++;
-            }
-        }
-        return scrollPane;
-    }
-
-    static class SelectableText extends TextField {
-        SelectableText(String text) {
-            super(text);
-            setEditable(false);
-            setPrefColumnCount(20);
         }
     }
 

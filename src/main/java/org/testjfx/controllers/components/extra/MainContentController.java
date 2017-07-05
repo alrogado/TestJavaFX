@@ -21,13 +21,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
-
 import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.typicons.Typicons;
 import org.reactfx.EventStreams;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -43,7 +41,8 @@ import static org.testjfx.util.IkonUtils.customizeIkon;
 public class MainContentController {
 
     public static final String CONTENT_PANE = "ContentPane";
-
+    private static final Random RND = new Random();
+    Tile personalTile;
     @FXMLViewFlowContext
     private ViewFlowContext context;
     @FXML
@@ -62,26 +61,22 @@ public class MainContentController {
     private JFXButton customButton;
     @FXML
     private Label time;
-
     @FXML
     private StackPane root;
-
     @FXML
     private FlowGridPane flowGridPane;
-
     @FXML
     private FlowGridPane flowGridPaneInternal;
-
     @FXML
     private FlowGridPane flowGridPaneButtons;
-
     @FXML
     private JFXDialog dialog;
-
-    Tile personalTile;
+    private long lastTimerCall;
+    private AnimationTimer timer;
+    private DoubleProperty value;
 
     public MainContentController() {
-        this.personalTile=this.personalTile;
+        this.personalTile = this.personalTile;
     }
 
     /**
@@ -103,10 +98,10 @@ public class MainContentController {
         flowGridPane.setAlignment(Pos.CENTER);
         flowGridPane.setCenterShape(true);
         flowGridPane.setPadding(new Insets(5));
-        flowGridPane.setNoOfColsAndNoOfRows(2,2);
+        flowGridPane.setNoOfColsAndNoOfRows(2, 2);
         //flowGridPane.add(flowGridPaneInternal,0,1);
-        flowGridPane.add(createGaugeTile(),1,0);
-        flowGridPane.add(createTimeTile(),1,0);
+        flowGridPane.add(createGaugeTile(), 1, 0);
+        flowGridPane.add(createTimeTile(), 1, 0);
         //flowGridPane.setBackground(new Background(new BackgroundFill(Color.web("#101214"), CornerRadii.EMPTY, Insets.EMPTY)));
         //root.getChildren().add(pane);
         this.value = new SimpleDoubleProperty(0);
@@ -165,7 +160,7 @@ public class MainContentController {
                 .title("Tile Reloj")
                 //.text("Whatever text")
                 .dateVisible(true)
-                .locale(new Locale("es","ES"))
+                .locale(new Locale("es", "ES"))
                 .running(true)
                 .build();
 
@@ -183,7 +178,7 @@ public class MainContentController {
 
 
         //FlowGridPane flowGridPaneInternal = new FlowGridPane(1,1);
-        flowGridPaneInternal.setNoOfColsAndNoOfRows(1,1);
+        flowGridPaneInternal.setNoOfColsAndNoOfRows(1, 1);
 
         flowGridPaneInternal.setHgap(5);
         flowGridPaneInternal.setVgap(5);
@@ -209,7 +204,7 @@ public class MainContentController {
                 .build();
 
 
-        personalTile= new Tile();
+        personalTile = new Tile();
         personalTile.setMinValue(0);
         personalTile.setMaxValue(30);
         personalTile.setTitle("Personal");
@@ -240,8 +235,8 @@ public class MainContentController {
                 .roundedCorners(false)
                 .build();
 
-        flowGridPaneInternal.add(worldTile,0,0);
-        flowGridPaneInternal.add(sliderTile,1,0);
+        flowGridPaneInternal.add(worldTile, 0, 0);
+        flowGridPaneInternal.add(sliderTile, 1, 0);
         //flowGridPaneInternal.add(clockTile,0,1);
 
     }
@@ -260,7 +255,7 @@ public class MainContentController {
         //topButton.setRipplerFill(GRAD_FGR_BGR);
 
         StringProperty timestamp = new SimpleStringProperty();
-        SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         ///eventos para el reloj
         EventStreams.ticks(Duration.ofMillis(1000)).subscribe(tick -> timestamp.setValue(sdf.format(System.currentTimeMillis())));
 
@@ -297,17 +292,10 @@ public class MainContentController {
         acceptDialogButton.setOnMouseClicked((e) -> dialog.close());
     }
 
-
-
-    private static final Random RND = new Random();
-    private long            lastTimerCall;
-    private AnimationTimer  timer;
-    private DoubleProperty  value;
-
     private void bindingProps() {
         //binding properties
-        IntegerProperty ip1= new SimpleIntegerProperty(3);
-        IntegerProperty ip2= new SimpleIntegerProperty();
+        IntegerProperty ip1 = new SimpleIntegerProperty(3);
+        IntegerProperty ip2 = new SimpleIntegerProperty();
         ip2.bind(ip1.multiply(10));
 
         //También se pueden haver bind de valores de propiedades

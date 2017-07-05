@@ -16,7 +16,7 @@ public class MainContentTilesControllerNFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(TwoTilesTilesController.class, stage), false);
-        configureAndSetScene(stage,new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
+        configureAndSetScene(stage, new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
         configureNotFullScreenStage(stage);
         stage.show();
     }

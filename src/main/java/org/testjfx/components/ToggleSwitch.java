@@ -1,6 +1,9 @@
 package org.testjfx.components;
 
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.BooleanPropertyBase;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Labeled;
@@ -11,7 +14,28 @@ import javafx.scene.control.Skin;
  */
 public class ToggleSwitch extends Labeled {
 
+    /***************************************************************************
+     *                                                                         *
+     * Stylesheet Handling                                                     *
+     *                                                                         *
+     **************************************************************************/
+
+    private static final String DEFAULT_STYLE_CLASS = "toggle-switch";
+    private static final PseudoClass PSEUDO_CLASS_SELECTED =
+            PseudoClass.getPseudoClass("selected");
     boolean initialValue;
+    /**
+     * Indicates whether this ToggleSwitch is selected.
+     */
+    private BooleanProperty selected;
+
+    /***************************************************************************
+     *                                                                         *
+     * Properties                                                              *
+     *                                                                         *
+     **************************************************************************/
+    private StringProperty turnOnText;
+    private StringProperty turnOffText;
 
     /***************************************************************************
      *                                                                         *
@@ -35,28 +59,19 @@ public class ToggleSwitch extends Labeled {
         getStyleClass().setAll(DEFAULT_STYLE_CLASS);
     }
 
-    /***************************************************************************
-     *                                                                         *
-     * Properties                                                              *
-     *                                                                         *
-     **************************************************************************/
-
-    /**
-     * Indicates whether this ToggleSwitch is selected.
-     */
-    private BooleanProperty selected;
-    public final void setSelected(boolean value) {
-        selectedProperty().set(value);
-    }
-
     public final boolean isSelected() {
         return selected == null ? false : selected.get();
+    }
+
+    public final void setSelected(boolean value) {
+        selectedProperty().set(value);
     }
 
     public final BooleanProperty selectedProperty() {
         if (selected == null) {
             selected = new BooleanPropertyBase() {
-                @Override protected void invalidated() {
+                @Override
+                protected void invalidated() {
                     final Boolean v = get();
                     pseudoClassStateChanged(PSEUDO_CLASS_SELECTED, v);
 //                    accSendNotification(Attribute.SELECTED);
@@ -85,9 +100,14 @@ public class ToggleSwitch extends Labeled {
         }
         return turnOnText;
     }
-    private StringProperty turnOnText;
-    public final void setTurnOnText(String value) { turnOnTextProperty().setValue(value); }
-    public final String getTurnOnText() { return turnOnText == null ? "" : turnOnText.getValue(); }
+
+    public final String getTurnOnText() {
+        return turnOnText == null ? "" : turnOnText.getValue();
+    }
+
+    public final void setTurnOnText(String value) {
+        turnOnTextProperty().setValue(value);
+    }
 
     /**
      * The text to show when this switch is off. The text may be null.
@@ -98,15 +118,20 @@ public class ToggleSwitch extends Labeled {
         }
         return turnOffText;
     }
-    private StringProperty turnOffText;
-    public final void setTurnOffText(String value) { turnOffTextProperty().setValue(value); }
-    public final String getTurnOffText() { return turnOffText == null ? "" : turnOffText.getValue(); }
 
     /***************************************************************************
      *                                                                         *
      * Methods                                                                 *
      *                                                                         *
      **************************************************************************/
+
+    public final String getTurnOffText() {
+        return turnOffText == null ? "" : turnOffText.getValue();
+    }
+
+    public final void setTurnOffText(String value) {
+        turnOffTextProperty().setValue(value);
+    }
 
     /**
      * Toggles the state of the {@code ToggleSwitch}. If allowIndeterminate is
@@ -123,22 +148,13 @@ public class ToggleSwitch extends Labeled {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override protected Skin<?> createDefaultSkin() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Skin<?> createDefaultSkin() {
         return new ToggleSwitchSkin(this);
     }
-
-
-    /***************************************************************************
-     *                                                                         *
-     * Stylesheet Handling                                                     *
-     *                                                                         *
-     **************************************************************************/
-
-    private static final String DEFAULT_STYLE_CLASS = "toggle-switch";
-
-    private static final PseudoClass PSEUDO_CLASS_SELECTED =
-            PseudoClass.getPseudoClass("selected");
 
     /*@Override
     public String getUserAgentStylesheet() {

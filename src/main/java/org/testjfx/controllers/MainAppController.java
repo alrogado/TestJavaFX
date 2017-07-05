@@ -1,7 +1,9 @@
 package org.testjfx.controllers;
 
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXToolbar;
 import eu.hansolo.fx.regulators.Fonts;
 import io.datafx.controller.ViewConfiguration;
 import io.datafx.controller.ViewController;
@@ -24,44 +26,39 @@ import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.kordamp.ikonli.typicons.Typicons;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
-import org.testjfx.conf.Configuration;
 import org.testjfx.components.ClockBuilder;
+import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testjfx.util.GuiColors;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Objects;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.testjfx.GuiApp.*;
+import static org.testjfx.GuiApp.ANIM_DURATION;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Application")
 public class MainAppController {
 
+    public static FlowHandler flowHandler;
     private static Logger logger = LoggerFactory.getLogger(MainAppController.class);
-
     @FXMLViewFlowContext
     private ViewFlowContext context;
-
     @FXML
     private StackPane root;
     @FXML
     private JFXToolbar toolbar;
     @FXML
     private JFXDrawer drawer;
-
-    public static FlowHandler flowHandler;
-
+    private int wrappingWidth = 75;
 
 
     /**
@@ -104,10 +101,10 @@ public class MainAppController {
 
         toolbar.setCenter(ClockBuilder.createClock());
 
-        toolbar.getLeftItems().addAll(createPanelSessionShoots(),createPanelTotals());
+        toolbar.getLeftItems().addAll(createPanelSessionShoots(), createPanelTotals());
     }
 
-    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler,  Class controllerClass) {
+    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler, Class controllerClass) {
         if (event.getClickCount() == 1) {
             try {
                 //flowHandler.handle(node.getId());
@@ -140,7 +137,7 @@ public class MainAppController {
         lblShootsValue.setTextOrigin(VPos.CENTER);
         lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
         lblShootsValue.setFont(robotoMedium);
-        lblShootsValue.setWrappingWidth(100);
+        lblShootsValue.setWrappingWidth(wrappingWidth);
 
         JFXButton btnReload = new JFXButton();
         FontIcon fontIcon = customizeIkon(MaterialDesign.MDI_RELOAD);
@@ -168,7 +165,7 @@ public class MainAppController {
         lblShootsValue.setTextOrigin(VPos.CENTER);
         lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
         lblShootsValue.setFont(robotoMedium);
-        lblShootsValue.setWrappingWidth(100);
+        lblShootsValue.setWrappingWidth(wrappingWidth);
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(lblSession, "west");

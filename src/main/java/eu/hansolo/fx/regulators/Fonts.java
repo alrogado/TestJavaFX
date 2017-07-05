@@ -35,12 +35,13 @@ public class Fonts {
 
     static {
         try {
-            robotoLightName  = Font.loadFont(Fonts.class.getResourceAsStream("/eu/hansolo/fx/regulators/Roboto-Light.ttf"), 10).getName();
+            robotoLightName = Font.loadFont(Fonts.class.getResourceAsStream("/eu/hansolo/fx/regulators/Roboto-Light.ttf"), 10).getName();
             robotoMediumName = Font.loadFont(Fonts.class.getResourceAsStream("/eu/hansolo/fx/regulators/Roboto-Medium.ttf"), 10).getName();
             robotoBoldName = Font.loadFont(Fonts.class.getResourceAsStream("/eu/hansolo/fx/regulators/Roboto-Bold.ttf"), 10).getName();
             robotoBlackName = Font.loadFont(Fonts.class.getResourceAsStream("/eu/hansolo/fx/regulators/Roboto-Black.ttf"), 10).getName();
-        } catch (Exception exception) { }
-        ROBOTO_LIGHT_NAME  = robotoLightName;
+        } catch (Exception exception) {
+        }
+        ROBOTO_LIGHT_NAME = robotoLightName;
         ROBOTO_MEDIUM_NAME = robotoMediumName;
         ROBOTO_BOLD_NAME = robotoBoldName;
         ROBOTO_BLACK_NAME = robotoBlackName;
@@ -48,8 +49,19 @@ public class Fonts {
 
 
     // ******************** Methods *******************************************
-    public static Font robotoLight(final double SIZE) { return new Font(ROBOTO_LIGHT_NAME, SIZE); }
-    public static Font robotoMedium(final double SIZE) { return new Font(ROBOTO_MEDIUM_NAME, SIZE); }
-    public static Font robotoBold(final double SIZE) { return new Font(ROBOTO_BOLD_NAME, SIZE); }
-    public static Font robotoBlack(final double SIZE) { return new Font(ROBOTO_BLACK_NAME, SIZE); }
+    public static Font robotoLight(final double SIZE) {
+        return new Font(ROBOTO_LIGHT_NAME, SIZE);
+    }
+
+    public static Font robotoMedium(final double SIZE) {
+        return new Font(ROBOTO_MEDIUM_NAME, SIZE);
+    }
+
+    public static Font robotoBold(final double SIZE) {
+        return new Font(ROBOTO_BOLD_NAME, SIZE);
+    }
+
+    public static Font robotoBlack(final double SIZE) {
+        return new Font(ROBOTO_BLACK_NAME, SIZE);
+    }
 }

@@ -7,9 +7,13 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -24,11 +28,11 @@ import org.testjfx.GuiApp;
  * Demonstrates three different methods of creating an icon in a scalable close button.
  */
 public class RoundButton extends Application {
+    private DoubleBinding scaleFactor;
+
     public static void main(String[] args) {
         launch(args);
     }
-
-    private DoubleBinding scaleFactor;
 
     @Override
     public void start(Stage primaryStage) {

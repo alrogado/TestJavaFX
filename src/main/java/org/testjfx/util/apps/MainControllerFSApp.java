@@ -15,7 +15,7 @@ public class MainControllerFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(MainAppController.class, stage), true);
-        configureAndSetScene(stage,new Scene(decorator));
+        configureAndSetScene(stage, new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();
     }

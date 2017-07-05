@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
-import org.testjfx.controllers.components.PasswordNumberController;
 
 import static org.testjfx.GuiApp.*;
 
@@ -17,7 +16,7 @@ public class PasswordAlphabetNFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(PasswordAlpahabetController.class, stage), false);
-        configureAndSetScene(stage,new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
+        configureAndSetScene(stage, new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
         configureNotFullScreenStage(stage);
         stage.show();
     }

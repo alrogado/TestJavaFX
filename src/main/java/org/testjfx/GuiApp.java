@@ -14,7 +14,6 @@ import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -23,11 +22,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.fxmisc.cssfx.CSSFX;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testjfx.components.Audio;
 import org.testjfx.conf.Configuration;
 import org.testjfx.controllers.PreloaderController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.Instant;
@@ -38,27 +37,14 @@ import static org.testjfx.util.GuiColors.GRAD_FGR_BGR;
 
 public class GuiApp extends Application {
 
+    public static JFXDecorator decorator;
+    public static String APPTITLE = "Gui Appplication";
+    public static FlowHandler handler;
+    public static Duration ANIM_DURATION = Duration.millis(320);
     private static Logger logger = LoggerFactory.getLogger(GuiApp.class);
     private static Notification.Notifier notifier;
-
     private static JFXDialog dialog;
-
     private long epochSeconds;
-
-    public static JFXDecorator decorator;
-
-    public static String APPTITLE = "Gui Appplication";
-
-    public static FlowHandler handler;
-
-    public void start(Stage stage) {
-        epochSeconds = Instant.now().getEpochSecond();
-        logger.debug("start");
-        createJFXDecorator(stage, initFlowConf(PreloaderController.class, stage), true);
-        configureAndSetScene(stage, new Scene(decorator));
-        configureFullScreenStage(stage);
-        stage.show();
-    }
 
     public static void configureAndSetScene(Stage stage, Scene scene) {
         final ObservableList<String> stylesheets = scene.getStylesheets();
@@ -114,12 +100,10 @@ public class GuiApp extends Application {
         try {
             handler.start(container);
         } catch (FlowException e) {
-            logger.error("",e);
+            logger.error("", e);
         }
         return container;
     }
-
-    public static Duration ANIM_DURATION = Duration.millis(320);
 
     public static void createJFXDecorator(Stage stage, DefaultFlowContainer container, boolean maximized) {
         decorator = new JFXDecorator(stage, container.getView());
@@ -145,12 +129,12 @@ public class GuiApp extends Application {
     }
 
     public static void configStaticValues(Config conf) {
-        if(conf!=null) {
+        if (conf != null) {
             String localeStr = conf.getString("application.locale");
             if (localeStr != null) {
                 URL resource = GuiApp.class.getResource("/testjfx_" + localeStr + ".properties");
                 if (resource == null) {
-                    logger.warn("el valor del parametro de pais/idioma '"+localeStr+"' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
+                    logger.warn("el valor del parametro de pais/idioma '" + localeStr + "' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
                 } else {
                     Configuration.LOCALE = new Locale(localeStr);
                     Configuration.APPBUNDLE = ResourceBundle.getBundle("testjfx", Configuration.LOCALE);
@@ -161,5 +145,14 @@ public class GuiApp extends Application {
 
     public static void showInfo(String title, String message) {
         notifier.notify(new Notification(title, message, Notification.INFO_ICON));
+    }
+
+    public void start(Stage stage) {
+        epochSeconds = Instant.now().getEpochSecond();
+        logger.debug("start");
+        createJFXDecorator(stage, initFlowConf(PreloaderController.class, stage), true);
+        configureAndSetScene(stage, new Scene(decorator));
+        configureFullScreenStage(stage);
+        stage.show();
     }
 }

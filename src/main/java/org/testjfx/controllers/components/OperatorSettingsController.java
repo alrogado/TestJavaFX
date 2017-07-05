@@ -21,19 +21,19 @@ import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.components.RegulatorsPane.HEIGHTTILE;
 import static org.testjfx.components.RegulatorsPane.WIDTHTILE;
-import static org.testjfx.controllers.components.RegulatorsController.*;
+import static org.testjfx.controllers.components.RegulatorsController.horizontalGap;
+import static org.testjfx.controllers.components.RegulatorsController.padding;
 import static org.testjfx.util.EffectUtils.fadeIn;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class OperatorSettingsController {
 
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
-
     @FXML
     StackPane root;
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
     private Double height = 400d;
-    private Double width= 400d;
+    private Double width = 400d;
 
     /**
      * init fxml when loaded.
@@ -42,7 +42,7 @@ public class OperatorSettingsController {
     public void init() {
         Objects.requireNonNull(context, "context");
         MigPane rootMP = new MigPane("fill");
-        rootMP.add(createTempeperatureSparkGauage(),"alignx center, wrap");
+        rootMP.add(createTempeperatureSparkGauage(), "alignx center, wrap");
         root.getChildren().addAll(rootMP);
         fadeIn(root);
     }
@@ -60,37 +60,38 @@ public class OperatorSettingsController {
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                true,true,
+                true, true,
                 RIGHT);
         Tile diodoTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("diodo.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getDepositMinValue(),
                 Configuration.getDepositMaxValue(),
-                true,true,
+                true, true,
                 LEFT);
         Tile machineTempTile = RegulatorBuilder.createTempSparkRegulator(
                 Configuration.getBundleString("machine.label"),
                 WIDTHTILE, HEIGHTTILE,
                 Configuration.getTipMinValue(),
                 Configuration.getTipMaxValue(),
-                true,true,
+                true, true,
                 RIGHT);
 
-        FlowGridPane pane = new FlowGridPane(2,2, depositTempTile, tipTempTile, diodoTempTile, machineTempTile);
+        FlowGridPane pane = new FlowGridPane(2, 2, depositTempTile, tipTempTile, diodoTempTile, machineTempTile);
         pane.setHgap(horizontalGap);
         pane.setPadding(padding);
 
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};
         AnimationTimer timer = new AnimationTimer() {
-            @Override public void handle(long now) {
+            @Override
+            public void handle(long now) {
                 if (now > lastTimerCall[0] + 3_500_000_000L) {
                     //(0, 32767+32768) then subtract by 32768
-                    depositTempTile.setValue((RDM.nextInt(80)-20));
-                    tipTempTile.setValue((RDM.nextInt(80)-20));
-                    diodoTempTile.setValue((RDM.nextInt(80)-20));
-                    machineTempTile.setValue((RDM.nextInt(80)-20));
+                    depositTempTile.setValue((RDM.nextInt(80) - 20));
+                    tipTempTile.setValue((RDM.nextInt(80) - 20));
+                    diodoTempTile.setValue((RDM.nextInt(80) - 20));
+                    machineTempTile.setValue((RDM.nextInt(80) - 20));
                     lastTimerCall[0] = now;
                 }
             }

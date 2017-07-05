@@ -1,7 +1,5 @@
 package org.testjfx.conf;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 
 /**
@@ -28,9 +26,9 @@ public class FreqFluPair {
     }
 
     public FreqFluPair(float frequency, float fluency, Pulse pulse) {
-        this.frequency=frequency;
-        this.fluency=fluency;
-        this.pulse=pulse;
+        this.frequency = frequency;
+        this.fluency = fluency;
+        this.pulse = pulse;
     }
 
     public float getFrequency() {

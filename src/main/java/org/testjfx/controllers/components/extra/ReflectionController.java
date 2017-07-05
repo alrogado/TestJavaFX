@@ -13,7 +13,7 @@ import org.testjfx.util.DemoFxApp;
 import javax.annotation.PostConstruct;
 
 @ViewController(value = "/org/testjfx/fxml/ui/sprite3d.fxml")
-public class ReflectionController extends AbstractEffectsController{
+public class ReflectionController extends AbstractEffectsController {
 
     @FXMLViewFlowContext
     private ViewFlowContext context;

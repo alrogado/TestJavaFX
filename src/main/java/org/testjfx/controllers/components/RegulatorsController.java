@@ -1,28 +1,7 @@
 package org.testjfx.controllers.components;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
-import eu.hansolo.fx.regulators.Fonts;
-import eu.hansolo.fx.regulators.Regulator;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.Ikonli;
-import org.kordamp.ikonli.elusive.Elusive;
-import org.kordamp.ikonli.ionicons.Ionicons;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.tbee.javafx.scene.layout.MigPane;
-import org.testjfx.GuiApp;
-import org.testjfx.components.PopupNotification;
-import org.testjfx.components.RegulatorsInnerControlsPane;
-import org.testjfx.components.RegulatorsPane;
-import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -30,50 +9,44 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
-import org.testjfx.conf.Configuration;
-import org.testjfx.components.RegulatorBuilder;
-import org.testjfx.conf.Mode;
-import org.testjfx.conf.WorkModes;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.Ikonli;
+import org.kordamp.ikonli.elusive.Elusive;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tbee.javafx.scene.layout.MigPane;
+import org.testjfx.components.RegulatorsInnerControlsPane;
+import org.testjfx.components.RegulatorsPane;
 import org.testjfx.util.GuiColors;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
 
-import static javafx.scene.text.TextAlignment.LEFT;
-import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.util.EffectUtils.fadeIn;
-import static org.testjfx.util.GuiColors.FRG;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class RegulatorsController {
 
+    public static int horizontalGap = 5;
+    public static Insets padding = new Insets(5);
     private static Logger logger = LoggerFactory.getLogger(RegulatorsController.class);
-
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
-
     @FXML
     StackPane root;
 
-    private JFXDialog dialog;
-
     //String migLayoutConstraints = "w 45sp,h 45sp";
     //String migLayoutConstraints = "w 50%,h 40%";
-
-    public static int horizontalGap = 5;
-    public static Insets padding = new Insets(5);
-
     RegulatorsPane regulatorsPane;
-
-
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
+    private JFXDialog dialog;
 
     /**
      * init fxml when loaded.
@@ -100,7 +73,8 @@ public class RegulatorsController {
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};
         AnimationTimer timer = new AnimationTimer() {
-            @Override public void handle(long now) {
+            @Override
+            public void handle(long now) {
                 regulatorsPane.layout();
                 if (now > lastTimerCall[0] + 3_500_000_000L) {
 
@@ -135,7 +109,7 @@ public class RegulatorsController {
         //to change the font use .jfx-layout-body in .css
         layout.setHeading(titleText);
         dialog.setOverlayClose(false);
-        layout.setPrefSize(650,350);
+        layout.setPrefSize(650, 350);
 
         layout.setEffect(GuiColors.DROPSHADOW_TEXT);
         VBox vbox = new VBox();
@@ -146,12 +120,12 @@ public class RegulatorsController {
         Label messageLbl = new Label(message);
         vbox.getChildren().addAll(messageLbl);
 
-        FlowGridPane pane = new FlowGridPane(2,1);
-        pane.add(messageLbl, 0,0);
+        FlowGridPane pane = new FlowGridPane(2, 1);
+        pane.add(messageLbl, 0, 0);
 
-        Color ikonColor =GuiColors.FRG;
-        Ikon ikon =Ikonli.NONE;
-        switch(messageType){
+        Color ikonColor = GuiColors.FRG;
+        Ikon ikon = Ikonli.NONE;
+        switch (messageType) {
             case ERROR:
                 /** An error message */
                 ikon = Elusive.ERROR_ALT;
@@ -160,7 +134,7 @@ public class RegulatorsController {
             case WARNING:
                 /** A warning message */
                 ikon = Elusive.WARNING_SIGN;
-                ikonColor=Color.YELLOW;
+                ikonColor = Color.YELLOW;
                 break;
             case INFO:
                 /** An information message */
@@ -176,7 +150,7 @@ public class RegulatorsController {
         fontIcon.setIconSize(170);
         fontIcon.setFill(ikonColor);
         fontIcon.setEffect(GuiColors.DROPSHADOW_COMP);
-        pane.add(fontIcon, 1,0);
+        pane.add(fontIcon, 1, 0);
         layout.setBody(pane);
         dialog.setTransitionType(JFXDialog.DialogTransition.TOP);
         dialog.setContent(layout);
@@ -184,7 +158,7 @@ public class RegulatorsController {
     }
 
     public void closeDialog() {
-        if(dialog!=null &&dialog.isVisible()){
+        if (dialog != null && dialog.isVisible()) {
             dialog.close();
         }
     }

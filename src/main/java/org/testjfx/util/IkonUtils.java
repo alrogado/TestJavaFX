@@ -4,8 +4,6 @@ import javafx.scene.paint.Color;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import static org.testjfx.util.GuiColors.GRAD_FGR_BGR;
-
 /**
  * Created by alvaro.lopez on 06/06/2017.
  */

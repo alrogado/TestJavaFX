@@ -35,33 +35,33 @@ import java.util.Locale;
  * Created by hansolo on 29.09.16.
  */
 public class TextClockSkin extends ClockSkinBase {
-    protected static final double            PREFERRED_WIDTH       = 250;
-    protected static final double            PREFERRED_HEIGHT      = 100;
-    protected static final double            MINIMUM_WIDTH         = 50;
-    protected static final double            MINIMUM_HEIGHT        = 20;
-    protected static final double            MAXIMUM_WIDTH         = 1024;
-    protected static final double            MAXIMUM_HEIGHT        = 1024;
-    private   static final DateTimeFormatter HHMM_FORMATTER        = DateTimeFormatter.ofPattern("HH:mm");
-    private   static final DateTimeFormatter HHMMSS_FORMATTER      = DateTimeFormatter.ofPattern("HH:mm:ss");
-    private   static final DateTimeFormatter AMPM_HHMM_FORMATTER   = DateTimeFormatter.ofPattern("hh:mm a");
-    private   static final DateTimeFormatter AMPM_HHMMSS_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a");
-    private                double            aspectRatio           = 0.4;
-    private                double            width;
-    private                double            height;
-    private                DateTimeFormatter dateFormat;
-    private                Text              timeText;
-    private                Text              dateText;
-    private                Pane              pane;
-    private                Color             textColor;
-    private                Color             dateColor;
-    private                Font              customFont;
+    protected static final double PREFERRED_WIDTH = 250;
+    protected static final double PREFERRED_HEIGHT = 100;
+    protected static final double MINIMUM_WIDTH = 50;
+    protected static final double MINIMUM_HEIGHT = 20;
+    protected static final double MAXIMUM_WIDTH = 1024;
+    protected static final double MAXIMUM_HEIGHT = 1024;
+    private static final DateTimeFormatter HHMM_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter HHMMSS_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter AMPM_HHMM_FORMATTER = DateTimeFormatter.ofPattern("hh:mm a");
+    private static final DateTimeFormatter AMPM_HHMMSS_FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss a");
+    private double aspectRatio = 0.4;
+    private double width;
+    private double height;
+    private DateTimeFormatter dateFormat;
+    private Text timeText;
+    private Text dateText;
+    private Pane pane;
+    private Color textColor;
+    private Color dateColor;
+    private Font customFont;
 
 
     // ******************** Constructors **************************************
     public TextClockSkin(Clock clock) {
         super(clock);
-        textColor  = clock.getTextColor();
-        dateColor  = clock.getDateColor();
+        textColor = clock.getTextColor();
+        dateColor = clock.getDateColor();
         dateFormat = Helper.getDateFormat(clock.getLocale());
         customFont = clock.getCustomFont();
 
@@ -71,10 +71,11 @@ public class TextClockSkin extends ClockSkinBase {
 
 
     // ******************** Initialization ************************************
-    @Override protected void initGraphics() {
+    @Override
+    protected void initGraphics() {
         // Set initial size
         if (Double.compare(clock.getPrefWidth(), 0.0) <= 0 || Double.compare(clock.getPrefHeight(), 0.0) <= 0 ||
-            Double.compare(clock.getWidth(), 0.0) <= 0 || Double.compare(clock.getHeight(), 0.0) <= 0) {
+                Double.compare(clock.getWidth(), 0.0) <= 0 || Double.compare(clock.getHeight(), 0.0) <= 0) {
             if (clock.getPrefWidth() > 0 && clock.getPrefHeight() > 0) {
                 clock.setPrefSize(clock.getPrefWidth(), clock.getPrefHeight());
             } else {
@@ -97,13 +98,15 @@ public class TextClockSkin extends ClockSkinBase {
         getChildren().setAll(pane);
     }
 
-    @Override protected void registerListeners() {
+    @Override
+    protected void registerListeners() {
         super.registerListeners();
     }
 
 
     // ******************** Methods *******************************************
-    @Override protected void handleEvents(final String EVENT_TYPE) {
+    @Override
+    protected void handleEvents(final String EVENT_TYPE) {
         super.handleEvents(EVENT_TYPE);
         if ("VISIBILITY".equals(EVENT_TYPE)) {
 
@@ -128,21 +131,25 @@ public class TextClockSkin extends ClockSkinBase {
         // draw the date
         if (clock.isDateVisible()) {
             String strDate = dateFormat.format(TIME);
-            dateText.setText(strDate.substring(0,1).toUpperCase()+strDate.substring(1));
+            dateText.setText(strDate.substring(0, 1).toUpperCase() + strDate.substring(1));
             dateText.setX((width - dateText.getLayoutBounds().getWidth()) * 0.5);
         }
     }
 
-    @Override public void updateTime(final ZonedDateTime TIME) {
+    @Override
+    public void updateTime(final ZonedDateTime TIME) {
         drawTime(TIME);
     }
 
-    @Override public void updateAlarms() {}
+    @Override
+    public void updateAlarms() {
+    }
 
 
     // ******************** Resizing ******************************************
-    @Override protected void resize() {
-        width  = clock.getWidth() - clock.getInsets().getLeft() - clock.getInsets().getRight();
+    @Override
+    protected void resize() {
+        width = clock.getWidth() - clock.getInsets().getLeft() - clock.getInsets().getRight();
         height = clock.getHeight() - clock.getInsets().getTop() - clock.getInsets().getBottom();
 
         if (aspectRatio * width > height) {
@@ -180,17 +187,18 @@ public class TextClockSkin extends ClockSkinBase {
         }
     }
 
-    @Override protected void redraw() {
+    @Override
+    protected void redraw() {
         pane.setBorder(new Border(new BorderStroke(clock.getBorderPaint(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(clock.getBorderWidth() / PREFERRED_WIDTH * height))));
         pane.setBackground(new Background(new BackgroundFill(clock.getBackgroundPaint(), CornerRadii.EMPTY, Insets.EMPTY)));
         ZonedDateTime time = clock.getTime();
 
         dateFormat = Helper.getDateFormat(clock.getLocale());
 
-        textColor  = clock.getTextColor();
+        textColor = clock.getTextColor();
         timeText.setFill(textColor);
 
-        dateColor  = clock.getDateColor();
+        dateColor = clock.getDateColor();
         dateText.setFill(dateColor);
 
         drawTime(time);

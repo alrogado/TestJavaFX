@@ -1,7 +1,6 @@
 package org.testjfx.conf;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by alrogado on 6/21/17.

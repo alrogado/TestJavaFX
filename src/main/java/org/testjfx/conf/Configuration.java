@@ -1,6 +1,5 @@
 package org.testjfx.conf;
 
-import java.awt.font.ImageGraphicAttribute;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -8,7 +7,6 @@ import java.util.ResourceBundle;
  * Created by alrogado on 6/20/17.
  */
 public class Configuration {
-
 
 
     static final String FILE_NAME_USER_CONFIG = "userconfig.properties";
@@ -133,11 +131,11 @@ public class Configuration {
     private static boolean pedalEnabled = true;
     private static boolean triggerEnabled;
 
-    public static String getBundleString(String rscBundle){
+    public static String getBundleString(String rscBundle) {
         String res = rscBundle;
-        try{
+        try {
             res = APPBUNDLE.getString(rscBundle);
-        }catch (Exception e){
+        } catch (Exception e) {
             //logger.e
         }
         return res;

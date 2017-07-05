@@ -6,29 +6,31 @@ package org.testjfx.components;
 public class RegulatorsInnerControlsPane extends RegulatorsPane {
 
 
+    int factorXForSecondTiles = 280;
+
+    public static RegulatorsPane getInstance() {
+        return instance == null ? instance = new RegulatorsInnerControlsPane() : instance;
+    }
+
     protected double getXForComp() {
-        return getPadding().getLeft()-150;
+        return getPadding().getLeft() - 150;
     }
 
     protected double getXForStartButton(double x, double depositTempWidth) {
-        return(getWidth()/2)-startButton.getWidth()/2 -20;
+        return (getWidth() / 2) - startButton.getWidth() / 2 - 20;
     }
 
     protected double getRepositionXForLeftButtons() {
-        return (getWidth()/2)-getWorkModebuttonsPaneLeft().getWidth()-20;
+        return (getWidth() / 2) - getWorkModebuttonsPaneLeft().getWidth() - 20;
     }
 
     protected double getXForMessagePane(double x, double depositTempWidth) {
-        return x + depositTempWidth-depositTempWidth/10;
+        return x + depositTempWidth - depositTempWidth / 10;
     }
-
 
     protected double getRespositionMinusXForRightButtons() {
-        return (getWidth()/2)+5;
+        return (getWidth() / 2) + 5;
     }
-
-
-    int factorXForSecondTiles = 280;
 
     protected double getRepositionXForFluencyTile() {
         return factorXForSecondTiles;
@@ -36,10 +38,6 @@ public class RegulatorsInnerControlsPane extends RegulatorsPane {
 
     protected double getRepositionXForTipTile() {
         return factorXForSecondTiles;
-    }
-
-    public static RegulatorsPane getInstance() {
-        return instance==null?instance=new RegulatorsInnerControlsPane():instance;
     }
 
     protected void setSpacingWorkModeButtons() {
@@ -55,7 +53,7 @@ public class RegulatorsInnerControlsPane extends RegulatorsPane {
     }
 
     protected double getWidthForMessagePanel() {
-        return 280+(depositTempTile.getWidth()*0.2);
+        return 280 + (depositTempTile.getWidth() * 0.2);
     }
 
 }

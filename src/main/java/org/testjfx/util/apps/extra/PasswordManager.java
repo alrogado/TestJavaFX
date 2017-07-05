@@ -24,13 +24,10 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.LC;
@@ -40,46 +37,36 @@ import org.testjfx.GuiApp;
 
 public class PasswordManager extends Application {
 
-    private enum ButtonStyle {
-        WHITE("button-white"),
-        BROWN("button-brown"),
-        GRAY("button-gray"),
-        RED("button-red"),
-        ORANGE("button-orange");
+    private EventHandler<ActionEvent> actionHandler;
+    private EventHandler<KeyEvent> keyHandler;
+    private StringProperty passwordValue;
+    private StringBuilder currentValue;
+    private JFXPasswordField passwordField;
+    private Button one;
+    private Button two;
+    private Button three;
+    private Button four;
+    private Button five;
+    private Button six;
+    private Button seven;
+    private Button eight;
+    private Button nine;
+    private Button zero;
+    private Button ok;
+    private Button del;
 
-        public final String STYLE_CLASS;
-
-        private ButtonStyle(final String STYLE_CLASS) {
-            this.STYLE_CLASS = STYLE_CLASS;
-        }
+    public static void main(String[] args) {
+        launch(args);
     }
 
-    private EventHandler<ActionEvent> actionHandler;
-    private EventHandler<KeyEvent>    keyHandler;
-    private StringProperty passwordValue;
-    private StringBuilder             currentValue;
-    private JFXPasswordField passwordField;
-    private Button                    one;
-    private Button                    two;
-    private Button                    three;
-    private Button                    four;
-    private Button                    five;
-    private Button                    six;
-    private Button                    seven;
-    private Button                    eight;
-    private Button                    nine;
-    private Button                    zero;
-    private Button                    ok;
-    private Button                    del;
-
-
     // ******************** Initialization ************************************
-    @Override public void init() {
-        actionHandler   = EVENT -> handleEvent(EVENT);
-        keyHandler      = EVENT -> handleEvent(EVENT);
+    @Override
+    public void init() {
+        actionHandler = EVENT -> handleEvent(EVENT);
+        keyHandler = EVENT -> handleEvent(EVENT);
 
         passwordValue = new SimpleStringProperty(this, "passwordValue", "");
-        currentValue    = new StringBuilder();
+        currentValue = new StringBuilder();
 
         passwordField = new JFXPasswordField();
         passwordField.setMaxWidth(Double.MAX_VALUE);
@@ -87,18 +74,18 @@ public class PasswordManager extends Application {
         passwordField.getStyleClass().add("lcd");
         passwordField.textProperty().bind(passwordValue);
 
-        one       = createButton("1", ButtonStyle.WHITE);
-        two       = createButton("2", ButtonStyle.WHITE);
-        three     = createButton("3", ButtonStyle.WHITE);
-        four      = createButton("4", ButtonStyle.WHITE);
-        five      = createButton("5", ButtonStyle.WHITE);
-        six       = createButton("6", ButtonStyle.WHITE);
-        seven     = createButton("7", ButtonStyle.WHITE);
-        eight     = createButton("8", ButtonStyle.WHITE);
-        nine      = createButton("9", ButtonStyle.WHITE);
-        zero      = createButton("0", ButtonStyle.WHITE);
-        ok        = createButton("Ok", ButtonStyle.GRAY);
-        del       = createButton("Del", ButtonStyle.RED);
+        one = createButton("1", ButtonStyle.WHITE);
+        two = createButton("2", ButtonStyle.WHITE);
+        three = createButton("3", ButtonStyle.WHITE);
+        four = createButton("4", ButtonStyle.WHITE);
+        five = createButton("5", ButtonStyle.WHITE);
+        six = createButton("6", ButtonStyle.WHITE);
+        seven = createButton("7", ButtonStyle.WHITE);
+        eight = createButton("8", ButtonStyle.WHITE);
+        nine = createButton("9", ButtonStyle.WHITE);
+        zero = createButton("0", ButtonStyle.WHITE);
+        ok = createButton("Ok", ButtonStyle.GRAY);
+        del = createButton("Del", ButtonStyle.RED);
     }
 
 
@@ -153,8 +140,8 @@ public class PasswordManager extends Application {
 
     // ******************** Event handling ************************************
     private void handleEvent(final Event EVENT) {
-        final Object  SOURCE = EVENT.getSource();
-        final String  TEXT   = EVENT instanceof KeyEvent ? ((KeyEvent) EVENT).getText() : "";
+        final Object SOURCE = EVENT.getSource();
+        final String TEXT = EVENT instanceof KeyEvent ? ((KeyEvent) EVENT).getText() : "";
         if (SOURCE.equals(one) || TEXT.equals("1")) {
             currentValue.append("1");
             updateLcdValue();
@@ -185,7 +172,7 @@ public class PasswordManager extends Application {
         } else if (SOURCE.equals(zero) || TEXT.equals("0")) {
             currentValue.append("0");
             updateLcdValue();
-        } else if (SOURCE.equals(ok) ) {
+        } else if (SOURCE.equals(ok)) {
             checkPassword();
         } else if (SOURCE.equals(del)) {
             int length = currentValue.length();
@@ -207,7 +194,8 @@ public class PasswordManager extends Application {
 
 
     // ******************** Public Methods ************************************
-    @Override public void start(Stage stage) {
+    @Override
+    public void start(Stage stage) {
         Scene scene = new Scene(createLayout());
         scene.getStylesheets().add(DemoCalculator.class.getResource("/org/testjfx/css/calculator/calculator.css").toExternalForm());
         //scene.getStylesheets().add(DemoCalculator.class.getResource("/org/testjfx/css/calculator/calculator-alternative.css").toExternalForm());
@@ -224,11 +212,22 @@ public class PasswordManager extends Application {
         stage.show();
     }
 
-    @Override public void stop() {
+    @Override
+    public void stop() {
 
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    private enum ButtonStyle {
+        WHITE("button-white"),
+        BROWN("button-brown"),
+        GRAY("button-gray"),
+        RED("button-red"),
+        ORANGE("button-orange");
+
+        public final String STYLE_CLASS;
+
+        private ButtonStyle(final String STYLE_CLASS) {
+            this.STYLE_CLASS = STYLE_CLASS;
+        }
     }
 }

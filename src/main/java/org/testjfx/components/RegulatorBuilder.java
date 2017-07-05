@@ -19,9 +19,12 @@ import static org.testjfx.util.GuiColors.FRG;
  */
 public class RegulatorBuilder {
 
-    public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double heigth, Double width, Double value, Double minVal, Double maxVal){
+    static int MINVALUETEMP = -20;
+    static int MAXVALUETEMP = 60;
+
+    public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double heigth, Double width, Double value, Double minVal, Double maxVal) {
         return ColorRegulatorBuilder.create()
-                .prefSize(width,heigth)
+                .prefSize(width, heigth)
                 //.textColor(Color.YELLOW)
                 //.textColor(Color.YELLOW)
                 //.color(Color.PURPLE)
@@ -32,7 +35,7 @@ public class RegulatorBuilder {
                 .build();
     }
 
-    public static FeedbackRegulator createFeedbackRegulator(String title, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal){
+    public static FeedbackRegulator createFeedbackRegulator(String title, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal) {
         return FeedbackRegulatorBuilder.create()
                 .prefSize(width, height)
                 .minValue(0)
@@ -45,7 +48,7 @@ public class RegulatorBuilder {
                         new Stop(0.5, Color.YELLOW),
                         new Stop(1, Color.GREEN))
                 //.symbolColor(Color.CRIMSON)
-                .icon(ikon!=null?ikon: Ikonli.NONE)
+                .icon(ikon != null ? ikon : Ikonli.NONE)
                 .iconColor(Color.WHITE)
                 //.textColor(Color.MAGENTA)
                 .color(FRG)
@@ -54,16 +57,13 @@ public class RegulatorBuilder {
                 .build();
     }
 
-    static int MINVALUETEMP = -20;
-    static int MAXVALUETEMP = 60;
-
-    public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, boolean textVisible, TextAlignment textAllignment){
+    public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, boolean textVisible, TextAlignment textAllignment) {
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
         String startFormated = String.format(Configuration.LOCALE, format, start);
-        String stopFormated = String.format(Configuration.LOCALE, format, stop );
+        String stopFormated = String.format(Configuration.LOCALE, format, stop);
 
-        String text = Configuration.getBundleString("start.label")+": "+startFormated+" - "+Configuration.getBundleString("stop.label")+": "+stopFormated;
+        String text = Configuration.getBundleString("start.label") + ": " + startFormated + " - " + Configuration.getBundleString("stop.label") + ": " + stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(width, height)
@@ -110,19 +110,20 @@ public class RegulatorBuilder {
                         new Stop(1.0, Tile.LIGHT_RED))
                 .build();
     }
-    public static Regulator createRegulator(String title, String subtitle, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal){
+
+    public static Regulator createRegulator(String title, String subtitle, String unit, Ikon ikon, Double width, Double height, Double value, Double minVal, Double maxVal) {
         final Regulator regulator = eu.hansolo.fx.regulators.RegulatorBuilder.create()
                 .prefSize(width, height)
                 //.barColor(Color.rgb(255, 222, 102))
                 .title(title)
                 .subtitle(subtitle)
                 .unit(unit)
-                .targetValue(value!=null?value:0)
-                .minValue(minVal!=null?minVal:0)
-                .maxValue(maxVal!=null?maxVal:100)
+                .targetValue(value != null ? value : 0)
+                .minValue(minVal != null ? minVal : 0)
+                .maxValue(maxVal != null ? maxVal : 100)
                 /*.textColor(Color.YELLOW)
                 .symbolColor(Color.MAGENTA)*/
-                .icon(ikon!=null?ikon: Ikonli.NONE)
+                .icon(ikon != null ? ikon : Ikonli.NONE)
                 /*.symbolPath(1, 0.71428571, "M 11.7829 11.7647 L 9.3333 20 L 17.5 8.2353 L 12.7171 " +
                         "8.2353 L 15.1667 0 L 7 11.7647 L 11.7829 11.7647 ZM 1.1667 " +
                         "17.6471 L 8.8138 17.6471 L 9.5156 15.2941 L 2.3333 15.2941 " +

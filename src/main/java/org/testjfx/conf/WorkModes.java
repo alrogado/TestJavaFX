@@ -2,7 +2,6 @@ package org.testjfx.conf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.io.IOException;
@@ -19,8 +18,21 @@ public class WorkModes {
     @JsonProperty
     private List<Mode> workModes;
 
+    public static void main(String args[]) throws IOException {
+        WorkModes workModes = new WorkModes().loadConf();
+        System.out.println("Size:" + workModes.getWorkModes().size());
+    }
+
+    public static WorkModes getLoadedWorkModes() throws IOException {
+        return new WorkModes().loadConf();
+    }
+
     public List<Mode> getWorkModes() {
         return workModes;
+    }
+
+    public void setWorkModes(List<Mode> workModes) {
+        this.workModes = workModes;
     }
 
     public String getFileName() {
@@ -29,10 +41,6 @@ public class WorkModes {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public void setWorkModes(List<Mode> workModes) {
-        this.workModes = workModes;
     }
 
     public WorkModes loadConf() throws IOException {
@@ -45,15 +53,6 @@ public class WorkModes {
         simpleModule.addKeyDeserializer(Pulse.class, new PulseKeyDeserializer());
         mapper.registerModule(simpleModule);*/
         return mapper.readValue(file, WorkModes.class);
-    }
-
-    public static void main(String args[]) throws IOException {
-        WorkModes workModes = new WorkModes().loadConf();
-        System.out.println("Size:"+workModes.getWorkModes().size());
-    }
-
-    public static WorkModes getLoadedWorkModes() throws IOException {
-        return new WorkModes().loadConf();
     }
 
     /*

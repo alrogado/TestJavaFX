@@ -9,16 +9,13 @@ import javafx.scene.shape.SVGPathBuilder;
  */
 public class IconButton extends Group {
 
-    private Node icon;
-    private boolean isSelected;
-
     private final double iconHeightUsageRatio = 0.80;
     private final double iconSizeWithinBoxRatio = 0.75;
-
     private final double labelWidthRatio = 1; // max value is 1
-
     private final double SELECTED_OPACITY = 1;
     private final double NOT_SELECTED_OPACITY = 0.4;
+    private Node icon;
+    private boolean isSelected;
 
     public IconButton() {
         icon = svgPathCloseIcon();
@@ -39,13 +36,13 @@ public class IconButton extends Group {
     }
 
     private void mouseEntered() {
-        if(isSelected)
+        if (isSelected)
             return;
         icon.setOpacity(SELECTED_OPACITY);
     }
 
     private void mouseExited() {
-        if(isSelected)
+        if (isSelected)
             return;
         icon.setOpacity(NOT_SELECTED_OPACITY);
     }
@@ -58,23 +55,24 @@ public class IconButton extends Group {
     /**
      * Decorates resizeRelocate, resizing subviews.
      * width and height must be the width/height property of the SMTComponent
+     *
      * @param width
      * @param height
      */
     private void layoutSubviews(double width, double height) {
-        double iconBoxHeight = height*iconHeightUsageRatio;
+        double iconBoxHeight = height * iconHeightUsageRatio;
         double iconBoxWidth = width;
 
         boolean heightIsSmallerThanWidth = iconBoxHeight < iconBoxWidth;
 
-        double iconSize = iconSizeWithinBoxRatio*(heightIsSmallerThanWidth ? iconBoxHeight : iconBoxWidth);
-        double iconX = (iconBoxWidth - iconSize)/2;
-        double iconY = (iconBoxHeight - iconSize)/2;
+        double iconSize = iconSizeWithinBoxRatio * (heightIsSmallerThanWidth ? iconBoxHeight : iconBoxWidth);
+        double iconX = (iconBoxWidth - iconSize) / 2;
+        double iconY = (iconBoxHeight - iconSize) / 2;
 
         double labelY = iconBoxHeight;
         double labelHeight = height - labelY;
-        double labelWidth = labelWidthRatio*width;
-        double labelX = (width - labelWidth)/2; // center it no matter what the label ratio, max ratio is 1 though
+        double labelWidth = labelWidthRatio * width;
+        double labelX = (width - labelWidth) / 2; // center it no matter what the label ratio, max ratio is 1 though
 
         icon.relocate(iconX, iconY);
         /*icon.setWidth(iconSize);

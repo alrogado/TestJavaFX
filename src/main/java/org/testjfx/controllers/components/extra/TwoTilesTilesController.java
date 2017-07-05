@@ -1,12 +1,11 @@
 package org.testjfx.controllers.components.extra;
 
 import eu.hansolo.tilesfx.Tile;
-import eu.hansolo.tilesfx.TileBuilder;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
-import javafx.scene.layout.*;
+import javafx.scene.layout.StackPane;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -17,17 +16,14 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 public class TwoTilesTilesController {
 
 
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
-
     @FXML
     StackPane root;
-
     @FXML
     Tile personalTile;
-
     @FXML
     Tile personalTile2;
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
 
     /**
      * init fxml when loaded.

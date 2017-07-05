@@ -42,71 +42,52 @@ import org.testjfx.GuiApp;
  * Time: 15:47
  */
 public class DemoCalculator extends Application {
-    public enum Operation {
-        NONE     { public double eval(double x, double y) {return 0;    } },
-        PLUS     { public double eval(double x, double y) {return x + y;} },
-        MINUS    { public double eval(double x, double y) {return x - y;} },
-        MULTIPLY { public double eval(double x, double y) {return x * y;} },
-        DIVIDE   { public double eval(double x, double y) {return x / y;} };
-
-        public abstract double eval(double x, double y);
-    }
-    private enum ButtonStyle {
-        WHITE("button-white"),
-        BROWN("button-brown"),
-        GRAY("button-gray"),
-        RED("button-red"),
-        ORANGE("button-orange");
-
-        public final String STYLE_CLASS;
-
-        private ButtonStyle(final String STYLE_CLASS) {
-            this.STYLE_CLASS = STYLE_CLASS;
-        }
-    }
-
     private EventHandler<ActionEvent> actionHandler;
-    private EventHandler<KeyEvent>    keyHandler;
-    private StringProperty            operator1;
-    private StringProperty            operator2;
-    private StringProperty            lcdValue;
-    private StringBuilder             currentValue;
-    private int                       currentOperator;
-    private Operation                 operation;
-    private Label                     lcd;
-    private Button                    one;
-    private Button                    two;
-    private Button                    three;
-    private Button                    four;
-    private Button                    five;
-    private Button                    six;
-    private Button                    seven;
-    private Button                    eight;
-    private Button                    nine;
-    private Button                    zero;
-    private Button                    dot;
-    private Button                    plus;
-    private Button                    minus;
-    private Button                    multiply;
-    private Button                    divide;
-    private Button                    plusminus;
-    private Button                    equal;
-    private Button                    ac;
-    private Button                    c;
-    private Button                    del;
+    private EventHandler<KeyEvent> keyHandler;
+    private StringProperty operator1;
+    private StringProperty operator2;
+    private StringProperty lcdValue;
+    private StringBuilder currentValue;
+    private int currentOperator;
+    private Operation operation;
+    private Label lcd;
+    private Button one;
+    private Button two;
+    private Button three;
+    private Button four;
+    private Button five;
+    private Button six;
+    private Button seven;
+    private Button eight;
+    private Button nine;
+    private Button zero;
+    private Button dot;
+    private Button plus;
+    private Button minus;
+    private Button multiply;
+    private Button divide;
+    private Button plusminus;
+    private Button equal;
+    private Button ac;
+    private Button c;
+    private Button del;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     // ******************** Initialization ************************************
-    @Override public void init() {
-        actionHandler   = EVENT -> handleEvent(EVENT);
-        keyHandler      = EVENT -> handleEvent(EVENT);
+    @Override
+    public void init() {
+        actionHandler = EVENT -> handleEvent(EVENT);
+        keyHandler = EVENT -> handleEvent(EVENT);
 
-        operator1       = new SimpleStringProperty(this, "operator1", "0");
-        operator2       = new SimpleStringProperty(this, "operator2", "0");
-        lcdValue        = new SimpleStringProperty(this, "lcdValue", "0");
+        operator1 = new SimpleStringProperty(this, "operator1", "0");
+        operator2 = new SimpleStringProperty(this, "operator2", "0");
+        lcdValue = new SimpleStringProperty(this, "lcdValue", "0");
         currentOperator = 1;
-        operation       = Operation.NONE;
-        currentValue    = new StringBuilder();
+        operation = Operation.NONE;
+        currentValue = new StringBuilder();
 
         lcd = new Label();
         lcd.setMaxWidth(Double.MAX_VALUE);
@@ -114,28 +95,27 @@ public class DemoCalculator extends Application {
         lcd.getStyleClass().add("lcd");
         lcd.textProperty().bind(lcdValue);
 
-        one       = createButton("1", ButtonStyle.WHITE);
-        two       = createButton("2", ButtonStyle.WHITE);
-        three     = createButton("3", ButtonStyle.WHITE);
-        four      = createButton("4", ButtonStyle.WHITE);
-        five      = createButton("5", ButtonStyle.WHITE);
-        six       = createButton("6", ButtonStyle.WHITE);
-        seven     = createButton("7", ButtonStyle.WHITE);
-        eight     = createButton("8", ButtonStyle.WHITE);
-        nine      = createButton("9", ButtonStyle.WHITE);
-        zero      = createButton("0", ButtonStyle.WHITE);
-        dot       = createButton(".", ButtonStyle.WHITE);
-        plus      = createButton("+", ButtonStyle.BROWN);
-        minus     = createButton("-", ButtonStyle.BROWN);
-        multiply  = createButton("×", ButtonStyle.BROWN);
-        divide    = createButton("÷", ButtonStyle.BROWN);
+        one = createButton("1", ButtonStyle.WHITE);
+        two = createButton("2", ButtonStyle.WHITE);
+        three = createButton("3", ButtonStyle.WHITE);
+        four = createButton("4", ButtonStyle.WHITE);
+        five = createButton("5", ButtonStyle.WHITE);
+        six = createButton("6", ButtonStyle.WHITE);
+        seven = createButton("7", ButtonStyle.WHITE);
+        eight = createButton("8", ButtonStyle.WHITE);
+        nine = createButton("9", ButtonStyle.WHITE);
+        zero = createButton("0", ButtonStyle.WHITE);
+        dot = createButton(".", ButtonStyle.WHITE);
+        plus = createButton("+", ButtonStyle.BROWN);
+        minus = createButton("-", ButtonStyle.BROWN);
+        multiply = createButton("×", ButtonStyle.BROWN);
+        divide = createButton("÷", ButtonStyle.BROWN);
         plusminus = createButton("±", ButtonStyle.GRAY);
-        equal     = createButton("=", ButtonStyle.ORANGE);
-        ac        = createButton("AC", ButtonStyle.RED);
-        c         = createButton("C", ButtonStyle.RED);
-        del       = createButton("Del", ButtonStyle.RED);
+        equal = createButton("=", ButtonStyle.ORANGE);
+        ac = createButton("AC", ButtonStyle.RED);
+        c = createButton("C", ButtonStyle.RED);
+        del = createButton("Del", ButtonStyle.RED);
     }
-
 
     // ******************** Private Methods ***********************************
     private void updateLcdValue() {
@@ -248,11 +228,10 @@ public class DemoCalculator extends Application {
         return pane;
     }
 
-
     // ******************** Event handling ************************************
     private void handleEvent(final Event EVENT) {
-        final Object  SOURCE = EVENT.getSource();
-        final String  TEXT   = EVENT instanceof KeyEvent ? ((KeyEvent) EVENT).getText() : "";
+        final Object SOURCE = EVENT.getSource();
+        final String TEXT = EVENT instanceof KeyEvent ? ((KeyEvent) EVENT).getText() : "";
         if (SOURCE.equals(one) || TEXT.equals("1")) {
             currentValue.append("1");
             updateLcdValue();
@@ -333,9 +312,9 @@ public class DemoCalculator extends Application {
         }
     }
 
-
     // ******************** Public Methods ************************************
-    @Override public void start(Stage stage) {
+    @Override
+    public void start(Stage stage) {
         Scene scene = new Scene(createLayout());
         //scene.getStylesheets().add(DemoCalculator.class.getResource("/org/testjfx/css/calculator/calculator.css").toExternalForm());
         //scene.getStylesheets().add(DemoCalculator.class.getResource("/org/testjfx/css/calculator/calculator-alternative.css").toExternalForm());
@@ -352,11 +331,52 @@ public class DemoCalculator extends Application {
         stage.show();
     }
 
-    @Override public void stop() {
+    @Override
+    public void stop() {
 
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public enum Operation {
+        NONE {
+            public double eval(double x, double y) {
+                return 0;
+            }
+        },
+        PLUS {
+            public double eval(double x, double y) {
+                return x + y;
+            }
+        },
+        MINUS {
+            public double eval(double x, double y) {
+                return x - y;
+            }
+        },
+        MULTIPLY {
+            public double eval(double x, double y) {
+                return x * y;
+            }
+        },
+        DIVIDE {
+            public double eval(double x, double y) {
+                return x / y;
+            }
+        };
+
+        public abstract double eval(double x, double y);
+    }
+
+    private enum ButtonStyle {
+        WHITE("button-white"),
+        BROWN("button-brown"),
+        GRAY("button-gray"),
+        RED("button-red"),
+        ORANGE("button-orange");
+
+        public final String STYLE_CLASS;
+
+        private ButtonStyle(final String STYLE_CLASS) {
+            this.STYLE_CLASS = STYLE_CLASS;
+        }
     }
 }

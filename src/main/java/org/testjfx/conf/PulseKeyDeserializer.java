@@ -12,6 +12,6 @@ import java.io.IOException;
 public class PulseKeyDeserializer extends KeyDeserializer {
     @Override
     public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        return new Pulse(Float.parseFloat(key.split(",")[0]),Float.parseFloat(key.split(",")[1]),Float.parseFloat(key.split(",")[2]),Float.parseFloat(key.split(",")[3]));
+        return new Pulse(Float.parseFloat(key.split(",")[0]), Float.parseFloat(key.split(",")[1]), Float.parseFloat(key.split(",")[2]), Float.parseFloat(key.split(",")[3]));
     }
 }

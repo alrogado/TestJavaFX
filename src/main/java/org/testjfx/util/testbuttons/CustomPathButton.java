@@ -28,11 +28,11 @@ import org.testjfx.GuiApp;
  * Demonstrates three different methods of creating an icon in a scalable close button.
  */
 public class CustomPathButton extends Application {
+    private DoubleBinding scaleFactor;
+
     public static void main(String[] args) {
         launch(args);
     }
-
-    private DoubleBinding scaleFactor;
 
     @Override
     public void start(Stage primaryStage) {

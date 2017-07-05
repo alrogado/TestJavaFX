@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.elusive.Elusive;
@@ -27,22 +26,18 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
 public class SettingsController {
 
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
-
     @FXML
     StackPane root;
-    private Double height = 400d;
-    private Double width= 400d;
-
     Regulator volumScreen;
     Regulator volumPulse;
-
     ToggleSwitch tsTrigger;
     ToggleSwitch tsPedal;
     ToggleSwitch tsFillDeposit;
-
     ChoiceBox choiceBox;
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
+    private Double height = 400d;
+    private Double width = 400d;
 
     /**
      * init fxml when loaded.
@@ -52,23 +47,23 @@ public class SettingsController {
         Objects.requireNonNull(context, "context");
         MigPane rootMP = new MigPane("fill");
         volumScreen = RegulatorBuilder.createRegulator(
-                "Pantalla", "","%",
+                "Pantalla", "", "%",
                 Elusive.SCREEN_ALT,
                 width, height,
                 50d, 0d, 100d);
         //use Reactfx to manipulate bindings and values from communications
         //volumScreen.minValueProperty()
         volumPulse = RegulatorBuilder.createRegulator(
-                "Pulso", "","%",
+                "Pulso", "", "%",
                 Ionicons.ION_IOS_PULSE_STRONG,
                 width, height,
                 50d, 0d, 100d);
 
-        FlowGridPane regulatorsPane = new FlowGridPane(2,1, volumScreen,volumPulse);
+        FlowGridPane regulatorsPane = new FlowGridPane(2, 1, volumScreen, volumPulse);
         regulatorsPane.setHgap(100);
         regulatorsPane.setPadding(new Insets(10));
 
-        rootMP.add(regulatorsPane,"alignx center, wrap");
+        rootMP.add(regulatorsPane, "alignx center, wrap");
 
         VBox optionsPane = new VBox();
         optionsPane.setSpacing(20);
@@ -76,13 +71,13 @@ public class SettingsController {
 
         choiceBox = new ChoiceBox(FXCollections.observableArrayList("uno", "dos"));
         optionsPane.getChildren().add(choiceBox);
-        tsFillDeposit = new ToggleSwitch("fillDeposit.label",Configuration.getDepositFillEnabled());
+        tsFillDeposit = new ToggleSwitch("fillDeposit.label", Configuration.getDepositFillEnabled());
         optionsPane.getChildren().add(tsFillDeposit);
-        tsPedal = new ToggleSwitch("pedal.label",Configuration.getPedalEnabled());
+        tsPedal = new ToggleSwitch("pedal.label", Configuration.getPedalEnabled());
         optionsPane.getChildren().add(tsPedal);
-        tsTrigger = new ToggleSwitch("trigger.label",Configuration.getTriggerEnabled());
+        tsTrigger = new ToggleSwitch("trigger.label", Configuration.getTriggerEnabled());
         optionsPane.getChildren().add(tsTrigger);
-        rootMP.add(optionsPane,"alignx center, wrap");
+        rootMP.add(optionsPane, "alignx center, wrap");
         root.getChildren().addAll(rootMP);
         fadeIn(root);
     }

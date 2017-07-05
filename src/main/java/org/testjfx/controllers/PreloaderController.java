@@ -22,24 +22,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.testjfx.conf.Configuration;
-import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testjfx.conf.Configuration;
+import org.testjfx.util.ExtendedAnimatedFlowContainer;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Objects;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
-import static org.testjfx.GuiApp.*;
+import static org.testjfx.GuiApp.ANIM_DURATION;
 import static org.testjfx.util.EffectUtils.fadeOut;
 
 @ViewController(value = "/org/testjfx/fxml/ui/preloader.fxml", title = "Application")
 public class PreloaderController {
 
     private static Logger logger = LoggerFactory.getLogger(PreloaderController.class);
-
+    BooleanProperty ready = new SimpleBooleanProperty(false);
     @FXMLViewFlowContext
     private ViewFlowContext context;
     @FXML
@@ -58,8 +57,6 @@ public class PreloaderController {
     private JFXProgressBar loadProgress;
     @FXML
     private Label progressText;
-
-    BooleanProperty ready = new SimpleBooleanProperty(false);
 
     /**
      * init fxml when loaded.
@@ -90,7 +87,7 @@ public class PreloaderController {
                         context.register("ContentPane", drawer.getContent().get(0));
                         //configureContent(MainAppController.class, drawer);
                     } catch (Exception e) {
-                        logger.error("",e);
+                        logger.error("", e);
                     }
                 });
             }
@@ -102,7 +99,6 @@ public class PreloaderController {
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,
                 SWIPE_LEFT)));*/
     }
-
 
 
     private void simulateTasks() {

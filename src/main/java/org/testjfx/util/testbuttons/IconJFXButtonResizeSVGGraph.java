@@ -61,7 +61,7 @@ public class IconJFXButtonResizeSVGGraph extends Application {
                 }
         );
 
-        Scene scene = new Scene(root,MIN_BUTTON_SIZE*10, MIN_BUTTON_SIZE*10);
+        Scene scene = new Scene(root, MIN_BUTTON_SIZE * 10, MIN_BUTTON_SIZE * 10);
 
 
         primaryStage.setScene(scene);

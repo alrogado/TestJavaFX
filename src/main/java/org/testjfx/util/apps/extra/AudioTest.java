@@ -14,9 +14,12 @@ import org.testjfx.components.Audio;
  */
 public class AudioTest extends Application {
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
-    public void start (Stage primaryStage)
-    {
+    public void start(Stage primaryStage) {
         //Add a scene
         Group root = new Group();
         Scene scene = new Scene(root, 500, 200);
@@ -37,9 +40,5 @@ public class AudioTest extends Application {
         primaryStage.setTitle("Media Player");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

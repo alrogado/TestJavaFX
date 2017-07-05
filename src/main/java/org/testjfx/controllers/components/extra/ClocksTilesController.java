@@ -7,7 +7,6 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.fxml.FXML;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import org.reactfx.util.Lists;
 import org.testjfx.components.ClockBuilder;
 
 import javax.annotation.PostConstruct;
@@ -19,14 +18,12 @@ import static org.testjfx.util.EffectUtils.fadeIn;
 public class ClocksTilesController {
 
 
-    @FXMLViewFlowContext
-    private ViewFlowContext context;
-
     @FXML
     StackPane root;
-
     @FXML
     FlowGridPane flowGridPane;
+    @FXMLViewFlowContext
+    private ViewFlowContext context;
 
     /**
      * init fxml when loaded.

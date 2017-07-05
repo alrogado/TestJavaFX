@@ -42,7 +42,7 @@ public class LogoButtonResizeGrad extends Application {
                     buttonWithSVG.setPrefSize(size, size);
                 }
         );
-        root.setPrefSize(800,600);
+        root.setPrefSize(800, 600);
         Scene scene = new Scene(root);
 
         final ObservableList<String> stylesheets = scene.getStylesheets();

@@ -21,8 +21,6 @@ package org.testjfx.components.extra;
 
 import com.jfoenix.validation.base.ValidatorBase;
 import javafx.beans.DefaultProperty;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import org.testjfx.conf.Configuration;
 
@@ -42,7 +40,7 @@ public class PasswordValidator extends ValidatorBase {
     private void evalTextInputField() {
         TextInputControl textField = (TextInputControl) srcControl.get();
         try {
-            if(Configuration.getPassword().equals(textField.getText()))
+            if (Configuration.getPassword().equals(textField.getText()))
                 hasErrors.set(false);
             else
                 hasErrors.set(true);

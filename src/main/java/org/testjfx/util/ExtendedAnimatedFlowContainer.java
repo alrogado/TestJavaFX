@@ -25,9 +25,9 @@ public class ExtendedAnimatedFlowContainer extends AnimatedFlowContainer impleme
 
     private final StackPane view;
     private final Duration duration;
+    private final ImageView placeholder;
     private Function<AnimatedFlowContainer, List<KeyFrame>> animationProducer;
     private Timeline animation;
-    private final ImageView placeholder;
 
     /**
      * Defaults constructor that creates a container with a fade animation that last 320 ms.

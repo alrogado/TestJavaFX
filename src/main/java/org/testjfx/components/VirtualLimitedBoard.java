@@ -2,7 +2,8 @@ package org.testjfx.components;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableStringValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,7 +15,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
-import org.testjfx.util.GuiColors;
 
 public class VirtualLimitedBoard {
 
@@ -26,8 +26,8 @@ public class VirtualLimitedBoard {
      * Creates a Virtual Keyboard.
      *
      * @param passwordAlpahabetController The node that will receive KeyEvents from this keyboard.
-     *               If target is null, KeyEvents will be dynamically forwarded to the focus owner
-     *               in the Scene containing this keyboard.
+     *                                    If target is null, KeyEvents will be dynamically forwarded to the focus owner
+     *                                    in the Scene containing this keyboard.
      */
     public VirtualLimitedBoard(PasswordAlpahabetController passwordAlpahabetController) {
         this.passwordAlpahabetController = passwordAlpahabetController;
@@ -39,7 +39,7 @@ public class VirtualLimitedBoard {
         final String[][] unshifted = new String[][]{
                 {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"},
                 {"q", "w", "e", "r", "t", "y", "u", "i", "o", "p"},
-                {"a", "s", "d", "f", "g", "h", "j", "k", "l", },
+                {"a", "s", "d", "f", "g", "h", "j", "k", "l",},
                 {"z", "x", "c", "v", "b", "n", "m"}};
 
 
@@ -104,7 +104,7 @@ public class VirtualLimitedBoard {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                target.setText(target.getText()+text.get());
+                target.setText(target.getText() + text.get());
                 passwordAlpahabetController.updatPasswordValue();
             }
         });

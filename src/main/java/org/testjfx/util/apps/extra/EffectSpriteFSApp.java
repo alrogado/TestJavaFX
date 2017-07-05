@@ -15,7 +15,7 @@ public class EffectSpriteFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(Sprite3dController.class, stage), true);
-        configureAndSetScene(stage,new Scene(decorator));
+        configureAndSetScene(stage, new Scene(decorator));
         configureFullScreenStage(stage);
         stage.show();
     }

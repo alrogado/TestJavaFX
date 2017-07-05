@@ -16,7 +16,7 @@ public class OperatorSettingsNFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(OperatorSettingsController.class, stage), false);
-        configureAndSetScene(stage,new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
+        configureAndSetScene(stage, new Scene(decorator, Configuration.WIDTH, Configuration.HEIGHT));
         configureFullScreenStage(stage);
         stage.show();
     }
