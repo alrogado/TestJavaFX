@@ -133,15 +133,13 @@ public class RegulatorsController {
     }
 
     public void showInfo(String title, String message, TrayIcon.MessageType messageType) {
+        closeDialog();
 
-        if(dialog!=null &&dialog.isVisible()){
-            dialog.close();
-        }
         dialog = new JFXDialog();
 
         JFXDialogLayout layout = new JFXDialogLayout();
         Text titleText = new Text(title);
-        titleText.setFont(new Font("Roboto Bold", 28));
+        to change the font use
         layout.setHeading(titleText);
         dialog.setOverlayClose(false);
         layout.setPrefSize(650,350);
@@ -193,6 +191,12 @@ public class RegulatorsController {
         dialog.setTransitionType(JFXDialog.DialogTransition.TOP);
         dialog.setContent(layout);
         dialog.show(root);
+    }
+
+    public void closeDialog() {
+        if(dialog!=null &&dialog.isVisible()){
+            dialog.close();
+        }
     }
 
 }
