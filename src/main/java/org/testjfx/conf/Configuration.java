@@ -130,6 +130,7 @@ public class Configuration {
     private static boolean depositFillEnabled;
     private static boolean pedalEnabled = true;
     private static boolean triggerEnabled;
+    private static long aliveInterval;
 
     public static String getBundleString(String rscBundle) {
         String res = rscBundle;
@@ -231,5 +232,13 @@ public class Configuration {
 
     public static void setTriggerEnabled(boolean triggerEnabled) {
         Configuration.triggerEnabled = triggerEnabled;
+    }
+
+    public static long getAliveInterval() {
+        return aliveInterval;
+    }
+
+    public static void setAliveInterval(long aliveInterval) {
+        Configuration.aliveInterval = aliveInterval;
     }
 }
