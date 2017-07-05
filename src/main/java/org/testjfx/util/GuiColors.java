@@ -24,6 +24,7 @@ public class GuiColors {
     public static Color FRG_4 = Color.web("#001CC5");
 
     public static Background BACKGROUNDFILL_100 = new Background(new BackgroundFill(FRG, new CornerRadii(100), Insets.EMPTY));
+    public static Background BACKGROUNDFILL_DARKER_100 = new Background(new BackgroundFill(FRG.darker(), new CornerRadii(100), Insets.EMPTY));
     public static Background BACKGROUNDFILL_60 = new Background(new BackgroundFill(FRG, new CornerRadii(60), Insets.EMPTY));
     public static Background BACKGROUND_BRIGTHER_FILL_60 = new Background(new BackgroundFill(FRG.brighter(), new CornerRadii(60), Insets.EMPTY));
 

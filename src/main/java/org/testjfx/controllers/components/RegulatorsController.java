@@ -82,25 +82,19 @@ public class RegulatorsController {
     public void init() {
         Objects.requireNonNull(context, "context");
 
-        root.getChildren().remove(dialog);
-
-        MigPane rootMP = new MigPane("fill");
-        //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny top, wrap");
-        //rootMP.add(createMessagesBox(), "alignx center, aligny top, wrap");
-        //regulatorsPane = RegulatorsPane.getInstance();
         regulatorsPane = RegulatorsInnerControlsPane.getInstance();
 
-        rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
+        regulatorsPane.setWorkMode("15ms");
 
-        //rootMP.add(createHBoxWorkModesList(), "alignx center, aligny bottom, wrap");
-        //regulatorsPane.layout();
-        //rootMP.add(new RegulatorsPane(this), "aligny bottom, aligny bottom, wrap");
+        MigPane rootMP = new MigPane("fill");
+        rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
+        //regulatorsPane = RegulatorsPane.getInstance();
+
         /*FlowPane rootMP = new FlowPane();
-        rootMP.getChildren().addAll(createWorkModesNodeList(),new RegulatorsPane(this));*/
+        rootMP.getChildren().addAll(regulatorsPane);*/
 
         /*FlowGridPane rootMP = new FlowGridPane(1,2, createHBoxWorkModesList(), new RegulatorsPane(this));
-        rootMP.setAlignment(Pos.CENTER);
-*/
+        rootMP.setAlignment(Pos.CENTER);*/
         root.getChildren().addAll(rootMP);
 
         Random RDM = new Random();
@@ -117,18 +111,17 @@ public class RegulatorsController {
                     regulatorsPane.getTipTempTile().setValue(tipTemp);
                     lastTimerCall[0] = now;
 
-                    if((tipTemp>=regulatorsPane.getTipTempTile().getSections().get(1).getStart()&&tipTemp<=regulatorsPane.getTipTempTile().getSections().get(1).getStop())
+                    /*if((tipTemp>=regulatorsPane.getTipTempTile().getSections().get(1).getStart()&&tipTemp<=regulatorsPane.getTipTempTile().getSections().get(1).getStop())
                         &&(depositTemp>=regulatorsPane.getDepositTempTile().getSections().get(1).getStart()&&depositTemp<=regulatorsPane.getDepositTempTile().getSections().get(1).getStop()))
                         regulatorsPane.disable(false);
                     else{
                         regulatorsPane.disable(true);
                     }
-                    showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.ERROR);
+                    showInfo("Mensaje", "Seg "+now, TrayIcon.MessageType.ERROR);*/
                 }
             }
         };
         timer.start();
-        regulatorsPane.disable(true);
         fadeIn(root);
     }
 

@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -130,6 +131,8 @@ public class RegulatorsPane extends Region {
             getFrequencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
 
             getMessagePane().setPrefSize(getWidthForMessagePanel(),  getHeigthForMessagePanel());
+            //in order to adjust pane width for the text
+            workModeSelectedMessage.setWrappingWidth(getMessagePane().getWidth()-40);
 
             setSpacingWorkModeButtons();
 
@@ -305,19 +308,19 @@ public class RegulatorsPane extends Region {
     }
 
     private void createVBoxWorkModesList() {
-
-        /*nodesList.addAnimatedNode(btnWorkModes,
-                (expanded) -> singletonList(new KeyValue(lblWorkModes.rotateProperty(),
-                        expanded ? 15 : 0,
-                        Interpolator.EASE_BOTH)));*/
         try {
             workModes = WorkModes.getLoadedWorkModes().getWorkModes();
         } catch (IOException e) {
             logger.error("Error loading workmodes ", e);
         }
-        int limit = workModes.size() / 2;
-        workModebuttonsPaneLeft = createButtonsList(workModes.subList(0,limit));
-        workModebuttonsPaneRight = createButtonsList(workModes.subList(limit, workModes.size()));
+        if(workModes!=null&&workModes.size()>0) {
+            int limit = workModes.size() / 2;
+            workModebuttonsPaneLeft = createButtonsList(workModes.subList(0, limit));
+            workModebuttonsPaneRight = createButtonsList(workModes.subList(limit, workModes.size()));
+        }else{
+            workModebuttonsPaneLeft = new VBox();
+            workModebuttonsPaneRight = new VBox();
+        }
 
     }
 
@@ -339,12 +342,17 @@ public class RegulatorsPane extends Region {
         workModeButton.setTooltip(new Tooltip(Configuration.getBundleString(mode.getName()+"_wm.tooltip")));
         workModeButton.setButtonType(JFXButton.ButtonType.RAISED);
         workModeButton.setPrefWidth(150);
+        workModeButton.setPadding(new Insets(25));
         workModeButton.setPrefHeight(getHeight()/10);
         workModeButton.setBorder(BORDER_WHITE_2_OVER_100);
+        workModeButton.getProperties().put("mode", mode);
         workModeButton.setBackground(BACKGROUNDFILL_100);
         workModeButton.setOnMouseClicked(e->{
             this.workMode = mode;
-            changeMessageText(Configuration.getBundleString(mode.getName()+"_wm.tooltip"));
+            setWorkModeMessageText(Configuration.getBundleString(mode.getName()+"_wm.help"));
+            for(Button button:buttonsSet)
+                button.setBackground(BACKGROUNDFILL_100);
+            workModeButton.setBackground(BACKGROUNDFILL_DARKER_100);
         });
         //-fx-pref-width: 150px;
         //-fx-background-color: #0091DC;
@@ -365,15 +373,19 @@ public class RegulatorsPane extends Region {
         fluencyTile.setDisable(newVal);
         if(!newVal) {
             new TadaTransition(startButton).play();
-            changeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.tooltip"));
+            if(workMode!=null)
+                setWorkModeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.help"));
+            else
+                setWorkModeMessageText("Seleccione un Modo de trabajo.");
         }else {
-            changeMessageText("Modo de trabajo desactivado.\n Temperaturas bajas.");
+            setWorkModeMessageText("Modo de trabajo desactivado.\n Temperaturas bajas.");
         }
         startButtonPane.setDisable(newVal);
         getMessagePane().setDisable(newVal);
-        for(JFXButton wmButton: buttonsSet){
-            wmButton.setDisable(newVal);
-        }
+        if(buttonsSet!=null & buttonsSet.size()>0)
+            for(JFXButton wmButton: buttonsSet){
+                wmButton.setDisable(newVal);
+            }
     }
 
     public void createStartButton() {
@@ -386,7 +398,7 @@ public class RegulatorsPane extends Region {
         startButton.setTooltip(new Tooltip(""));
         startButton.setTextFill(Color.WHITE);
         startButton.setEffect(DROPSHADOW_TEXT);
-        startButton.setButtonType(JFXButton.ButtonType.RAISED);
+        //startButton.setButtonType(JFXButton.ButtonType.RAISED);
         startButton.setBorder(BORDER_WHITE_4_OVER_100);
         startButton.setBackground(BACKGROUNDFILL_100);
 
@@ -482,6 +494,8 @@ public class RegulatorsPane extends Region {
         workModeSelectedMessage.setText("Modo de trabajo");
         workModeSelectedMessage.setEffect(GuiColors.DROPSHADOW_TEXT);
         workModeSelectedMessage.setFont(eu.hansolo.tilesfx.fonts.Fonts.latoRegular(24));
+        workModeSelectedMessage.setPickOnBounds(true);
+
 
         //messagePane.getChildren().add(workModeSelectedMessage);
         messagePane = new FlowGridPane(1,1, workModeSelectedMessage);
@@ -491,9 +505,11 @@ public class RegulatorsPane extends Region {
         messagePane.setPadding(new Insets(25,20,20,20));
 
         messagePane.setPrefSize(   250,250);
+
+
     }
 
-    public void changeMessageText(String message){
+    public void setWorkModeMessageText(String message){
         workModeSelectedMessage.setText(message);
     }
 
@@ -517,7 +533,13 @@ public class RegulatorsPane extends Region {
         for(Mode mode:workModes){
             if(mode.getName().equals(workModeStr)) {
                 workMode = mode;
-                changeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.tooltip"));
+                setWorkModeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.help"));
+                for(Button button:buttonsSet)
+                    if (((Mode)button.getProperties().get("mode")).getName().equals(workModeStr))
+                        button.setBackground(BACKGROUNDFILL_DARKER_100);
+                    else
+                        button.setBackground(BACKGROUNDFILL_100);
+
             }
         }
     }
