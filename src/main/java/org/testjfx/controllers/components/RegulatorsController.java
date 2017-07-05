@@ -7,6 +7,7 @@ import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.Ikon;
@@ -37,6 +38,7 @@ import org.testjfx.conf.Configuration;
 import org.testjfx.components.RegulatorBuilder;
 import org.testjfx.conf.Mode;
 import org.testjfx.conf.WorkModes;
+import org.testjfx.util.GuiColors;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
@@ -121,21 +123,13 @@ public class RegulatorsController {
                     else{
                         regulatorsPane.disable(true);
                     }
-                    //showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.INFO);
+                    showInfo("Mesaje", "seg "+now, TrayIcon.MessageType.ERROR);
                 }
             }
         };
         timer.start();
         regulatorsPane.disable(true);
         fadeIn(root);
-    }
-
-    private Node createMessagesBox() {
-        Pane messagesPane = new Pane();
-        messagesPane.setPadding(new Insets(5,5,5,5));
-        messagesPane.getChildren().add(new Text("testeando"));
-        //messagesPane.();
-        return messagesPane;
     }
 
     public void showInfo(String title, String message, TrayIcon.MessageType messageType) {
@@ -147,44 +141,54 @@ public class RegulatorsController {
 
         JFXDialogLayout layout = new JFXDialogLayout();
         Text titleText = new Text(title);
-        titleText.setFont(new Font("Roboto Bold", 18));
+        titleText.setFont(new Font("Roboto Bold", 28));
         layout.setHeading(titleText);
         dialog.setOverlayClose(false);
+        layout.setPrefSize(650,350);
 
+        layout.setEffect(GuiColors.DROPSHADOW_TEXT);
         VBox vbox = new VBox();
-        vbox.setPrefWidth(400);
+        vbox.setPrefWidth(450);
+        vbox.setPrefHeight(450);
         vbox.setSpacing(7);
 
         Label messageLbl = new Label(message);
         messageLbl.setId("message");
-        messageLbl.setFont(new Font("Roboto", 12));
+        messageLbl.setFont(new Font("Arial", 30));
 
         vbox.getChildren().addAll(messageLbl);
 
         FlowGridPane pane = new FlowGridPane(2,1);
         pane.add(messageLbl, 0,0);
-        Ikon ikon = Ikonli.NONE;
+
+        Color ikonColor =GuiColors.FRG;
+        Ikon ikon =Ikonli.NONE;
         switch(messageType){
             case ERROR:
                 /** An error message */
                 ikon = Elusive.ERROR_ALT;
+                ikonColor = Color.RED;
                 break;
             case WARNING:
                 /** A warning message */
                 ikon = Elusive.WARNING_SIGN;
+                ikonColor=Color.YELLOW;
                 break;
             case INFO:
                 /** An information message */
-                ikon = Elusive.INFO_SIGN;
+                ikon = Elusive.DELL;//INFO_SIGN;
                 break;
             case NONE:
                 /** Simple message */
                 ikon = Elusive.DELL;
                 break;
         }
-        FontIcon child = IkonUtils.customizeIkon(ikon);
-        child.setIconColor(FRG);
-        pane.add(child, 1,0);
+        FontIcon fontIcon = IkonUtils.customizeIkon(ikon);
+        layout.setBorder(new Border(new BorderStroke(ikonColor, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(2))));
+        fontIcon.setIconSize(170);
+        fontIcon.setFill(ikonColor);
+        fontIcon.setEffect(GuiColors.DROPSHADOW_COMP);
+        pane.add(fontIcon, 1,0);
         layout.setBody(pane);
         dialog.setTransitionType(JFXDialog.DialogTransition.TOP);
         dialog.setContent(layout);

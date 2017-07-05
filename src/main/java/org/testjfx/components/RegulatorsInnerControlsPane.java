@@ -14,23 +14,27 @@ public class RegulatorsInnerControlsPane extends RegulatorsPane {
         return(getWidth()/2)-startButton.getWidth()/2 -20;
     }
 
-    protected double getRepositionFactorXForLeftButtons() {
+    protected double getRepositionXForLeftButtons() {
         return (getWidth()/2)-getWorkModebuttonsPaneLeft().getWidth()-20;
     }
 
+    protected double getXForMessagePane(double x, double depositTempWidth) {
+        return x + depositTempWidth-depositTempWidth/10;
+    }
 
-    protected double getRespositionMinusFactorXForRightButtons() {
+
+    protected double getRespositionMinusXForRightButtons() {
         return (getWidth()/2)+5;
     }
 
 
     int factorXForSecondTiles = 280;
 
-    protected double getRepositionFactorXForFluencyTile() {
+    protected double getRepositionXForFluencyTile() {
         return factorXForSecondTiles;
     }
 
-    protected double getRepositionFactorXForTipTile() {
+    protected double getRepositionXForTipTile() {
         return factorXForSecondTiles;
     }
 
@@ -45,8 +49,13 @@ public class RegulatorsInnerControlsPane extends RegulatorsPane {
         getWorkModebuttonsPaneRight().setSpacing((getHeight() / 7 / getWorkModebuttonsPaneRight().getChildren().size()) - factorForSpacingButtons);
     }
 
-    protected int getFactorToResizeStartButton() {
-        return 10;
+
+    protected double getRepositionXForFreqTile() {
+        return 0;
+    }
+
+    protected double getWidthForMessagePanel() {
+        return 280+(depositTempTile.getWidth()*0.2);
     }
 
 }

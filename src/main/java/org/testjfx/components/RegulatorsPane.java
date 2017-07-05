@@ -16,6 +16,7 @@
 
 package org.testjfx.components;
 
+import com.fxexperience.javafx.animation.TadaTransition;
 import com.jfoenix.controls.JFXButton;
 import eu.hansolo.fx.regulators.Fonts;
 import eu.hansolo.fx.regulators.Regulator;
@@ -26,7 +27,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -92,7 +92,8 @@ public class RegulatorsPane extends Region {
 
     SimpleBooleanProperty disabledProperty = new SimpleBooleanProperty(true);
     protected Set<JFXButton> buttonsSet = new HashSet<>();
-    private FlowGridPane messagePanel;
+    private FlowGridPane messagePane;
+    Text workModeSelectedMessage;
 
     static RegulatorsPane instance;
 
@@ -108,7 +109,7 @@ public class RegulatorsPane extends Region {
                 getStartButtonPane(),
                 getWorkModebuttonsPaneLeft(),
                 getWorkModebuttonsPaneRight(),
-                getMessagePanel()
+                getMessagePane()
         );
         /*widthSizeTile = getWidth()/factor;
         heigthSizeTile = getHeight()/factor;*/
@@ -126,11 +127,82 @@ public class RegulatorsPane extends Region {
             getFluencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
             getFrequencyTile().setPrefSize(widthSizeTile, heigthSizeTile);
 
+            getMessagePane().setPrefSize(getWidthForMessagePanel(),  getHeigthForMessagePanel());
+
             setSpacingWorkModeButtons();
 
             prefSizeStartButton(newBounds);
 
         });
+    }
+
+    @Override
+    protected void layoutChildren() {
+        super.layoutChildren();
+
+        double x = getXForComp();
+        double y = getPadding().getTop();
+
+
+        getDepositTempTile().relocate(x, y);
+        double depositTempHeight = getDepositTempTile().prefHeight(getWidth() - x - getPadding().getRight());
+        double depositTempWidth = getDepositTempTile().prefWidth(getHeight() - x - getPadding().getRight());
+
+        double repositionFactorXForTipTile = getRepositionXForTipTile();
+        getTipTempTile().relocate(x + depositTempWidth + repositionFactorXForTipTile, y);
+        double tipTempHeight = getTipTempTile().prefHeight(getWidth() - x - getPadding().getRight());
+
+        double xforStartButton = getXForStartButton(x, depositTempWidth);
+        getStartButtonPane().relocate(xforStartButton, y + tipTempHeight - getStartButtonPane().getHeight() / 2 - startButtonRadious / 2);
+
+        double xforMessagePane = getXForMessagePane(x, depositTempWidth);
+        getMessagePane().relocate(xforMessagePane, y + tipTempHeight +65);
+
+        double repositionFactorYForFreqTile = getRepositionYForFreqTile();
+        getFrequencyTile().relocate(x - getRepositionXForFreqTile(), y + depositTempHeight - repositionFactorYForFreqTile);
+
+        double repositionFactorXForFluencyTile = getRepositionXForFluencyTile();
+        double frequencyWidth = getFrequencyTile().prefWidth(getWidth() - x - getPadding().getRight());
+        getFluencyTile().relocate(x + frequencyWidth + repositionFactorXForFluencyTile, y + depositTempHeight - repositionFactorYForFreqTile);
+
+        //todo refactor workmode value pane
+        double repositionFactorXForLeftButtons = getRepositionXForLeftButtons();
+        getWorkModebuttonsPaneLeft().relocate(repositionFactorXForLeftButtons, y);
+        double respositionMinusFactorXForRightButtons = getRespositionMinusXForRightButtons();
+        getWorkModebuttonsPaneRight().relocate(depositTempHeight * 2 - respositionMinusFactorXForRightButtons, y);
+
+        //todo we need to set resize to the same value in setPrefSize in order to not move controls after resize root pane
+        getTipTempTile().resize(widthSizeTile, heigthSizeTile);
+        getDepositTempTile().resize(widthSizeTile, heigthSizeTile);
+        getFluencyTile().resize(widthSizeTile, heigthSizeTile);
+        getFrequencyTile().resize(widthSizeTile, heigthSizeTile);
+
+
+        getMessagePane().resize( getWidthForMessagePanel(), getHeigthForMessagePanel());
+
+        resizeWmButtonsList();
+
+        repositionVmButtons();
+
+        getStartButton().setFont(Fonts.robotoBlack(getStartButton().getWidth() / 6));
+
+        int factorToResizeStartButton = getFactorToResizeStartButton();
+        startButtonRadious = Math.max(initialStartButtonRadious, Math.min(getWidth() / factorToResizeStartButton, getHeight() / factorToResizeStartButton));
+        double size = 2 * startButtonRadious;
+        startButton.resize(size, size);
+
+    }
+
+    protected double getRepositionXForFreqTile() {
+        return 120;
+    }
+
+    protected double getWidthForMessagePanel() {
+        return 220+(depositTempTile.getWidth()*0.2);
+    }
+
+    protected double getHeigthForMessagePanel() {
+        return heigthSizeTile*0.6;
     }
 
     protected void prefSizeStartButton(Bounds newBounds) {
@@ -165,56 +237,7 @@ public class RegulatorsPane extends Region {
         return Orientation.HORIZONTAL;
     }
 
-    @Override
-    protected void layoutChildren() {
-        super.layoutChildren();
 
-        double x = getXForComp();
-        double y = getPadding().getTop();
-
-        getDepositTempTile().relocate(x, y);
-
-        double depositTempHeight = getDepositTempTile().prefHeight(getWidth() - x - getPadding().getRight());
-        double depositTempWidth = getDepositTempTile().prefWidth(getHeight() - x - getPadding().getRight());
-
-        double repositionFactorXForTipTile = getRepositionFactorXForTipTile();
-        getTipTempTile().relocate(x + depositTempWidth + repositionFactorXForTipTile, y);
-        double tipTempHeight = getTipTempTile().prefHeight(getWidth() - x - getPadding().getRight());
-
-        double xforStartButton = getXForStartButton(x, depositTempWidth);
-        getStartButtonPane().relocate(xforStartButton, y + tipTempHeight - getStartButtonPane().getHeight() / 2 - startButtonRadious / 2);
-
-        double repositionFactorYForFreqTile = getRepositionFactorYForFreqTile();
-        getFrequencyTile().relocate(x, y + depositTempHeight - repositionFactorYForFreqTile);
-
-        double repositionFactorXForFluencyTile = getRepositionFactorXForFluencyTile();
-        double frequencyWidth = getFrequencyTile().prefWidth(getWidth() - x - getPadding().getRight());
-        getFluencyTile().relocate(x + frequencyWidth + repositionFactorXForFluencyTile, y + depositTempHeight - repositionFactorYForFreqTile);
-
-        //todo refactor workmode value pane
-        double repositionFactorXForLeftButtons = getRepositionFactorXForLeftButtons();
-        getWorkModebuttonsPaneLeft().relocate(repositionFactorXForLeftButtons, y);
-        double respositionMinusFactorXForRightButtons = getRespositionMinusFactorXForRightButtons();
-        getWorkModebuttonsPaneRight().relocate(depositTempHeight * 2 - respositionMinusFactorXForRightButtons, y);
-
-        //todo we need to set resize to the same value in setPrefSize in order to not move controls after resize root pane
-        getTipTempTile().resize(widthSizeTile, heigthSizeTile);
-        getDepositTempTile().resize(widthSizeTile, heigthSizeTile);
-        getFluencyTile().resize(widthSizeTile, heigthSizeTile);
-        getFrequencyTile().resize(widthSizeTile, heigthSizeTile);
-
-        resizeWmButtonsList();
-
-        repositionVmButtons();
-
-        getStartButton().setFont(Fonts.robotoBlack(getStartButton().getWidth() / 6));
-
-        int factorToResizeStartButton = getFactorToResizeStartButton();
-        startButtonRadious = Math.max(initialStartButtonRadious, Math.min(getWidth() / factorToResizeStartButton, getHeight() / factorToResizeStartButton));
-        double size = 2 * startButtonRadious;
-        startButton.resize(size, size);
-
-    }
 
     protected void resizeWmButtonsList() {
         workModebuttonsPaneLeft.resize(widthSizeTile, heigthSizeTile);
@@ -228,6 +251,10 @@ public class RegulatorsPane extends Region {
         }
     }
 
+    protected double getXForMessagePane(double x, double depositTempWidth) {
+        return getWidth()*0.439 - 100;
+    }
+
     protected double getXForStartButton(double x, double depositTempWidth) {
         return x + depositTempWidth - getStartButtonPane().getWidth() / 2;
     }
@@ -236,23 +263,23 @@ public class RegulatorsPane extends Region {
         return getPadding().getLeft();
     }
 
-    protected double getRespositionMinusFactorXForRightButtons() {
+    protected double getRespositionMinusXForRightButtons() {
         return 40;
     }
 
-    protected double getRepositionFactorXForLeftButtons() {
+    protected double getRepositionXForLeftButtons() {
         return -120;
     }
 
-    protected double getRepositionFactorXForFluencyTile() {
-        return 0;
+    protected double getRepositionXForFluencyTile() {
+        return 120;
     }
 
-    protected double getRepositionFactorYForFreqTile() {
+    protected double getRepositionYForFreqTile() {
         return 70;
     }
 
-    protected double getRepositionFactorXForTipTile() {
+    protected double getRepositionXForTipTile() {
         return 0;
     }
 
@@ -312,8 +339,8 @@ public class RegulatorsPane extends Region {
         workModeButton.setButtonType(JFXButton.ButtonType.RAISED);
         workModeButton.setPrefWidth(150);
         workModeButton.setPrefHeight(getHeight()/10);
-        workModeButton.setBorder(new Border(new BorderStroke(Color.WHITE,BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(2))));
-        workModeButton.setBackground(new Background(new BackgroundFill(FRG,new CornerRadii(100),Insets.EMPTY)));
+        workModeButton.setBorder(BORDER_WHITE_2_OVER_100);
+        workModeButton.setBackground(BACKGROUNDFILL_100);
         //-fx-pref-width: 150px;
         //-fx-background-color: #0091DC;
         //-fx-background-radius: 100px;
@@ -331,7 +358,14 @@ public class RegulatorsPane extends Region {
     public void disable(boolean newVal){
         frequencyTile.setDisable(newVal);
         fluencyTile.setDisable(newVal);
+        if(!newVal) {
+            new TadaTransition(startButton).play();
+            changeMessageText("");
+        }else {
+            changeMessageText("Modo de trabajo desactivado.\n Temperaturas bajas.");
+        }
         startButtonPane.setDisable(newVal);
+        getMessagePane().setDisable(newVal);
         for(JFXButton wmButton: buttonsSet){
             wmButton.setDisable(newVal);
         }
@@ -348,8 +382,8 @@ public class RegulatorsPane extends Region {
         startButton.setTextFill(Color.WHITE);
         startButton.setEffect(DROPSHADOW_TEXT);
         startButton.setButtonType(JFXButton.ButtonType.RAISED);
-        startButton.setBorder(new Border(new BorderStroke(Color.WHITE,BorderStrokeStyle.SOLID, new CornerRadii(100), new BorderWidths(4))));
-        startButton.setBackground(new Background(new BackgroundFill(FRG,new CornerRadii(100),Insets.EMPTY)));
+        startButton.setBorder(BORDER_WHITE_4_OVER_100);
+        startButton.setBackground(BACKGROUNDFILL_100);
 
         Circle buttonCircle = new Circle(startButtonRadious);
         startButton.setShape(buttonCircle);
@@ -438,23 +472,28 @@ public class RegulatorsPane extends Region {
     }
 
     public void createMessagePanel() {
-        messagePanel = new FlowGridPane(1,1);
-        VBox vBox = new VBox();
-
-        Text workModeSelectedMessage = new Text();
+        workModeSelectedMessage = new Text();
         workModeSelectedMessage.setFill(Color.WHITE);
         workModeSelectedMessage.setText("Modo de trabajo");
         workModeSelectedMessage.setEffect(GuiColors.DROPSHADOW_TEXT);
+        workModeSelectedMessage.setFont(eu.hansolo.tilesfx.fonts.Fonts.latoRegular(24));
 
-        vBox.getChildren().add(workModeSelectedMessage);
-        vBox.setStyle("-fx-background: #0091DC;");
-        messagePanel.setStyle("-fx-background: #0091DC;");
-        messagePanel.add(vBox, 0,0);
-        messagePanel.setPrefSize(250,250);
+        //messagePane.getChildren().add(workModeSelectedMessage);
+        messagePane = new FlowGridPane(1,1, workModeSelectedMessage);
+        messagePane.setBackground(BACKGROUND_BRIGTHER_FILL_60);
+        messagePane.setBorder(BORDER_WHITE_4_OVER_60);
+        messagePane.setEffect(DROPSHADOW_COMP);
+        messagePane.setPadding(new Insets(25,20,20,20));
+
+        messagePane.setPrefSize(   250,250);
     }
 
-    public FlowGridPane getMessagePanel() {
-        return messagePanel;
+    public void changeMessageText(String message){
+        workModeSelectedMessage.setText(message);
+    }
+
+    public Pane getMessagePane() {
+        return messagePane;
     }
 
     public static RegulatorsPane getInstance() {
