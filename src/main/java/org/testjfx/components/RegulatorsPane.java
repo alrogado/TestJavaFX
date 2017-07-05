@@ -96,6 +96,8 @@ public class RegulatorsPane extends Region {
     Text workModeSelectedMessage;
 
     static RegulatorsPane instance;
+    private Mode workMode;
+    List<Mode> workModes;
 
     protected RegulatorsPane() {
         initComponents();
@@ -308,7 +310,6 @@ public class RegulatorsPane extends Region {
                 (expanded) -> singletonList(new KeyValue(lblWorkModes.rotateProperty(),
                         expanded ? 15 : 0,
                         Interpolator.EASE_BOTH)));*/
-        List<Mode> workModes = null;
         try {
             workModes = WorkModes.getLoadedWorkModes().getWorkModes();
         } catch (IOException e) {
@@ -341,6 +342,10 @@ public class RegulatorsPane extends Region {
         workModeButton.setPrefHeight(getHeight()/10);
         workModeButton.setBorder(BORDER_WHITE_2_OVER_100);
         workModeButton.setBackground(BACKGROUNDFILL_100);
+        workModeButton.setOnMouseClicked(e->{
+            this.workMode = mode;
+            changeMessageText(Configuration.getBundleString(mode.getName()+"_wm.tooltip"));
+        });
         //-fx-pref-width: 150px;
         //-fx-background-color: #0091DC;
         //-fx-background-radius: 100px;
@@ -360,7 +365,7 @@ public class RegulatorsPane extends Region {
         fluencyTile.setDisable(newVal);
         if(!newVal) {
             new TadaTransition(startButton).play();
-            changeMessageText("");
+            changeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.tooltip"));
         }else {
             changeMessageText("Modo de trabajo desactivado.\n Temperaturas bajas.");
         }
@@ -502,5 +507,18 @@ public class RegulatorsPane extends Region {
 
     public JFXButton getStartButton() {
         return startButton;
+    }
+
+    public Mode getWorkMode() {
+        return workMode;
+    }
+
+    public void setWorkMode(String workModeStr) {
+        for(Mode mode:workModes){
+            if(mode.getName().equals(workModeStr)) {
+                workMode = mode;
+                changeMessageText(Configuration.getBundleString(workMode.getName()+"_wm.tooltip"));
+            }
+        }
     }
 }

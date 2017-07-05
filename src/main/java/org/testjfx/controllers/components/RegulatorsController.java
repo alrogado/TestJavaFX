@@ -139,7 +139,7 @@ public class RegulatorsController {
 
         JFXDialogLayout layout = new JFXDialogLayout();
         Text titleText = new Text(title);
-        to change the font use
+        //to change the font use .jfx-layout-body in .css
         layout.setHeading(titleText);
         dialog.setOverlayClose(false);
         layout.setPrefSize(650,350);
@@ -151,9 +151,6 @@ public class RegulatorsController {
         vbox.setSpacing(7);
 
         Label messageLbl = new Label(message);
-        messageLbl.setId("message");
-        messageLbl.setFont(new Font("Arial", 30));
-
         vbox.getChildren().addAll(messageLbl);
 
         FlowGridPane pane = new FlowGridPane(2,1);
