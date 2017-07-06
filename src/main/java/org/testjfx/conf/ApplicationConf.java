@@ -26,8 +26,8 @@ public class ApplicationConf {
     static final String FILE_NAME_CONFIGURATION = "/config.properties";
 
     // Version and copyright information
-    static final String APPLICATION_NAME = "Sapphire LS";
-    static final String COPYRIGHT = "@Sapphire LS 2014";
+    static final String APPLICATION_NAME = "Test JavaFX LS";
+    static final String COPYRIGHT = "@Test JavaFX LS 2014";
     static final String VERSION = "V3.0";
 
     // Encryption/decryption o fconfiguration files
