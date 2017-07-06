@@ -19,4 +19,24 @@ public class Communication {
             }
         }
     }
+
+    /**
+     * Method to be invoked asynchronously when manual show to reset the UI control status in the configured timeout
+     */
+    public synchronized void manualShot()
+    {
+        comm.sendShotCommand();
+
+        try {
+            Thread.sleep(200);
+        }catch (InterruptedException e1) {}
+
+        //ui.getToolsPanel().diodeShotControlOff();
+    }
+
+    static ICommunication instance = new InnerCommunication();
+
+    public static ICommunication getICommunication(){
+        return instance;
+    }
 }

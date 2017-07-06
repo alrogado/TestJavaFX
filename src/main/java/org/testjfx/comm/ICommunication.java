@@ -5,4 +5,7 @@ package org.testjfx.comm;
  */
 public interface ICommunication {
     void sendAlive();
+
+    void sendShotCommand();
+
 }

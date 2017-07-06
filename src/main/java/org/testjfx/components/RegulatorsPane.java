@@ -38,8 +38,8 @@ import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testjfx.conf.Configuration;
-import org.testjfx.conf.Mode;
-import org.testjfx.conf.WorkModes;
+import org.testjfx.conf.PredefinedWorkMode;
+import org.testjfx.conf.PredefinedWorkModes;
 import org.testjfx.util.GuiColors;
 
 import java.io.IOException;
@@ -86,9 +86,9 @@ public class RegulatorsPane extends Region {
     JFXButton startButton;
     SimpleBooleanProperty disabledProperty = new SimpleBooleanProperty(true);
     Text workModeSelectedMessage;
-    List<Mode> workModes;
+    List<PredefinedWorkMode> predefinedWorkModes;
     private FlowGridPane messagePane;
-    private Mode workMode;
+    private PredefinedWorkMode predefinedWorkMode;
 
     protected RegulatorsPane() {
         initComponents();
@@ -300,15 +300,11 @@ public class RegulatorsPane extends Region {
     }
 
     private void createVBoxWorkModesList() {
-        try {
-            workModes = WorkModes.getLoadedWorkModes().getWorkModes();
-        } catch (IOException e) {
-            logger.error("Error loading workmodes ", e);
-        }
-        if (workModes != null && workModes.size() > 0) {
-            int limit = workModes.size() / 2;
-            workModebuttonsPaneLeft = createButtonsList(workModes.subList(0, limit));
-            workModebuttonsPaneRight = createButtonsList(workModes.subList(limit, workModes.size()));
+        predefinedWorkModes = PredefinedWorkModes.getInstance().getPredefinedWorkModes();
+        if (predefinedWorkModes != null && predefinedWorkModes.size() > 0) {
+            int limit = predefinedWorkModes.size() / 2;
+            workModebuttonsPaneLeft = createButtonsList(predefinedWorkModes.subList(0, limit));
+            workModebuttonsPaneRight = createButtonsList(predefinedWorkModes.subList(limit, predefinedWorkModes.size()));
         } else {
             workModebuttonsPaneLeft = new VBox();
             workModebuttonsPaneRight = new VBox();
@@ -316,32 +312,32 @@ public class RegulatorsPane extends Region {
 
     }
 
-    private VBox createButtonsList(List<Mode> workModes) {
+    private VBox createButtonsList(List<PredefinedWorkMode> predefinedWorkModes) {
         VBox buttonsList = new VBox();
         //buttonsList.setEffect(new GaussianBlur());
-        //buttonsList.setSpacing(getHeight()/workModes.size());
+        //buttonsList.setSpacing(getHeight()/predefinedWorkModes.size());
         buttonsList.setPadding(new Insets(20, 5, 5, 5));
-        for (Mode modeName : workModes) {
-            JFXButton innerWorkModeButton = createInnerWorkModeButton(modeName);
+        for (PredefinedWorkMode predefinedWorkModeName : predefinedWorkModes) {
+            JFXButton innerWorkModeButton = createInnerWorkModeButton(predefinedWorkModeName);
             buttonsList.getChildren().add(innerWorkModeButton);
             buttonsSet.add(innerWorkModeButton);
         }
         return buttonsList;
     }
 
-    protected JFXButton createInnerWorkModeButton(Mode mode) {
-        JFXButton workModeButton = new JFXButton(Configuration.getBundleString(mode.getName() + "_wm.label"));
-        workModeButton.setTooltip(new Tooltip(Configuration.getBundleString(mode.getName() + "_wm.tooltip")));
+    protected JFXButton createInnerWorkModeButton(PredefinedWorkMode predefinedWorkMode) {
+        JFXButton workModeButton = new JFXButton(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.label"));
+        workModeButton.setTooltip(new Tooltip(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.tooltip")));
         workModeButton.setButtonType(JFXButton.ButtonType.RAISED);
         workModeButton.setPrefWidth(150);
         workModeButton.setPadding(new Insets(25));
         workModeButton.setPrefHeight(getHeight() / 10);
         workModeButton.setBorder(BORDER_WHITE_2_OVER_100);
-        workModeButton.getProperties().put("mode", mode);
+        workModeButton.getProperties().put("predefinedWorkMode", predefinedWorkMode);
         workModeButton.setBackground(BACKGROUNDFILL_100);
         workModeButton.setOnMouseClicked(e -> {
-            this.workMode = mode;
-            setWorkModeMessageText(Configuration.getBundleString(mode.getName() + "_wm.help"));
+            this.predefinedWorkMode = predefinedWorkMode;
+            setWorkModeMessageText(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
             for (Button button : buttonsSet)
                 button.setBackground(BACKGROUNDFILL_100);
             workModeButton.setBackground(BACKGROUNDFILL_DARKER_100);
@@ -364,8 +360,8 @@ public class RegulatorsPane extends Region {
         fluencyTile.setDisable(newVal);
         if (!newVal) {
             new TadaTransition(startButton).play();
-            if (workMode != null)
-                setWorkModeMessageText(Configuration.getBundleString(workMode.getName() + "_wm.help"));
+            if (predefinedWorkMode != null)
+                setWorkModeMessageText(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
             else
                 setWorkModeMessageText("Seleccione un Modo de trabajo.");
         } else {
@@ -511,17 +507,17 @@ public class RegulatorsPane extends Region {
         return startButton;
     }
 
-    public Mode getWorkMode() {
-        return workMode;
+    public PredefinedWorkMode getPredefinedWorkMode() {
+        return predefinedWorkMode;
     }
 
-    public void setWorkMode(String workModeStr) {
-        for (Mode mode : workModes) {
-            if (mode.getName().equals(workModeStr)) {
-                workMode = mode;
-                setWorkModeMessageText(Configuration.getBundleString(workMode.getName() + "_wm.help"));
+    public void setPredefinedWorkMode(String workModeStr) {
+        for (PredefinedWorkMode predefinedWorkMode : predefinedWorkModes) {
+            if (predefinedWorkMode.getName().equals(workModeStr)) {
+                this.predefinedWorkMode = predefinedWorkMode;
+                setWorkModeMessageText(Configuration.getBundleString(this.predefinedWorkMode.getName() + "_wm.help"));
                 for (Button button : buttonsSet)
-                    if (((Mode) button.getProperties().get("mode")).getName().equals(workModeStr))
+                    if (((PredefinedWorkMode) button.getProperties().get("predefinedWorkMode")).getName().equals(workModeStr))
                         button.setBackground(BACKGROUNDFILL_DARKER_100);
                     else
                         button.setBackground(BACKGROUNDFILL_100);

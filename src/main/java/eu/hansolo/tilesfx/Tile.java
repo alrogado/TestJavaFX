@@ -5529,7 +5529,7 @@ public class Tile extends Control {
 
     /**
      * Returns the mode of the RadarChartTileSkin.
-     * There are Mode.POLYGON and Mode.SECTOR.
+     * There are WorkMode.POLYGON and WorkMode.SECTOR.
      *
      * @return the mode of the RadarChartTileSkin
      */
@@ -5540,7 +5540,7 @@ public class Tile extends Control {
     /**
      * Defines the mode that is used in the RadarChartTileSkin
      * to visualize the data in the RadarChart.
-     * There are Mode.POLYGON and Mode.SECTOR.
+     * There are WorkMode.POLYGON and WorkMode.SECTOR.
      *
      * @param MODE
      */

@@ -3,6 +3,8 @@ package org.testjfx.conf;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,40 +13,27 @@ import java.util.List;
 /**
  * Created by alrogado on 6/21/17.
  */
-public class WorkModes {
+public class PredefinedWorkModes {
 
-    String fileName = "/workModes.conf";
+    private static Logger logger = LoggerFactory.getLogger(PredefinedWorkModes.class);
+
+    static String fileName = "/predefinedWorkModes.conf";
 
     @JsonProperty
-    private List<Mode> workModes;
+    private List<PredefinedWorkMode> predefinedWorkModes;
 
-    public static void main(String args[]) throws IOException {
-        WorkModes workModes = new WorkModes().loadConf();
-        System.out.println("Size:" + workModes.getWorkModes().size());
+
+    public List<PredefinedWorkMode> getPredefinedWorkModes() {
+        return predefinedWorkModes;
     }
 
-    public static WorkModes getLoadedWorkModes() throws IOException {
-        return new WorkModes().loadConf();
+    public void setPredefinedWorkModes(List<PredefinedWorkMode> predefinedWorkModes) {
+        this.predefinedWorkModes = predefinedWorkModes;
     }
 
-    public List<Mode> getWorkModes() {
-        return workModes;
-    }
 
-    public void setWorkModes(List<Mode> workModes) {
-        this.workModes = workModes;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public WorkModes loadConf() throws IOException {
-        final InputStream file = WorkModes.class.getResourceAsStream(fileName);
+    public static void  loadConf() throws IOException {
+        final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
         /*
         Now this is not needed
@@ -52,7 +41,13 @@ public class WorkModes {
         simpleModule.addKeyDeserializer(FreqFluPair.class, new FreqFluPairKeyDeserializer());
         simpleModule.addKeyDeserializer(Pulse.class, new PulseKeyDeserializer());
         mapper.registerModule(simpleModule);*/
-        return mapper.readValue(file, WorkModes.class);
+        instance = mapper.readValue(file, PredefinedWorkModes.class);
+    }
+
+    static PredefinedWorkModes instance = new PredefinedWorkModes();
+
+    public static PredefinedWorkModes getInstance(){
+        return instance;
     }
 
     /*
@@ -63,4 +58,10 @@ public class WorkModes {
     Properties config = new Properties();
     config.load(new CipherInputStream(Configuration.class.getResourceAsStream(FILE_NAME_CONFIGURATION),cipher));
      */
+
+    public static void main(String args[]) throws IOException {
+        PredefinedWorkModes.getInstance().loadConf();
+        System.out.println("Size:" + PredefinedWorkModes.getInstance().getPredefinedWorkModes().size());
+    }
+
 }

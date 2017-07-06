@@ -96,6 +96,7 @@ public class Configuration {
 
     // Screen behaviour keys
     static final String KEY_COMM_ALIVE_INTERVAL = "comm.aliveSignalInterval";
+
     static final String KEY_TOOLS_ACCESS_CLICKS = "tools.accessClicks";
     static final String KEY_TOOLS_ACCESS_TIME = "tools.accessTime";
     static final String KEY_SHUTDOWN_MESSAGE_TIME = "shutdownMessageTime";

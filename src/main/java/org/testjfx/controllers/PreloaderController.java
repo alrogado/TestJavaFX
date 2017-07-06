@@ -38,6 +38,7 @@ import static org.testjfx.util.EffectUtils.fadeOut;
 public class PreloaderController {
 
     private static Logger logger = LoggerFactory.getLogger(PreloaderController.class);
+
     BooleanProperty ready = new SimpleBooleanProperty(false);
     @FXMLViewFlowContext
     private ViewFlowContext context;

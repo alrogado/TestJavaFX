@@ -57,7 +57,7 @@ public class RegulatorsController {
 
         regulatorsPane = RegulatorsInnerControlsPane.getInstance();
 
-        regulatorsPane.setWorkMode("15ms");
+        regulatorsPane.setPredefinedWorkMode("15ms");
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
