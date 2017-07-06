@@ -22,7 +22,7 @@ package org.testjfx.components.extra;
 import com.jfoenix.validation.base.ValidatorBase;
 import javafx.beans.DefaultProperty;
 import javafx.scene.control.TextInputControl;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 
 @DefaultProperty(value = "icon")
 public class PasswordValidator extends ValidatorBase {
@@ -40,7 +40,7 @@ public class PasswordValidator extends ValidatorBase {
     private void evalTextInputField() {
         TextInputControl textField = (TextInputControl) srcControl.get();
         try {
-            if (Configuration.getPassword().equals(textField.getText()))
+            if (ApplicationConf.getInstance().getPassword().equals(textField.getText()))
                 hasErrors.set(false);
             else
                 hasErrors.set(true);

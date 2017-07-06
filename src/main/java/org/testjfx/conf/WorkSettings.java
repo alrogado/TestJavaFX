@@ -3,6 +3,7 @@ package org.testjfx.conf;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.reactfx.StateMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,23 +59,13 @@ public class WorkSettings {
     static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
     static final byte[] KEY_GENERATION_SALT = new byte[]{(byte)0x1A,(byte)0xAF,(byte)0x13,(byte)0xF5,(byte)0x12,(byte)0x01,(byte)0xAA,(byte)0xDC};
     static final int KEY_GENERATION_ITERATIONS = 16;
-    static final char[] SECRET_KEY = "ShappireLS Configuration Files".toCharArray();
+    static final char[] SECRET_KEY = "Test JavaFx Configuration Files".toCharArray();
 
     static final String FILE_NAME_PULSES_A1 = "slspa";
     static final String FILE_NAME_PULSES_A2 = "slspb";
     static final String FILE_NAME_PULSES_B1 = "slspba";
     static final String FILE_NAME_PULSES_B2 = "slspbb";
 
-    public static void loadConf() throws IOException {
-        try {
-            final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            instance = mapper.readValue(file, WorkSettings.class);
-        } catch (IOException e) {
-            logger.error("Error loading predefined Work Modes ",e);
-            throw new RuntimeException(e);
-        }
-    }
 
     public float getTipWorkTempSetpoint() {
         return tipWorkTempSetpoint;
@@ -229,18 +220,28 @@ public class WorkSettings {
         this.triggerEnabled = triggerEnabled;
     }
 
-    static WorkSettings instance = new WorkSettings();
+    static WorkSettings instance = new WorkSettings().loadConf();
 
     public static WorkSettings getInstance(){
         return instance;
     }
 
     public static void main(String args[]) throws IOException {
-        WorkSettings.loadConf();
         System.out.println("diodeMaxTempSetpoint:" + WorkSettings.getInstance().getDiodeMaxTempSetpoint());
         System.out.println("tipWorkTempSetpoint:" + WorkSettings.getInstance().getTipWorkTempSetpoint());
     }
 
+    public static WorkSettings loadConf(){
+        try {
+            final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
+            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            instance = mapper.readValue(file, WorkSettings.class);
+        } catch (IOException e) {
+            logger.error("Error loading predefined Work Modes ",e);
+            throw new RuntimeException(e);
+        }
+        return instance;
+    }
 
     /**
      * Writes the current total pulses to the given file

@@ -8,7 +8,9 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
-import org.testjfx.conf.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testjfx.conf.ApplicationConf;
 import org.testjfx.util.GuiColors;
 
 import static javafx.scene.text.TextAlignment.CENTER;
@@ -21,6 +23,8 @@ public class RegulatorBuilder {
 
     static int MINVALUETEMP = -20;
     static int MAXVALUETEMP = 60;
+
+    private static Logger logger = LoggerFactory.getLogger(RegulatorBuilder.class);
 
     public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double heigth, Double width, Double value, Double minVal, Double maxVal) {
         return ColorRegulatorBuilder.create()
@@ -60,10 +64,10 @@ public class RegulatorBuilder {
     public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, boolean textVisible, TextAlignment textAllignment) {
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
-        String startFormated = String.format(Configuration.LOCALE, format, start);
-        String stopFormated = String.format(Configuration.LOCALE, format, stop);
+        String startFormated = String.format(ApplicationConf.LOCALE, format, start);
+        String stopFormated = String.format(ApplicationConf.LOCALE, format, stop);
 
-        String text = Configuration.getBundleString("start.label") + ": " + startFormated + " - " + Configuration.getBundleString("stop.label") + ": " + stopFormated;
+        String text = ApplicationConf.getBundleString("start.label") + ": " + startFormated + " - " + ApplicationConf.getBundleString("stop.label") + ": " + stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(width, height)
@@ -83,7 +87,7 @@ public class RegulatorBuilder {
                 .averageVisible(averageVisible)
                 .minValue(MINVALUETEMP)
                 .maxValue(MAXVALUETEMP)
-                .locale(Configuration.LOCALE)
+                .locale(ApplicationConf.LOCALE)
                 .animated(true)
                 .highlightSections(false)
                 .averagingPeriod(25)
@@ -139,7 +143,7 @@ public class RegulatorBuilder {
                 .iconColor(FRG)
                 .color(FRG)
                 .build();
-        regulator.setOnTargetSet(e -> System.out.println("New target set to " + regulator.getTargetValue()));
+        regulator.setOnTargetSet(e -> logger.debug("New target set to " + regulator.getTargetValue()));
         return regulator;
     }
 }

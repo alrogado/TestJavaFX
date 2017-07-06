@@ -16,7 +16,7 @@ import org.kordamp.ikonli.ionicons.Ionicons;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorBuilder;
 import org.testjfx.components.ToggleSwitch;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -50,14 +50,20 @@ public class SettingsController {
                 "Pantalla", "", "%",
                 Elusive.SCREEN_ALT,
                 width, height,
-                50d, 0d, 100d);
+                ApplicationConf.getInstance().getConfigValueAsDouble("volume.screen"), 0d, 100d);
         //use Reactfx to manipulate bindings and values from communications
         //volumScreen.minValueProperty()
+        volumScreen.setOnTargetSet(o->
+                ApplicationConf.getInstance().setConfigValue("volume.screen", volumScreen.getTargetValue()));
         volumPulse = RegulatorBuilder.createRegulator(
                 "Pulso", "", "%",
                 Ionicons.ION_IOS_PULSE_STRONG,
                 width, height,
-                50d, 0d, 100d);
+                (Double) ApplicationConf.getInstance().getConfigValueAsDouble("volume.pulse"), 0d, 100d);
+        //volumPulse.targetValueProperty().
+        //GuiApp.setConfigValue("volume.pulse", volumPulse.getValue());
+        volumPulse.setOnTargetSet(o->
+                ApplicationConf.getInstance().setConfigValue("volume.pulse", volumPulse.getTargetValue()));
 
         FlowGridPane regulatorsPane = new FlowGridPane(2, 1, volumScreen, volumPulse);
         regulatorsPane.setHgap(100);
@@ -71,11 +77,11 @@ public class SettingsController {
 
         choiceBox = new ChoiceBox(FXCollections.observableArrayList("uno", "dos"));
         optionsPane.getChildren().add(choiceBox);
-        tsFillDeposit = new ToggleSwitch("fillDeposit.label", Configuration.getDepositFillEnabled());
+        tsFillDeposit = new ToggleSwitch("fillDeposit.label", ApplicationConf.getInstance().getDepositFillEnabled());
         optionsPane.getChildren().add(tsFillDeposit);
-        tsPedal = new ToggleSwitch("pedal.label", Configuration.getPedalEnabled());
+        tsPedal = new ToggleSwitch("pedal.label", ApplicationConf.getInstance().getPedalEnabled());
         optionsPane.getChildren().add(tsPedal);
-        tsTrigger = new ToggleSwitch("trigger.label", Configuration.getTriggerEnabled());
+        tsTrigger = new ToggleSwitch("trigger.label", ApplicationConf.getInstance().getTriggerEnabled());
         optionsPane.getChildren().add(tsTrigger);
         rootMP.add(optionsPane, "alignx center, wrap");
         root.getChildren().addAll(rootMP);

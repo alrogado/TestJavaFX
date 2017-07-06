@@ -36,7 +36,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 
 import java.util.Locale;
 
@@ -672,7 +672,7 @@ public class Regulator extends Region implements RegulatorControl {
     private void rotate(final double VALUE) {
         drawBar(VALUE);
         indicatorRotate.setAngle((VALUE - minValue.get()) * angleStep - ANGLE_RANGE * 0.5);
-        text.setText(String.format(Configuration.LOCALE, formatString, VALUE));
+        text.setText(String.format(ApplicationConf.LOCALE, formatString, VALUE));
         adjustTextSize(text, size * 0.48, size * 0.216);
         text.setLayoutX((size - text.getLayoutBounds().getWidth()) * 0.5);
 

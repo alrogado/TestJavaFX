@@ -1,6 +1,6 @@
 package org.testjfx.comm;
 
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 
 /**
  * Created by alvaro.lopez on 05/07/2017.
@@ -13,7 +13,7 @@ public class Communication {
         while (true) {
             try {
                 comm.sendAlive();
-                Thread.sleep(Configuration.getAliveInterval());
+                Thread.sleep(ApplicationConf.getInstance().getAliveInterval());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

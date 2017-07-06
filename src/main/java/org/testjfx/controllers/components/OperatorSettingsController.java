@@ -11,7 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorBuilder;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
@@ -49,31 +49,31 @@ public class OperatorSettingsController {
 
     private Node createTempeperatureSparkGauage() {
         Tile depositTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("deposit.label"),
+                ApplicationConf.getBundleString("deposit.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getDepositMinValue(),
-                Configuration.getDepositMaxValue(),
+                ApplicationConf.getInstance().getDepositMinValue(),
+                ApplicationConf.getInstance().getDepositMaxValue(),
                 true, true,
                 LEFT);
         Tile tipTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("tip.label"),
+                ApplicationConf.getBundleString("tip.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getTipMinValue(),
-                Configuration.getTipMaxValue(),
+                ApplicationConf.getInstance().getTipMinValue(),
+                ApplicationConf.getInstance().getTipMaxValue(),
                 true, true,
                 RIGHT);
         Tile diodoTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("diodo.label"),
+                ApplicationConf.getBundleString("diodo.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getDepositMinValue(),
-                Configuration.getDepositMaxValue(),
+                ApplicationConf.getInstance().getDepositMinValue(),
+                ApplicationConf.getInstance().getDepositMaxValue(),
                 true, true,
                 LEFT);
         Tile machineTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("machine.label"),
+                ApplicationConf.getBundleString("machine.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getTipMinValue(),
-                Configuration.getTipMaxValue(),
+                ApplicationConf.getInstance().getTipMinValue(),
+                ApplicationConf.getInstance().getTipMaxValue(),
                 true, true,
                 RIGHT);
 

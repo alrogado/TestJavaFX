@@ -17,16 +17,21 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.reactfx.util.Interpolator;
+import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorsInnerControlsPane;
 import org.testjfx.components.RegulatorsPane;
+import org.testjfx.conf.ApplicationConf;
 import org.testjfx.util.GuiColors;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Random;
 
@@ -57,7 +62,7 @@ public class RegulatorsController {
 
         regulatorsPane = RegulatorsInnerControlsPane.getInstance();
 
-        regulatorsPane.setPredefinedWorkMode("15ms");
+        regulatorsPane.setPredefinedWorkMode(ApplicationConf.getInstance().getConfigValue("workmode.name"));
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
@@ -69,6 +74,11 @@ public class RegulatorsController {
         /*FlowGridPane rootMP = new FlowGridPane(1,2, createHBoxWorkModesList(), new RegulatorsPane(this));
         rootMP.setAlignment(Pos.CENTER);*/
         root.getChildren().addAll(rootMP);
+
+         Var<Integer> obs = Var.newSimpleVar(1);
+         Val<Integer> animValue = Val.animate(obs, Duration.ofMillis(500), Interpolator.EASE_IN_INTEGER);
+        // No se puede hacer un bind y luego hacer un setvlue
+         //regulatorsPane.getDepositTempTile().valueProperty().asObject().addListener();
 
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};
@@ -82,6 +92,7 @@ public class RegulatorsController {
                     int tipTemp = RDM.nextInt(80) - 20;
 
                     regulatorsPane.getDepositTempTile().setValue(depositTemp);
+                    //obs.setValue(depositTemp);
                     regulatorsPane.getTipTempTile().setValue(tipTemp);
                     lastTimerCall[0] = now;
 

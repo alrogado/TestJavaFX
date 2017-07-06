@@ -1,13 +1,26 @@
 package org.testjfx.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.typesafe.config.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testjfx.GuiApp;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * Created by alrogado on 6/20/17.
  */
-public class Configuration {
+public class ApplicationConf {
 
+    private static Logger logger = LoggerFactory.getLogger(ApplicationConf.class);
 
     static final String FILE_NAME_USER_CONFIG = "userconfig.properties";
     static final String FILE_NAME_CONFIGURATION = "/config.properties";
@@ -21,7 +34,7 @@ public class Configuration {
     static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
     static final byte[] KEY_GENERATION_SALT = new byte[]{(byte) 0x1A, (byte) 0xAF, (byte) 0x13, (byte) 0xF5, (byte) 0x12, (byte) 0x01, (byte) 0xAA, (byte) 0xDC};
     static final int KEY_GENERATION_ITERATIONS = 16;
-    static final char[] SECRET_KEY = "ShappireLS Configuration Files".toCharArray();
+    static final char[] SECRET_KEY = "Test JavaFx ApplicationConf Files".toCharArray();
 
     // Default values
     static final String DEFAULT_LOG_INFO = "true";
@@ -119,19 +132,22 @@ public class Configuration {
     public static ResourceBundle APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
     public static int WIDTH = 1100;
     public static int HEIGHT = 800;
+    public static String fileName = System.getProperty("user.dir")+"\\application.conf";
+    public static Config config;
+    private static ApplicationConf instance = new ApplicationConf();
 
 
-    private static double pulseVolume = 50;
-    private static double screenVolume = 50;
-    private static double depositMinValue = 15;
-    private static double depositMaxValue = 36;
-    private static double tipMinValue = 15;
-    private static double tipMaxValue = 40;
-    private static String password = "111";
-    private static boolean depositFillEnabled;
-    private static boolean pedalEnabled = true;
-    private static boolean triggerEnabled;
-    private static long aliveInterval;
+    private double pulseVolume = 50;
+    private double screenVolume = 50;
+    private double depositMinValue = 15;
+    private double depositMaxValue = 36;
+    private double tipMinValue = 15;
+    private double tipMaxValue = 40;
+    private String password = "111";
+    private boolean depositFillEnabled = false;
+    private boolean pedalEnabled = true;
+    private boolean triggerEnabled = false;
+    private long aliveInterval = 300;
 
     public static String getBundleString(String rscBundle) {
         String res = rscBundle;
@@ -143,103 +159,191 @@ public class Configuration {
         return res;
     }
 
-    public static double getPulseVolume() {
+    public static ApplicationConf getInstance() {
+        return instance;
+    }
+
+    public double getPulseVolume() {
         return pulseVolume;
     }
 
-    public static void setPulseVolume(double pulseVolume) {
-        Configuration.pulseVolume = pulseVolume;
+    public void setPulseVolume(double pulseVolume) {
+        this.pulseVolume = pulseVolume;
     }
 
-    public static double getScreenVolume() {
+    public double getScreenVolume() {
         return screenVolume;
     }
 
-    public static void setScreenVolume(double screenVolume) {
-        Configuration.screenVolume = screenVolume;
+    public void setScreenVolume(double screenVolume) {
+        this.screenVolume = screenVolume;
     }
 
-    public static double getDepositMinValue() {
+    public double getDepositMinValue() {
         return depositMinValue;
     }
 
-    public static void setDepositMinValue(double depositMinValue) {
-        Configuration.depositMinValue = depositMinValue;
+    public void setDepositMinValue(double depositMinValue) {
+        this.depositMinValue = depositMinValue;
     }
 
-    public static double getDepositMaxValue() {
+    public double getDepositMaxValue() {
         return depositMaxValue;
     }
 
-    public static void setDepositMaxValue(double depositMaxValue) {
-        Configuration.depositMaxValue = depositMaxValue;
+    public void setDepositMaxValue(double depositMaxValue) {
+        this.depositMaxValue = depositMaxValue;
     }
 
-    public static double getTipMaxValue() {
+    public double getTipMaxValue() {
         return tipMaxValue;
     }
 
-    public static void setTipMaxValue(double tipMaxValue) {
-        Configuration.tipMaxValue = tipMaxValue;
+    public void setTipMaxValue(double tipMaxValue) {
+        this.tipMaxValue = tipMaxValue;
     }
 
-    public static double getTipMinValue() {
+    public double getTipMinValue() {
         return tipMinValue;
     }
 
-    public static void setTipMinValue(double tipMinValue) {
-        Configuration.tipMinValue = tipMinValue;
+    public void setTipMinValue(double tipMinValue) {
+        this.tipMinValue = tipMinValue;
     }
 
-    public static String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public static void setPassword(String password) {
-        Configuration.password = password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public static boolean getDepositFillEnabled() {
+    public boolean getDepositFillEnabled() {
         return depositFillEnabled;
     }
 
-    public static boolean isDepositFillEnabled() {
+    public boolean isDepositFillEnabled() {
         return depositFillEnabled;
     }
 
-    public static void setDepositFillEnabled(boolean depositFillEnabled) {
-        Configuration.depositFillEnabled = depositFillEnabled;
+    public void setDepositFillEnabled(boolean depositFillEnabled) {
+        this.depositFillEnabled = depositFillEnabled;
     }
 
-    public static boolean getPedalEnabled() {
+    public boolean getPedalEnabled() {
         return pedalEnabled;
     }
 
-    public static boolean isPedalEnabled() {
+    public boolean isPedalEnabled() {
         return pedalEnabled;
     }
 
-    public static void setPedalEnabled(boolean pedalEnabled) {
-        Configuration.pedalEnabled = pedalEnabled;
+    public void setPedalEnabled(boolean pedalEnabled) {
+        this.pedalEnabled = pedalEnabled;
     }
 
-    public static boolean getTriggerEnabled() {
+    public boolean getTriggerEnabled() {
         return triggerEnabled;
     }
 
-    public static boolean isTriggerEnabled() {
+    public boolean isTriggerEnabled() {
         return triggerEnabled;
     }
 
-    public static void setTriggerEnabled(boolean triggerEnabled) {
-        Configuration.triggerEnabled = triggerEnabled;
+    public void setTriggerEnabled(boolean triggerEnabled) {
+        this.triggerEnabled = triggerEnabled;
     }
 
-    public static long getAliveInterval() {
+    public long getAliveInterval() {
         return aliveInterval;
     }
 
-    public static void setAliveInterval(long aliveInterval) {
-        Configuration.aliveInterval = aliveInterval;
+    public void setAliveInterval(long aliveInterval) {
+        this.aliveInterval = aliveInterval;
     }
+
+    public String getConfigValue(String key) {
+        String result = "";
+        if (config != null){
+            result = config.getString(key);
+        }else {
+            logger.error("No se ha podido cargar el fichero application.conf");
+            System.exit(0);
+        }
+        return result;
+    }
+
+    public void setConfigValue(String key, Object value) {
+        ConfigRenderOptions renderOptions = ConfigRenderOptions.defaults()
+                .setComments(true)
+                .setFormatted(true)
+                .setOriginComments(false)
+                .setJson(false);
+        config = config.withValue(key, ConfigValueFactory.fromAnyRef(value));
+        config.root().render(renderOptions);
+
+        String configData = config.root().render(renderOptions);
+        try {
+
+            FileWriter writer = new FileWriter(fileName);
+            writer.write(configData);
+            writer.close();
+        } catch (IOException e) {
+            logger.warn("failed to write file, message={}", e.getMessage());
+        }
+    }
+
+    static {
+        File file = new File(fileName);
+        if(file.exists()) {
+            config = ConfigFactory.parseFile(file);
+        }else{
+            //se carga con las propiedades por defecto del fichero de configuración del aplicativo si no se cambian
+            // así que no se escribe si q no hay cambios
+            ConfigParseOptions configParseOptions = ConfigParseOptions.defaults();
+            //.appendIncluder(ConfigIncluder)
+            config = ConfigFactory.defaultApplication();
+        }
+    }
+
+    public static void configStaticValues() {
+        if (config != null) {
+            String localeStr = config.getString("application.locale");
+            if (localeStr != null) {
+                URL resource = GuiApp.class.getResource("/testjfx_" + localeStr + ".properties");
+                if (resource == null) {
+                    logger.warn("el valor del parametro de pais/idioma '" + localeStr + "' no esta dado de alta como fichero. Se toma el valor por defecto del lenguaje de la aplicacion 'es'.");
+                } else {
+                    LOCALE = new Locale(localeStr);
+                    APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
+                }
+            }
+        }
+    }
+
+    public Double getConfigValueAsDouble(String key) {
+        return config.getDouble(key);
+    }
+
+    public static ApplicationConf loadConf() {
+        final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
+        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
+        /*
+        Now this is not needed
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addKeyDeserializer(FreqFluPair.class, new FreqFluPairKeyDeserializer());
+        simpleModule.addKeyDeserializer(Pulse.class, new PulseKeyDeserializer());
+        mapper.registerModule(simpleModule);*/
+        try {
+            instance = mapper.readValue(file, ApplicationConf.class);
+        } catch (IOException e) {
+            logger.error("Problem loading predefined workmodes", e);
+        }
+        return instance;
+    }
+
+
+
+
 }

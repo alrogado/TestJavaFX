@@ -20,7 +20,8 @@ import org.testjfx.util.GuiColors;
  * Created by alvaro.lopez on 12/06/2017.
  */
 public class LightAndColorText extends Application {
-    static String text = "Saphire LS";
+
+    static String text = "Testing JavaFX";
     Stage stage;
     Scene scene;
 

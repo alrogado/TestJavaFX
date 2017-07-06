@@ -37,12 +37,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 import org.testjfx.conf.PredefinedWorkMode;
 import org.testjfx.conf.PredefinedWorkModes;
 import org.testjfx.util.GuiColors;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +84,7 @@ public class RegulatorsPane extends Region {
     double startButtonRadious = initialStartButtonRadious;
     JFXButton startButton;
     SimpleBooleanProperty disabledProperty = new SimpleBooleanProperty(true);
-    Text workModeSelectedMessage;
+    Text workModeMessage;
     List<PredefinedWorkMode> predefinedWorkModes;
     private FlowGridPane messagePane;
     private PredefinedWorkMode predefinedWorkMode;
@@ -122,7 +121,7 @@ public class RegulatorsPane extends Region {
 
             getMessagePane().setPrefSize(getWidthForMessagePanel(), getHeigthForMessagePanel());
             //in order to adjust pane width for the text
-            workModeSelectedMessage.setWrappingWidth(getMessagePane().getWidth() - 40);
+            workModeMessage.setWrappingWidth(getMessagePane().getWidth() - 40);
 
             setSpacingWorkModeButtons();
 
@@ -326,8 +325,8 @@ public class RegulatorsPane extends Region {
     }
 
     protected JFXButton createInnerWorkModeButton(PredefinedWorkMode predefinedWorkMode) {
-        JFXButton workModeButton = new JFXButton(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.label"));
-        workModeButton.setTooltip(new Tooltip(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.tooltip")));
+        JFXButton workModeButton = new JFXButton(ApplicationConf.getBundleString(predefinedWorkMode.getName() + "_wm.label"));
+        workModeButton.setTooltip(new Tooltip(ApplicationConf.getBundleString(predefinedWorkMode.getName() + "_wm.tooltip")));
         workModeButton.setButtonType(JFXButton.ButtonType.RAISED);
         workModeButton.setPrefWidth(150);
         workModeButton.setPadding(new Insets(25));
@@ -337,10 +336,11 @@ public class RegulatorsPane extends Region {
         workModeButton.setBackground(BACKGROUNDFILL_100);
         workModeButton.setOnMouseClicked(e -> {
             this.predefinedWorkMode = predefinedWorkMode;
-            setWorkModeMessageText(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
+            setWorkModeMessage(ApplicationConf.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
             for (Button button : buttonsSet)
                 button.setBackground(BACKGROUNDFILL_100);
             workModeButton.setBackground(BACKGROUNDFILL_DARKER_100);
+            ApplicationConf.getInstance().setConfigValue("workmode.name", predefinedWorkMode.getName());
         });
         //-fx-pref-width: 150px;
         //-fx-background-color: #0091DC;
@@ -361,11 +361,11 @@ public class RegulatorsPane extends Region {
         if (!newVal) {
             new TadaTransition(startButton).play();
             if (predefinedWorkMode != null)
-                setWorkModeMessageText(Configuration.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
+                setWorkModeMessage(ApplicationConf.getBundleString(predefinedWorkMode.getName() + "_wm.help"));
             else
-                setWorkModeMessageText("Seleccione un Modo de trabajo.");
+                setWorkModeMessage(ApplicationConf.getBundleString("workModesMessage.selectOne.label"));
         } else {
-            setWorkModeMessageText("Modo de trabajo desactivado.\n Temperaturas bajas.");
+            setWorkModeMessage(ApplicationConf.getBundleString("workModesMessage.lowtemperature.label"));
         }
         startButtonPane.setDisable(newVal);
         getMessagePane().setDisable(newVal);
@@ -381,7 +381,7 @@ public class RegulatorsPane extends Region {
         // esto no se va de madre, porque al usar unos con una y otros con otra esto hace que se
         // vaya de madre toda la aplicación, es bastante desconcertante
         //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        startButton = new JFXButton(Configuration.getBundleString("buttonStart.label"));
+        startButton = new JFXButton(ApplicationConf.getBundleString("buttonStart.label"));
         startButton.setTooltip(new Tooltip(""));
         startButton.setTextFill(Color.WHITE);
         startButton.setEffect(DROPSHADOW_TEXT);
@@ -398,7 +398,7 @@ public class RegulatorsPane extends Region {
 
     private void createFreqFluGridPane() {
         Regulator frequency = RegulatorBuilder.createRegulator(
-                Configuration.getBundleString("frecuency.label"),
+                ApplicationConf.getBundleString("frecuency.label"),
                 "Hz",
                 "", null,
                 WIDTHTILE, HEIGHTTILE,
@@ -412,7 +412,7 @@ public class RegulatorsPane extends Region {
                 .build();
 
         Regulator fluency = RegulatorBuilder.createRegulator(
-                Configuration.getBundleString("fluencia.label"),
+                ApplicationConf.getBundleString("fluencia.label"),
                 "J/cm",
                 "",
                 null,
@@ -430,17 +430,17 @@ public class RegulatorsPane extends Region {
 
     private void createTempeperatureSparkGauage() {
         depositTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("deposit.label"),
+                ApplicationConf.getBundleString("deposit.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getDepositMinValue(),
-                Configuration.getDepositMaxValue(),
+                ApplicationConf.getInstance().getDepositMinValue(),
+                ApplicationConf.getInstance().getDepositMaxValue(),
                 false, false,
                 LEFT);
         tipTempTile = RegulatorBuilder.createTempSparkRegulator(
-                Configuration.getBundleString("tip.label"),
+                ApplicationConf.getBundleString("tip.label"),
                 WIDTHTILE, HEIGHTTILE,
-                Configuration.getTipMinValue(),
-                Configuration.getTipMaxValue(),
+                ApplicationConf.getInstance().getTipMinValue(),
+                ApplicationConf.getInstance().getTipMaxValue(),
                 false, false,
                 RIGHT);
 
@@ -475,16 +475,15 @@ public class RegulatorsPane extends Region {
     }
 
     public void createMessagePanel() {
-        workModeSelectedMessage = new Text();
-        workModeSelectedMessage.setFill(Color.WHITE);
-        workModeSelectedMessage.setText("Modo de trabajo");
-        workModeSelectedMessage.setEffect(GuiColors.DROPSHADOW_TEXT);
-        workModeSelectedMessage.setFont(eu.hansolo.tilesfx.fonts.Fonts.latoRegular(24));
-        workModeSelectedMessage.setPickOnBounds(true);
+        workModeMessage = new Text();
+        workModeMessage.setFill(Color.WHITE);
+        workModeMessage.setEffect(GuiColors.DROPSHADOW_TEXT);
+        workModeMessage.setFont(eu.hansolo.tilesfx.fonts.Fonts.latoRegular(24));
+        workModeMessage.setPickOnBounds(true);
 
 
-        //messagePane.getChildren().add(workModeSelectedMessage);
-        messagePane = new FlowGridPane(1, 1, workModeSelectedMessage);
+        //messagePane.getChildren().add(workModeMessage);
+        messagePane = new FlowGridPane(1, 1, workModeMessage);
         messagePane.setBackground(BACKGROUND_BRIGTHER_FILL_60);
         messagePane.setBorder(BORDER_WHITE_4_OVER_60);
         messagePane.setEffect(DROPSHADOW_COMP);
@@ -492,11 +491,10 @@ public class RegulatorsPane extends Region {
 
         messagePane.setPrefSize(250, 250);
 
-
     }
 
-    public void setWorkModeMessageText(String message) {
-        workModeSelectedMessage.setText(message);
+    public void setWorkModeMessage(String message) {
+        workModeMessage.setText(message);
     }
 
     public Pane getMessagePane() {
@@ -512,17 +510,18 @@ public class RegulatorsPane extends Region {
     }
 
     public void setPredefinedWorkMode(String workModeStr) {
-        for (PredefinedWorkMode predefinedWorkMode : predefinedWorkModes) {
-            if (predefinedWorkMode.getName().equals(workModeStr)) {
-                this.predefinedWorkMode = predefinedWorkMode;
-                setWorkModeMessageText(Configuration.getBundleString(this.predefinedWorkMode.getName() + "_wm.help"));
-                for (Button button : buttonsSet)
-                    if (((PredefinedWorkMode) button.getProperties().get("predefinedWorkMode")).getName().equals(workModeStr))
-                        button.setBackground(BACKGROUNDFILL_DARKER_100);
-                    else
-                        button.setBackground(BACKGROUNDFILL_100);
+        if(predefinedWorkModes!=null)
+            for (PredefinedWorkMode predefinedWorkMode : predefinedWorkModes) {
+                if (predefinedWorkMode.getName().equals(workModeStr)) {
+                    this.predefinedWorkMode = predefinedWorkMode;
+                    setWorkModeMessage(ApplicationConf.getBundleString(this.predefinedWorkMode.getName() + "_wm.help"));
+                    for (Button button : buttonsSet)
+                        if (((PredefinedWorkMode) button.getProperties().get("predefinedWorkMode")).getName().equals(workModeStr))
+                            button.setBackground(BACKGROUNDFILL_DARKER_100);
+                        else
+                            button.setBackground(BACKGROUNDFILL_100);
 
+                }
             }
-        }
     }
 }

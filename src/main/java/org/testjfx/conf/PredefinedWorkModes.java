@@ -17,11 +17,8 @@ public class PredefinedWorkModes {
 
     private static Logger logger = LoggerFactory.getLogger(PredefinedWorkModes.class);
 
-    static String fileName = "/predefinedWorkModes.conf";
-
     @JsonProperty
     private List<PredefinedWorkMode> predefinedWorkModes;
-
 
     public List<PredefinedWorkMode> getPredefinedWorkModes() {
         return predefinedWorkModes;
@@ -31,8 +28,9 @@ public class PredefinedWorkModes {
         this.predefinedWorkModes = predefinedWorkModes;
     }
 
+    static String fileName = "/predefinedWorkModes.conf";
 
-    public static void  loadConf() throws IOException {
+    public static PredefinedWorkModes  loadConf() {
         final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
         /*
@@ -41,10 +39,15 @@ public class PredefinedWorkModes {
         simpleModule.addKeyDeserializer(FreqFluPair.class, new FreqFluPairKeyDeserializer());
         simpleModule.addKeyDeserializer(Pulse.class, new PulseKeyDeserializer());
         mapper.registerModule(simpleModule);*/
-        instance = mapper.readValue(file, PredefinedWorkModes.class);
+        try {
+            instance = mapper.readValue(file, PredefinedWorkModes.class);
+        } catch (IOException e) {
+            logger.error("Problem loading predefined workmodes", e);
+        }
+        return instance;
     }
 
-    static PredefinedWorkModes instance = new PredefinedWorkModes();
+    static PredefinedWorkModes instance= new PredefinedWorkModes().loadConf();
 
     public static PredefinedWorkModes getInstance(){
         return instance;
@@ -56,12 +59,11 @@ public class PredefinedWorkModes {
     Cipher cipher = Cipher.getInstance(ENCRYPTER_ALGORITHM);
     cipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(KEY_GENERATION_SALT, KEY_GENERATION_ITERATIONS));
     Properties config = new Properties();
-    config.load(new CipherInputStream(Configuration.class.getResourceAsStream(FILE_NAME_CONFIGURATION),cipher));
+    config.load(new CipherInputStream(ApplicationConf.class.getResourceAsStream(FILE_NAME_CONFIGURATION),cipher));
      */
 
     public static void main(String args[]) throws IOException {
-        PredefinedWorkModes.getInstance().loadConf();
-        System.out.println("Size:" + PredefinedWorkModes.getInstance().getPredefinedWorkModes().size());
+        System.out.println("WorkModes Size:" + PredefinedWorkModes.getInstance().getPredefinedWorkModes().size());
     }
 
 }

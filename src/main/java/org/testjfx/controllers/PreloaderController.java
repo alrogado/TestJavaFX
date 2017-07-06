@@ -24,7 +24,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 
 import javax.annotation.PostConstruct;
@@ -79,7 +79,7 @@ public class PreloaderController {
                     dialog.close(); //this throws an exception
                     try {
                         ViewConfiguration viewConfiguration = new ViewConfiguration();
-                        viewConfiguration.setResources(Configuration.APPBUNDLE);
+                        viewConfiguration.setResources(ApplicationConf.APPBUNDLE);
                         Flow flow = new Flow(MainAppController.class, viewConfiguration);
                         FlowHandler handler = new FlowHandler(flow, context, viewConfiguration);
                         context.register("ContentFlowHandler", handler);
@@ -120,7 +120,7 @@ public class PreloaderController {
                     int finalI = i;
                     Platform.runLater(() -> {
                         loadProgress.setProgress(((double) finalI) / max); //this moves the progress bar of the preloader
-                        progressText.setText(Configuration.getBundleString(textProGressValues[finalI]));
+                        progressText.setText(ApplicationConf.getBundleString(textProGressValues[finalI]));
                     });
                     Thread.sleep(350);
                 }

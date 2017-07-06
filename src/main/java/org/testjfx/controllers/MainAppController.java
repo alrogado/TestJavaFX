@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.ClockBuilder;
-import org.testjfx.conf.Configuration;
+import org.testjfx.conf.ApplicationConf;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
 import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
@@ -73,7 +73,7 @@ public class MainAppController {
         Objects.requireNonNull(context, "context");
         // set the default controller
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(Configuration.APPBUNDLE);
+        viewConfiguration.setResources(ApplicationConf.APPBUNDLE);
         Flow innerFlow = new Flow(mainViewControllerClass, viewConfiguration);
         flowHandler = innerFlow.createHandler(context);
         context.register("ContentFlowHandler", flowHandler);
@@ -126,7 +126,7 @@ public class MainAppController {
     private Node createPanelSessionShoots() {
         Font robotoMedium = Fonts.robotoMedium(20);
 
-        Text lblSession = new Text(Configuration.getBundleString("shoots-sesion.label"));
+        Text lblSession = new Text(ApplicationConf.getBundleString("shoots-sesion.label"));
         lblSession.setFill(GuiColors.FRG);
         lblSession.setTextOrigin(VPos.CENTER);
         lblSession.setFont(robotoMedium);
@@ -154,7 +154,7 @@ public class MainAppController {
     private Node createPanelTotals() {
         Font robotoMedium = Fonts.robotoMedium(20);
 
-        Text lblSession = new Text(Configuration.getBundleString("shoots-total.label"));
+        Text lblSession = new Text(ApplicationConf.getBundleString("shoots-total.label"));
         lblSession.setFill(GuiColors.FRG);
         lblSession.setTextOrigin(VPos.CENTER);
         lblSession.setFont(robotoMedium);
