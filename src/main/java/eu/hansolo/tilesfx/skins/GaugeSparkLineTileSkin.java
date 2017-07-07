@@ -328,9 +328,11 @@ public class GaugeSparkLineTileSkin extends TileSkin {
     }
 
     ;
+    Section lastSection = null;
 
     @Override
     protected void handleCurrentValue(final double VALUE) {
+        lastSection = null;
         low = Statistics.getMin(dataList);
         high = Statistics.getMax(dataList);
         if (Helper.equals(low, high)) {
@@ -434,6 +436,12 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         if (tile.isHighlightSections()) {
             drawHighLightSections(VALUE);
         }
+
+        if (lastSection != null && (sections.indexOf(lastSection) == 0 || sections.indexOf(lastSection) == 2)) {
+            //todo launch in a separate thread
+            new ShakeTransition(valueText).play();
+            new ShakeTransition(unitText).play();
+        }
     }
 
     private void markMinMaxValues(final double VALUE) {
@@ -496,7 +504,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
         bar.setStartAngle(barStart);
         bar.setLength(barLength);
 
-        Section lastSection = null;
+
         if (tile.getSectionsVisible() && !sections.isEmpty()) {
             bar.setStroke(tile.getBarColor());
             for (Section section : sections) {
@@ -513,11 +521,6 @@ public class GaugeSparkLineTileSkin extends TileSkin {
                     break;
                 }
             }
-        }
-        if (lastSection != null && (sections.indexOf(lastSection) == 0 || sections.indexOf(lastSection) == 2)) {
-            //todo launch in a separate thread
-            new ShakeTransition(valueText).play();
-            new ShakeTransition(unitText).play();
         }
 
     }

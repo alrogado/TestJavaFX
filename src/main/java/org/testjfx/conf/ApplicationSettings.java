@@ -91,13 +91,12 @@ public class ApplicationSettings {
     @JsonProperty private boolean pedalEnabled = true;
     @JsonProperty private boolean triggerEnabled = false;
 
-
     public static String getBundleString(String rscBundle) {
         String res = rscBundle;
         try {
             res = APPBUNDLE.getString(rscBundle);
         } catch (Exception e) {
-            logger.error("Error loading resources ", e);
+            logger.warn("Error loading resources ", e);
         }
         return res;
     }

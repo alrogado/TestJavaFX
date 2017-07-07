@@ -38,11 +38,11 @@ import java.util.Random;
 import static org.testjfx.util.EffectUtils.fadeIn;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")
-public class RegulatorsController {
+public class MainController {
 
     public static int horizontalGap = 5;
     public static Insets padding = new Insets(5);
-    private static Logger logger = LoggerFactory.getLogger(RegulatorsController.class);
+    private static Logger logger = LoggerFactory.getLogger(MainController.class);
     @FXML
     StackPane root;
 
@@ -101,8 +101,8 @@ public class RegulatorsController {
                         regulatorsPane.disable(false);
                     else{
                         regulatorsPane.disable(true);
-                    }
-                    showInfo("Mensaje", "Seg "+now, TrayIcon.MessageType.ERROR);*/
+                    }*/
+                    //showInfo("Mensaje", "Seg "+now, TrayIcon.MessageType.ERROR);
                 }
             }
         };

@@ -21,8 +21,8 @@ import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
 import static org.testjfx.components.RegulatorsPane.HEIGHTTILE;
 import static org.testjfx.components.RegulatorsPane.WIDTHTILE;
-import static org.testjfx.controllers.components.RegulatorsController.horizontalGap;
-import static org.testjfx.controllers.components.RegulatorsController.padding;
+import static org.testjfx.controllers.components.MainController.horizontalGap;
+import static org.testjfx.controllers.components.MainController.padding;
 import static org.testjfx.util.EffectUtils.fadeIn;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main_content_regulators.fxml")

@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.ClockBuilder;
 import org.testjfx.conf.ApplicationSettings;
+import org.testjfx.controllers.components.MainController;
 import org.testjfx.controllers.components.PasswordAlpahabetController;
-import org.testjfx.controllers.components.RegulatorsController;
 import org.testjfx.controllers.components.SettingsController;
 import org.testjfx.util.ExtendedAnimatedFlowContainer;
 import org.testjfx.util.GuiColors;
@@ -46,10 +46,10 @@ import static org.testjfx.GuiApp.ANIM_DURATION;
 import static org.testjfx.util.IkonUtils.customizeIkon;
 
 @ViewController(value = "/org/testjfx/fxml/ui/main.fxml", title = "Application")
-public class MainAppController {
+public class AppController {
 
     public static FlowHandler flowHandler;
-    private static Logger logger = LoggerFactory.getLogger(MainAppController.class);
+    private static Logger logger = LoggerFactory.getLogger(AppController.class);
     @FXMLViewFlowContext
     private ViewFlowContext context;
     @FXML
@@ -67,7 +67,7 @@ public class MainAppController {
     @PostConstruct
     public void init() throws FlowException {
 
-        Class mainViewControllerClass = RegulatorsController.class;
+        Class mainViewControllerClass = MainController.class;
 
         // create the inner flow and content
         Objects.requireNonNull(context, "context");

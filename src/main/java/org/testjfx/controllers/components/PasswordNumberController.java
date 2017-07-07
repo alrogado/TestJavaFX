@@ -29,7 +29,7 @@ import org.testjfx.util.IkonUtils;
 import javax.annotation.PostConstruct;
 import java.util.Objects;
 
-import static org.testjfx.controllers.MainAppController.flowHandler;
+import static org.testjfx.controllers.AppController.flowHandler;
 import static org.testjfx.util.GuiColors.DROPSHADOW_COMP;
 import static org.testjfx.util.GuiColors.FRG;
 

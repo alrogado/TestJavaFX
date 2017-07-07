@@ -208,7 +208,7 @@ public class RegulatorsPane extends Region {
         startButtonRadious = Math.max(initialStartButtonRadious, Math.min(newBounds.getWidth() / factorToResizeStartButton, newBounds.getHeight() / factorToResizeStartButton));
         double size = 2 * startButtonRadious;
         startButton.setPrefSize(size, size);
-        //startButton.setMinSize(size, size);
+        startButton.setMinSize(size, size);
         startButton.setMaxSize(size, size);
     }
 
@@ -308,7 +308,6 @@ public class RegulatorsPane extends Region {
             workModebuttonsPaneLeft = new VBox();
             workModebuttonsPaneRight = new VBox();
         }
-
     }
 
     private VBox createButtonsList(List<PredefinedWorkMode> predefinedWorkModes) {
@@ -374,18 +373,8 @@ public class RegulatorsPane extends Region {
         // vaya de madre toda la aplicación, es bastante desconcertante
         //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
 
-        startButton = new JFXButton(ApplicationSettings.getBundleString( "_wm.label"));
-        startButton.setTooltip(new Tooltip(ApplicationSettings.getBundleString( "_wm.tooltip")));
-        startButton.setButtonType(JFXButton.ButtonType.RAISED);
-        startButton.setPrefWidth(150);
-        startButton.setPadding(new Insets(25));
-        startButton.setPrefHeight(getHeight() / 10);
-        startButton.setBorder(BORDER_WHITE_2_OVER_100);
-        startButton.getProperties().put("predefinedWorkMode", predefinedWorkMode);
-        startButton.setBackground(BACKGROUNDFILL_100);
 
-        
-        /*startButton = new JFXButton(ApplicationSettings.getBundleString("buttonStart.label"));
+        startButton = new JFXButton(ApplicationSettings.getBundleString("buttonStart.label"));
         startButton.setTooltip(new Tooltip(""));
         startButton.setTextFill(Color.WHITE);
         startButton.setEffect(DROPSHADOW_TEXT);
@@ -396,7 +385,7 @@ public class RegulatorsPane extends Region {
         Circle buttonCircle = new Circle(startButtonRadious);
         //startButton.setShape(buttonCircle);
         startButton.setMinSize(2* startButtonRadious, 2* startButtonRadious);
-        startButton.setMaxSize(2 * startButtonRadious, 2 * startButtonRadious);*/
+        startButton.setMaxSize(2 * startButtonRadious, 2 * startButtonRadious);
         startButtonPane = new Pane(startButton);
     }
 

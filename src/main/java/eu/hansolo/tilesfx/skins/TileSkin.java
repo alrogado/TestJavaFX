@@ -194,12 +194,8 @@ public class TileSkin extends SkinBase<Tile> implements Skin<Tile> {
         }
     }
 
-    ;
-
     protected void handleCurrentValue(final double VALUE) {
     }
-
-    ;
 
     @Override
     public void dispose() {
@@ -253,6 +249,4 @@ public class TileSkin extends SkinBase<Tile> implements Skin<Tile> {
         sectionsVisible = tile.getSectionsVisible();
         textSize = tile.getTextSize();
     }
-
-    ;
 }
