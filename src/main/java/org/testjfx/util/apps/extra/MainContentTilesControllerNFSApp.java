@@ -3,7 +3,7 @@ package org.testjfx.util.apps.extra;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.controllers.components.extra.TwoTilesTilesController;
 
 import static org.testjfx.GuiApp.*;
@@ -16,7 +16,7 @@ public class MainContentTilesControllerNFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(TwoTilesTilesController.class, stage), false);
-        configureAndSetScene(stage, new Scene(decorator, ApplicationConf.WIDTH, ApplicationConf.HEIGHT));
+        configureAndSetScene(stage, new Scene(decorator, ApplicationSettings.WIDTH, ApplicationSettings.HEIGHT));
         configureNotFullScreenStage(stage);
         stage.show();
     }

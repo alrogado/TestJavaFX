@@ -3,7 +3,7 @@ package org.testjfx.util.apps;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.controllers.components.OperatorSettingsController;
 
 import static org.testjfx.GuiApp.*;
@@ -16,7 +16,7 @@ public class OperatorSettingsNFSApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         createJFXDecorator(stage, initFlowConf(OperatorSettingsController.class, stage), false);
-        configureAndSetScene(stage, new Scene(decorator, ApplicationConf.WIDTH, ApplicationConf.HEIGHT));
+        configureAndSetScene(stage, new Scene(decorator, ApplicationSettings.WIDTH, ApplicationSettings.HEIGHT));
         configureFullScreenStage(stage);
         stage.show();
     }

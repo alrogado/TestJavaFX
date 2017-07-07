@@ -1,19 +1,24 @@
 package org.testjfx.comm;
 
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 
 /**
  * Created by alvaro.lopez on 05/07/2017.
  */
-public class Communication {
+public class CommunicationMgr {
 
+    static ICommunication instance = new InnerCommunication();
     ICommunication comm;
+
+    public static ICommunication getICommunication() {
+        return instance;
+    }
 
     public void sendAlive() {
         while (true) {
             try {
                 comm.sendAlive();
-                Thread.sleep(ApplicationConf.getInstance().getAliveInterval());
+                Thread.sleep(ApplicationSettings.getInstance().getCommAliveSignalInterval());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -23,20 +28,14 @@ public class Communication {
     /**
      * Method to be invoked asynchronously when manual show to reset the UI control status in the configured timeout
      */
-    public synchronized void manualShot()
-    {
+    public synchronized void manualShot() {
         comm.sendShotCommand();
 
         try {
             Thread.sleep(200);
-        }catch (InterruptedException e1) {}
+        } catch (InterruptedException e1) {
+        }
 
         //ui.getToolsPanel().diodeShotControlOff();
-    }
-
-    static ICommunication instance = new InnerCommunication();
-
-    public static ICommunication getICommunication(){
-        return instance;
     }
 }

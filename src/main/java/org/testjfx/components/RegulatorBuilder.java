@@ -10,7 +10,7 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.Ikonli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.util.GuiColors;
 
 import static javafx.scene.text.TextAlignment.CENTER;
@@ -64,10 +64,10 @@ public class RegulatorBuilder {
     public static Tile createTempSparkRegulator(String title, Double width, Double height, double start, double stop, boolean averageVisible, boolean textVisible, TextAlignment textAllignment) {
         int decimals = 0;
         String format = new StringBuilder("%.").append(Integer.toString(decimals)).append("f").toString();
-        String startFormated = String.format(ApplicationConf.LOCALE, format, start);
-        String stopFormated = String.format(ApplicationConf.LOCALE, format, stop);
+        String startFormated = String.format(ApplicationSettings.LOCALE, format, start);
+        String stopFormated = String.format(ApplicationSettings.LOCALE, format, stop);
 
-        String text = ApplicationConf.getBundleString("start.label") + ": " + startFormated + " - " + ApplicationConf.getBundleString("stop.label") + ": " + stopFormated;
+        String text = ApplicationSettings.getBundleString("start.label") + ": " + startFormated + " - " + ApplicationSettings.getBundleString("stop.label") + ": " + stopFormated;
         return TileBuilder.create()
                 .skinType(Tile.SkinType.GAUGE_SPARK_LINE)
                 .prefSize(width, height)
@@ -87,7 +87,7 @@ public class RegulatorBuilder {
                 .averageVisible(averageVisible)
                 .minValue(MINVALUETEMP)
                 .maxValue(MAXVALUETEMP)
-                .locale(ApplicationConf.LOCALE)
+                .locale(ApplicationSettings.LOCALE)
                 .animated(true)
                 .highlightSections(false)
                 .averagingPeriod(25)

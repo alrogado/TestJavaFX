@@ -4,7 +4,7 @@ import eu.hansolo.medusa.Clock;
 import eu.hansolo.medusa.LcdDesign;
 import eu.hansolo.medusa.LcdFont;
 import javafx.scene.paint.Color;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ClockBuilder {
     public static Clock createClock() {
         return eu.hansolo.medusa.ClockBuilder.create()
                 .skinType(Clock.ClockSkinType.TEXT)
-                .locale(ApplicationConf.LOCALE)
+                .locale(ApplicationSettings.LOCALE)
                 .lcdFont(LcdFont.DIGITAL_BOLD)
                 .shadowsEnabled(true)
                 .running(true)
@@ -34,7 +34,7 @@ public class ClockBuilder {
             for (Clock.ClockSkinType skinType : Clock.ClockSkinType.values()) {
                 add(eu.hansolo.medusa.ClockBuilder.create()
                         .skinType(skinType)
-                        .locale(ApplicationConf.LOCALE)
+                        .locale(ApplicationSettings.LOCALE)
                         .shadowsEnabled(true)
                         //.discreteSeconds(false)
                         //.discreteMinutes(false)

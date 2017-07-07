@@ -7,7 +7,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 
 /**
  * Created by alrogado on 6/20/17.
@@ -46,7 +46,7 @@ public class Audio {
      */
     public static void pulse() {
         try {
-            PULSE.setVolume(ApplicationConf.getInstance().getPulseVolume());
+            PULSE.setVolume(ApplicationSettings.getInstance().getPulseVolume());
             PULSE.play();
         } catch (Exception e) {
             logger.error("playing soung pulse", e);
@@ -58,7 +58,7 @@ public class Audio {
      */
     public static void keypress() {
         try {
-            TOUCH.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            TOUCH.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             TOUCH.play();
         } catch (Exception e) {
             logger.error("playing soung keypress", e);
@@ -70,7 +70,7 @@ public class Audio {
      */
     public static void message() {
         try {
-            MESSAGE.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            MESSAGE.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             MESSAGE.play();
         } catch (Exception e) {
             logger.error("playing soung message", e);
@@ -82,7 +82,7 @@ public class Audio {
      */
     public static void info() {
         try {
-            INFO.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            INFO.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             INFO.play();
         } catch (Exception e) {
             logger.error("playing soung info", e);
@@ -94,7 +94,7 @@ public class Audio {
      */
     public static void warn() {
         try {
-            WARN.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            WARN.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             WARN.play();
         } catch (Exception e) {
             logger.error("playing soung warn", e);
@@ -106,7 +106,7 @@ public class Audio {
      */
     public static void waitS() {
         try {
-            WAIT.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            WAIT.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             WAIT.play();
         } catch (Exception e) {
             logger.error("playing soung waitS", e);
@@ -118,7 +118,7 @@ public class Audio {
      */
     public static void error() {
         try {
-            ERROR.setVolume(ApplicationConf.getInstance().getScreenVolume());
+            ERROR.setVolume(ApplicationSettings.getInstance().getScreenVolume());
             ERROR.play();
         } catch (Exception e) {
             logger.error("playing soung error", e);

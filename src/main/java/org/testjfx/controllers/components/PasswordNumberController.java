@@ -23,7 +23,7 @@ import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.tbee.javafx.scene.layout.MigPane;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.util.IkonUtils;
 
 import javax.annotation.PostConstruct;
@@ -219,8 +219,8 @@ public class PasswordNumberController {
     }
 
     protected void checkPassword() {
-        if (ApplicationConf.getInstance().getPassword().length() == passwordField.getText().length()) {
-            if (ApplicationConf.getInstance().getPassword().equals(passwordField.getText())) {
+        if (ApplicationSettings.getInstance().getMaintenancePassword().length() == passwordField.getText().length()) {
+            if (ApplicationSettings.getInstance().getMaintenancePassword().equals(passwordField.getText())) {
                 try {
                     flowHandler.navigateTo(OperatorSettingsController.class);
                 } catch (Exception e) {

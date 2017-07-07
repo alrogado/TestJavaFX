@@ -22,7 +22,6 @@ public class UserSettings {
 
     private static Logger logger = LoggerFactory.getLogger(UserSettings.class);
 
-
     /**
      * Total laser shots
      */
@@ -33,7 +32,7 @@ public class UserSettings {
      */
     public long totalPulsesB;
 
-    static String fileName = "/workSettings.conf";
+    static String fileName = "/userSettings.conf";
 
     // Encryption/decryption o fconfiguration files
     static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
@@ -47,6 +46,22 @@ public class UserSettings {
     static final String FILE_NAME_PULSES_B2 = "slspbb";
 
 
+    public long getTotalPulsesA() {
+        return totalPulsesA;
+    }
+
+    public void setTotalPulsesA(long totalPulsesA) {
+        this.totalPulsesA = totalPulsesA;
+    }
+
+    public long getTotalPulsesB() {
+        return totalPulsesB;
+    }
+
+    public void setTotalPulsesB(long totalPulsesB) {
+        this.totalPulsesB = totalPulsesB;
+    }
+
     static UserSettings instance = new UserSettings().loadConf();
 
     public static UserSettings getInstance(){
@@ -54,7 +69,7 @@ public class UserSettings {
     }
 
     public static void main(String args[]) throws IOException {
-        System.out.println("diodeMaxTempSetpoint:" + UserSettings.getInstance());
+        System.out.println("TotalPulsesA:" + UserSettings.getInstance().getTotalPulsesA());
     }
 
     public static UserSettings loadConf(){

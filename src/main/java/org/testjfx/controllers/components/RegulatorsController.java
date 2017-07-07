@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjfx.components.RegulatorsInnerControlsPane;
 import org.testjfx.components.RegulatorsPane;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.util.GuiColors;
 import org.testjfx.util.IkonUtils;
 
@@ -61,8 +61,8 @@ public class RegulatorsController {
         Objects.requireNonNull(context, "context");
 
         regulatorsPane = RegulatorsInnerControlsPane.getInstance();
-
-        regulatorsPane.setPredefinedWorkMode(ApplicationConf.getInstance().getConfigValue("workmode.name"));
+        //todo, this assignment should be done in another way
+        regulatorsPane.setPredefinedWorkMode(ApplicationSettings.getInstance().getWorkModeName());
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");

@@ -23,7 +23,7 @@ import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testjfx.components.Audio;
-import org.testjfx.conf.ApplicationConf;
+import org.testjfx.conf.ApplicationSettings;
 import org.testjfx.controllers.PreloaderController;
 
 import java.time.Instant;
@@ -61,22 +61,22 @@ public class GuiApp extends Application {
         stage.setFullScreen(true);
         stage.setFullScreenExitHint("");
         stage.setAlwaysOnTop(true);
-        stage.setMinHeight(ApplicationConf.HEIGHT);
-        stage.setMinWidth(ApplicationConf.WIDTH);
-        stage.setHeight(ApplicationConf.HEIGHT);
-        stage.setWidth(ApplicationConf.WIDTH);
+        stage.setMinHeight(ApplicationSettings.HEIGHT);
+        stage.setMinWidth(ApplicationSettings.WIDTH);
+        stage.setHeight(ApplicationSettings.HEIGHT);
+        stage.setWidth(ApplicationSettings.WIDTH);
         stage.setTitle(APPTITLE);
         stage.setFullScreenExitHint("");
     }
 
     public static void configureNotFullScreenStage(Stage stage) {
         final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - ApplicationConf.WIDTH / 2);
-        stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - ApplicationConf.HEIGHT / 2);
+        stage.setX(bounds.getMinX() + bounds.getWidth() / 2 - ApplicationSettings.WIDTH / 2);
+        stage.setY(bounds.getMinY() + bounds.getHeight() / 2 - ApplicationSettings.HEIGHT / 2);
         stage.setAlwaysOnTop(false);
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setHeight(ApplicationConf.HEIGHT);
-        stage.setWidth(ApplicationConf.WIDTH);
+        stage.setHeight(ApplicationSettings.HEIGHT);
+        stage.setWidth(ApplicationSettings.WIDTH);
         stage.setTitle(APPTITLE);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setFullScreenExitHint("");
@@ -84,7 +84,7 @@ public class GuiApp extends Application {
 
     public static DefaultFlowContainer initFlowConf(Class startViewControllerClass, Stage stage) {
         ViewConfiguration viewConfiguration = new ViewConfiguration();
-        viewConfiguration.setResources(ApplicationConf.APPBUNDLE);
+        viewConfiguration.setResources(ApplicationSettings.APPBUNDLE);
 
         Flow flow = new Flow(startViewControllerClass, viewConfiguration);
         ViewFlowContext context = new ViewFlowContext();
@@ -119,7 +119,6 @@ public class GuiApp extends Application {
     }
 
     public static void main(String[] args) {
-        ApplicationConf.configStaticValues();
         Application.launch(args);
     }
 
