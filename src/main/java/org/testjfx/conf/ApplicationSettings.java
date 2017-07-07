@@ -50,15 +50,17 @@ public class ApplicationSettings {
     @JsonProperty private String localeAvailable;
     @JsonProperty private String datePattern;
 
-    @JsonProperty private int setpointMaxTemperature;
+    @JsonProperty private int setpointMinFullTemperature;
     @JsonProperty private int setpointMinTemperature;
+    @JsonProperty private int setpointMaxTemperature;
+    @JsonProperty private int setpointMaxFullTemperature;
 
     @JsonProperty private String workModeName;
 
     @JsonProperty private boolean fulScreenEnabled;
     @JsonProperty private int widthScreen;
-
     @JsonProperty private int heightScreen;
+
     @JsonProperty private int commRetryInterval;
     @JsonProperty private String commDriver;
     @JsonProperty private String commDriverArguments;
@@ -95,13 +97,29 @@ public class ApplicationSettings {
         try {
             res = APPBUNDLE.getString(rscBundle);
         } catch (Exception e) {
-            logger.error("Error loading resources ");
+            logger.error("Error loading resources ", e);
         }
         return res;
     }
 
     public static ApplicationSettings getInstance() {
         return instance;
+    }
+
+    public int getSetpointMinFullTemperature() {
+        return setpointMinFullTemperature;
+    }
+
+    public void setSetpointMinFullTemperature(int setpointMinFullTemperature) {
+        this.setpointMinFullTemperature = setpointMinFullTemperature;
+    }
+
+    public int getSetpointMaxFullTemperature() {
+        return setpointMaxFullTemperature;
+    }
+
+    public void setSetpointMaxFullTemperature(int setpointMaxFullTemperature) {
+        this.setpointMaxFullTemperature = setpointMaxFullTemperature;
     }
 
     public String getWorkModeName() {

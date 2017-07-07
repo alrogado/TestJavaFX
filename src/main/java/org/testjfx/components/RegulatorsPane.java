@@ -342,14 +342,6 @@ public class RegulatorsPane extends Region {
             workModeButton.setBackground(BACKGROUNDFILL_DARKER_100);
             ApplicationSettings.getInstance().setWorkModeName(predefinedWorkMode.getName());
         });
-        //-fx-pref-width: 150px;
-        //-fx-background-color: #0091DC;
-        //-fx-background-radius: 100px;
-        //-fx-pref-height: 10px;
-        //-fx-border-color: WHITE;
-        //-fx-border-radius: 100px;
-        //-fx-border-width: 4px;
-        //workModeButton.setStyle(style);
         workModeButton.setTextFill(Color.WHITE);
         //workModeButton.setPrefSize(20,20);
         return workModeButton;
@@ -381,18 +373,30 @@ public class RegulatorsPane extends Region {
         // esto no se va de madre, porque al usar unos con una y otros con otra esto hace que se
         // vaya de madre toda la aplicación, es bastante desconcertante
         //MigPane rootMP = new MigPane(new LC().fillX().fillY().pack(), new AC(), new AC());
-        startButton = new JFXButton(ApplicationSettings.getBundleString("buttonStart.label"));
+
+        startButton = new JFXButton(ApplicationSettings.getBundleString( "_wm.label"));
+        startButton.setTooltip(new Tooltip(ApplicationSettings.getBundleString( "_wm.tooltip")));
+        startButton.setButtonType(JFXButton.ButtonType.RAISED);
+        startButton.setPrefWidth(150);
+        startButton.setPadding(new Insets(25));
+        startButton.setPrefHeight(getHeight() / 10);
+        startButton.setBorder(BORDER_WHITE_2_OVER_100);
+        startButton.getProperties().put("predefinedWorkMode", predefinedWorkMode);
+        startButton.setBackground(BACKGROUNDFILL_100);
+
+        
+        /*startButton = new JFXButton(ApplicationSettings.getBundleString("buttonStart.label"));
         startButton.setTooltip(new Tooltip(""));
         startButton.setTextFill(Color.WHITE);
         startButton.setEffect(DROPSHADOW_TEXT);
-        //startButton.setButtonType(JFXButton.ButtonType.RAISED);
+        startButton.setButtonType(JFXButton.ButtonType.RAISED);
         startButton.setBorder(BORDER_WHITE_4_OVER_100);
         startButton.setBackground(BACKGROUNDFILL_100);
 
         Circle buttonCircle = new Circle(startButtonRadious);
-        startButton.setShape(buttonCircle);
-        //startButton.setMinSize(2* startButtonRadious, 2* startButtonRadious);
-        startButton.setMaxSize(2 * startButtonRadious, 2 * startButtonRadious);
+        //startButton.setShape(buttonCircle);
+        startButton.setMinSize(2* startButtonRadious, 2* startButtonRadious);
+        startButton.setMaxSize(2 * startButtonRadious, 2 * startButtonRadious);*/
         startButtonPane = new Pane(startButton);
     }
 

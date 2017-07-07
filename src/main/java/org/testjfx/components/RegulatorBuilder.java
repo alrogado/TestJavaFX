@@ -21,9 +21,6 @@ import static org.testjfx.util.GuiColors.FRG;
  */
 public class RegulatorBuilder {
 
-    static int MINVALUETEMP = -20;
-    static int MAXVALUETEMP = 60;
-
     private static Logger logger = LoggerFactory.getLogger(RegulatorBuilder.class);
 
     public static ColorRegulator createColorRegulator(String title, String unit, Ikon ikon, Double heigth, Double width, Double value, Double minVal, Double maxVal) {
@@ -85,8 +82,8 @@ public class RegulatorBuilder {
                 //.textColor(GuiColors.FRG_2)
                 .unit("ºC")
                 .averageVisible(averageVisible)
-                .minValue(MINVALUETEMP)
-                .maxValue(MAXVALUETEMP)
+                .minValue(ApplicationSettings.getInstance().getSetpointMinFullTemperature())
+                .maxValue(ApplicationSettings.getInstance().getSetpointMaxFullTemperature())
                 .locale(ApplicationSettings.LOCALE)
                 .animated(true)
                 .highlightSections(false)
@@ -98,9 +95,9 @@ public class RegulatorBuilder {
                 //.barColor(FRG)
                 //.barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
-                        new eu.hansolo.tilesfx.Section(MINVALUETEMP, start, Tile.GREEN),
+                        new eu.hansolo.tilesfx.Section(ApplicationSettings.getInstance().getSetpointMinFullTemperature(), start, Tile.GREEN),
                         new eu.hansolo.tilesfx.Section(start, stop, FRG),
-                        new eu.hansolo.tilesfx.Section(stop, MAXVALUETEMP, Tile.LIGHT_RED))
+                        new eu.hansolo.tilesfx.Section(stop, ApplicationSettings.getInstance().getSetpointMaxFullTemperature(), Tile.LIGHT_RED))
                 .sectionsVisible(true)
                 .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)
