@@ -169,7 +169,7 @@ public class ApplicationSettings extends Settings{
     }
 
     public static ApplicationSettings getInstance() {
-        return (ApplicationSettings)instance;
+        return instance;
     }
 
     public int getSetpointMinFullTemperature() {
