@@ -2,6 +2,7 @@ package org.testjfx.conf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,27 +19,21 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * Created by alvaro.lopez on 05/07/2017.
  */
-public class UserSettings {
+public class UserSettings extends Settings{
 
     private static Logger logger = LoggerFactory.getLogger(UserSettings.class);
 
     /**
      * Total laser shots
      */
-    public long totalPulsesA;
+    private long totalPulsesA;
 
     /**
      * Main total laser shots
      */
-    public long totalPulsesB;
+    private long totalPulsesB;
 
-    static String fileName = "/userSettings.conf";
-
-    // Encryption/decryption o fconfiguration files
-    static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
-    static final byte[] KEY_GENERATION_SALT = new byte[]{(byte)0x1A,(byte)0xAF,(byte)0x13,(byte)0xF5,(byte)0x12,(byte)0x01,(byte)0xAA,(byte)0xDC};
-    static final int KEY_GENERATION_ITERATIONS = 16;
-    static final char[] SECRET_KEY = "Test JavaFx Configuration Files".toCharArray();
+    String fileName = "userSettings.conf";
 
     static final String FILE_NAME_PULSES_A1 = "slspa";
     static final String FILE_NAME_PULSES_A2 = "slspb";
@@ -62,7 +57,7 @@ public class UserSettings {
         this.totalPulsesB = totalPulsesB;
     }
 
-    static UserSettings instance = new UserSettings().loadConf();
+    static UserSettings instance = new UserSettings().loadConf(UserSettings.class);
 
     public static UserSettings getInstance(){
         return instance;
@@ -72,61 +67,9 @@ public class UserSettings {
         System.out.println("TotalPulsesA:" + UserSettings.getInstance().getTotalPulsesA());
     }
 
-    public static UserSettings loadConf(){
-        try {
-            final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            instance = mapper.readValue(file, UserSettings.class);
-        } catch (IOException e) {
-            logger.error("Error loading predefined Work Modes ",e);
-            throw new RuntimeException(e);
-        }
-        return instance;
-    }
-
-    /**
-     * Writes the current total pulses to the given file
-     *
-     * @param pulsesFile File to write to
-     * @return
-     */
-    private static void writePulses(File pulsesFile, long totalPulses) throws Exception
-    {
-        PBEKeySpec keySpec = new PBEKeySpec(SECRET_KEY);
-        SecretKey key = SecretKeyFactory.getInstance(ENCRYPTER_ALGORITHM).generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance(ENCRYPTER_ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(KEY_GENERATION_SALT, KEY_GENERATION_ITERATIONS));
-
-        CipherOutputStream os = new CipherOutputStream(new FileOutputStream(pulsesFile), cipher);
-        os.write(Long.toString(totalPulses).getBytes());
-        os.flush();
-        os.close();
-    }
-
-    /**
-     * Reads total pulses from the given file
-     *
-     * @param pulsesFile File to read from
-     *
-     * @return The number of pulses
-     * @throws InvalidAlgorithmParameterException
-     * @throws InvalidKeyException
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     */
-    private static long readPulses(File pulsesFile) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException
-    {
-        PBEKeySpec keySpec = new PBEKeySpec(SECRET_KEY);
-        SecretKey key = SecretKeyFactory.getInstance(ENCRYPTER_ALGORITHM).generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance(ENCRYPTER_ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(KEY_GENERATION_SALT, KEY_GENERATION_ITERATIONS));
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(new CipherInputStream(new FileInputStream(pulsesFile), cipher)));
-        long result = Long.parseLong(br.readLine());
-        br.close();
-
-        return result;
+    @Override
+    public String getFileName() {
+        return fileName;
     }
 
 }

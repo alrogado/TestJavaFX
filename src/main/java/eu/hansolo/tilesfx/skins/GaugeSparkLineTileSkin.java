@@ -328,7 +328,7 @@ public class GaugeSparkLineTileSkin extends TileSkin {
     }
 
     ;
-    Section lastSection = null;
+
 
     @Override
     protected void handleCurrentValue(final double VALUE) {
@@ -437,6 +437,12 @@ public class GaugeSparkLineTileSkin extends TileSkin {
             drawHighLightSections(VALUE);
         }
 
+
+    }
+
+
+    Section lastSection = null;
+    public void moveValues(){
         if (lastSection != null && (sections.indexOf(lastSection) == 0 || sections.indexOf(lastSection) == 2)) {
             //todo launch in a separate thread
             new ShakeTransition(valueText).play();

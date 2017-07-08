@@ -2,23 +2,23 @@ package org.testjfx.conf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.typesafe.config.*;
+import javafx.beans.property.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testjfx.GuiApp;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
  * Created by alrogado on 6/20/17.
  */
-public class ApplicationSettings {
+public class ApplicationSettings extends Settings{
 
     private static Logger logger = LoggerFactory.getLogger(ApplicationSettings.class);
 
@@ -27,54 +27,41 @@ public class ApplicationSettings {
     static final String COPYRIGHT = "@Test JavaFX LS 2017";
     static final String VERSION = "V1.0";
 
-    // Encryption/decryption o fconfiguration files
-    static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
-    static final byte[] KEY_GENERATION_SALT = new byte[]{(byte) 0x1A, (byte) 0xAF, (byte) 0x13, (byte) 0xF5, (byte) 0x12, (byte) 0x01, (byte) 0xAA, (byte) 0xDC};
-    static final int KEY_GENERATION_ITERATIONS = 16;
-    static final char[] SECRET_KEY = "Test JavaFx ApplicationSettings Files".toCharArray();
-
     public static Locale LOCALE = new Locale("es");
     public static ResourceBundle APPBUNDLE = ResourceBundle.getBundle("testjfx", LOCALE);
+
     public static int WIDTH = 1100;
     public static int HEIGHT = 800;
 
-    public static String fileConfName = "/applicationSettings.conf";
+    public String fileName = "applicationSettings.conf";
 
-    private static ApplicationSettings instance = new ApplicationSettings().loadConf();
+    static ApplicationSettings instance = new ApplicationSettings().loadConf(ApplicationSettings.class);
 
     @JsonProperty private long startupDelay;
     @JsonProperty private String serialNumber;
     @JsonProperty private String maintenancePassword;
     @JsonProperty private String mainMaintenancePassword;
-
     @JsonProperty private String localeAvailable;
     @JsonProperty private String datePattern;
-
     @JsonProperty private int setpointMinFullTemperature;
     @JsonProperty private int setpointMinTemperature;
     @JsonProperty private int setpointMaxTemperature;
     @JsonProperty private int setpointMaxFullTemperature;
-
     @JsonProperty private String workModeName;
-
     @JsonProperty private boolean fulScreenEnabled;
     @JsonProperty private int widthScreen;
     @JsonProperty private int heightScreen;
-
     @JsonProperty private int commRetryInterval;
     @JsonProperty private String commDriver;
     @JsonProperty private String commDriverArguments;
     @JsonProperty private int commMessageWaitingTimeout;
     @JsonProperty private int commAcknowledgeWaitingTimeout;
     @JsonProperty private int commAliveSignalInterval;
-
     @JsonProperty private int toolsAccessClicks;
     @JsonProperty private int toolsAccessTime;
-
     @JsonProperty private int shutdownMessageTime;
     @JsonProperty private int errorShutdownMessageTime;
     @JsonProperty private int workIdleTimeout;
-
     @JsonProperty private int activationSignalTrigger;
     @JsonProperty private int activationSignalPedal;
     @JsonProperty private int activationSignalInterlock;
@@ -84,12 +71,92 @@ public class ApplicationSettings {
     @JsonProperty private int activationSignalFlowError;
     @JsonProperty private int activationSignalHighCompression;
     @JsonProperty private int activationSignalLowCompression;
+    @JsonProperty private double pulseVolume;
+    @JsonProperty private double screenVolume;
+    @JsonProperty private boolean depositFillEnabled;
+    @JsonProperty private boolean pedalEnabled;
+    @JsonProperty private boolean triggerEnabled;
 
-    @JsonProperty private double pulseVolume = 50;
-    @JsonProperty private double screenVolume = 50;
-    @JsonProperty private boolean depositFillEnabled = false;
-    @JsonProperty private boolean pedalEnabled = true;
-    @JsonProperty private boolean triggerEnabled = false;
+    LongProperty startupDelayProperty = new SimpleLongProperty(startupDelay);
+    StringProperty serialNumberProperty = new SimpleStringProperty(serialNumber);
+    StringProperty maintenancePasswordProperty = new SimpleStringProperty(maintenancePassword);
+    StringProperty mainMaintenancePasswordProperty = new SimpleStringProperty(mainMaintenancePassword);
+    StringProperty localeAvailableProperty = new SimpleStringProperty(localeAvailable);
+    StringProperty datePatternProperty = new SimpleStringProperty(datePattern);
+    IntegerProperty setpointMinFullTemperatureProperty = new SimpleIntegerProperty(setpointMinFullTemperature);
+    IntegerProperty setpointMinTemperatureProperty = new SimpleIntegerProperty(setpointMinTemperature);
+    IntegerProperty setpointMaxTemperatureProperty = new SimpleIntegerProperty(setpointMaxTemperature);
+    IntegerProperty setpointMaxFullTemperatureProperty = new SimpleIntegerProperty(setpointMaxFullTemperature);
+    StringProperty workModeNameProperty = new SimpleStringProperty(workModeName);
+    BooleanProperty fulScreenEnabledProperty = new SimpleBooleanProperty(fulScreenEnabled);
+    IntegerProperty widthScreenProperty = new SimpleIntegerProperty(widthScreen);
+    IntegerProperty heightScreenProperty = new SimpleIntegerProperty(heightScreen);
+    IntegerProperty commRetryIntervalProperty = new SimpleIntegerProperty(commRetryInterval);
+    StringProperty commDriverProperty = new SimpleStringProperty(commDriver);
+    StringProperty commDriverArgumentsProperty = new SimpleStringProperty(commDriverArguments);
+    IntegerProperty commMessageWaitingTimeoutProperty = new SimpleIntegerProperty(commMessageWaitingTimeout);
+    IntegerProperty commAcknowledgeWaitingTimeoutProperty = new SimpleIntegerProperty(commAcknowledgeWaitingTimeout);
+    IntegerProperty commAliveSignalIntervalProperty = new SimpleIntegerProperty(commAliveSignalInterval);
+    IntegerProperty toolsAccessClicksProperty = new SimpleIntegerProperty(toolsAccessClicks);
+    IntegerProperty toolsAccessTimeProperty = new SimpleIntegerProperty(toolsAccessTime);
+    IntegerProperty shutdownMessageTimeProperty = new SimpleIntegerProperty(shutdownMessageTime);
+    IntegerProperty errorShutdownMessageTimeProperty = new SimpleIntegerProperty(errorShutdownMessageTime);
+    IntegerProperty workIdleTimeoutProperty = new SimpleIntegerProperty(workIdleTimeout);
+    IntegerProperty activationSignalTriggerProperty = new SimpleIntegerProperty(activationSignalTrigger);
+    IntegerProperty activationSignalPedalProperty = new SimpleIntegerProperty(activationSignalPedal);
+    IntegerProperty activationSignalInterlockProperty = new SimpleIntegerProperty(activationSignalInterlock);
+    IntegerProperty activationSignalKeyProperty = new SimpleIntegerProperty(activationSignalKey);
+    IntegerProperty activationSignalFlowProperty = new SimpleIntegerProperty(activationSignalFlow);
+    IntegerProperty activationSignalTankLowLevelProperty = new SimpleIntegerProperty(activationSignalTankLowLevel);
+    IntegerProperty activationSignalFlowErrorProperty = new SimpleIntegerProperty(activationSignalFlowError);
+    IntegerProperty activationSignalHighCompressionProperty = new SimpleIntegerProperty(activationSignalHighCompression);
+    IntegerProperty activationSignalLowCompressionProperty = new SimpleIntegerProperty(activationSignalLowCompression);
+    DoubleProperty pulseVolumeProperty = new SimpleDoubleProperty(pulseVolume);
+    DoubleProperty screenVolumeProperty = new SimpleDoubleProperty(screenVolume);
+    BooleanProperty depositFillEnabledProperty = new SimpleBooleanProperty(depositFillEnabled);
+    BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
+    BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty(triggerEnabled);
+    {
+        startupDelayProperty.addListener(changeListener);
+        serialNumberProperty.addListener(changeListener);
+        maintenancePasswordProperty.addListener(changeListener);
+        mainMaintenancePasswordProperty.addListener(changeListener);
+        localeAvailableProperty.addListener(changeListener);
+        datePatternProperty.addListener(changeListener);
+        setpointMinFullTemperatureProperty.addListener(changeListener);
+        setpointMinTemperatureProperty.addListener(changeListener);
+        setpointMaxTemperatureProperty.addListener(changeListener);
+        setpointMaxFullTemperatureProperty.addListener(changeListener);
+        workModeNameProperty.addListener(changeListener);
+        fulScreenEnabledProperty.addListener(changeListener);
+        widthScreenProperty.addListener(changeListener);
+        heightScreenProperty.addListener(changeListener);
+        commRetryIntervalProperty.addListener(changeListener);
+        commDriverProperty.addListener(changeListener);
+        commDriverArgumentsProperty.addListener(changeListener);
+        commMessageWaitingTimeoutProperty.addListener(changeListener);
+        commAcknowledgeWaitingTimeoutProperty.addListener(changeListener);
+        commAliveSignalIntervalProperty.addListener(changeListener);
+        toolsAccessClicksProperty.addListener(changeListener);
+        toolsAccessTimeProperty.addListener(changeListener);
+        shutdownMessageTimeProperty.addListener(changeListener);
+        errorShutdownMessageTimeProperty.addListener(changeListener);
+        workIdleTimeoutProperty.addListener(changeListener);
+        activationSignalTriggerProperty.addListener(changeListener);
+        activationSignalPedalProperty.addListener(changeListener);
+        activationSignalInterlockProperty.addListener(changeListener);
+        activationSignalKeyProperty.addListener(changeListener);
+        activationSignalFlowProperty.addListener(changeListener);
+        activationSignalTankLowLevelProperty.addListener(changeListener);
+        activationSignalFlowErrorProperty.addListener(changeListener);
+        activationSignalHighCompressionProperty.addListener(changeListener);
+        activationSignalLowCompressionProperty.addListener(changeListener);
+        pulseVolumeProperty.addListener(changeListener);
+        screenVolumeProperty.addListener(changeListener);
+        depositFillEnabledProperty.addListener(changeListener);
+        pedalEnabledProperty.addListener(changeListener);
+        triggerEnabledProperty.addListener(changeListener);
+    }
 
     public static String getBundleString(String rscBundle) {
         String res = rscBundle;
@@ -102,344 +169,332 @@ public class ApplicationSettings {
     }
 
     public static ApplicationSettings getInstance() {
-        return instance;
+        return (ApplicationSettings)instance;
     }
 
     public int getSetpointMinFullTemperature() {
-        return setpointMinFullTemperature;
+        return setpointMinFullTemperatureProperty.get();
     }
 
     public void setSetpointMinFullTemperature(int setpointMinFullTemperature) {
-        this.setpointMinFullTemperature = setpointMinFullTemperature;
+        this.setpointMinFullTemperatureProperty.set(setpointMinFullTemperature);
     }
 
     public int getSetpointMaxFullTemperature() {
-        return setpointMaxFullTemperature;
+        return setpointMaxFullTemperatureProperty.get();
     }
 
     public void setSetpointMaxFullTemperature(int setpointMaxFullTemperature) {
-        this.setpointMaxFullTemperature = setpointMaxFullTemperature;
+        this.setpointMaxFullTemperatureProperty.set(setpointMaxFullTemperature);
     }
 
     public String getWorkModeName() {
-        return workModeName;
+        return workModeNameProperty.get();
     }
 
     public void setWorkModeName(String workModeName) {
-        this.workModeName = workModeName;
+        this.workModeNameProperty.set(workModeName);
     }
 
     public double getPulseVolume() {
-        return pulseVolume;
+        return pulseVolumeProperty.get();
     }
 
     public void setPulseVolume(double pulseVolume) {
-        this.pulseVolume = pulseVolume;
+        this.pulseVolumeProperty.set(pulseVolume);
     }
 
     public double getScreenVolume() {
-        return screenVolume;
+        return screenVolumeProperty.get();
     }
 
     public void setScreenVolume(double screenVolume) {
-        this.screenVolume = screenVolume;
+        this.screenVolumeProperty.set(screenVolume);
     }
 
 
     public boolean getDepositFillEnabled() {
-        return depositFillEnabled;
+        return depositFillEnabledProperty.get();
     }
 
     public boolean isDepositFillEnabled() {
-        return depositFillEnabled;
+        return depositFillEnabledProperty.get();
     }
 
     public void setDepositFillEnabled(boolean depositFillEnabled) {
-        this.depositFillEnabled = depositFillEnabled;
+        this.depositFillEnabledProperty.set(depositFillEnabled);
     }
 
     public boolean getPedalEnabled() {
-        return pedalEnabled;
+        return pedalEnabledProperty.get();
     }
 
     public boolean isPedalEnabled() {
-        return pedalEnabled;
+        return pedalEnabledProperty.get();
     }
 
     public void setPedalEnabled(boolean pedalEnabled) {
-        this.pedalEnabled = pedalEnabled;
+        this.pedalEnabledProperty.set(pedalEnabled);
     }
 
     public boolean getTriggerEnabled() {
-        return triggerEnabled;
+        return triggerEnabledProperty.get();
     }
 
     public boolean isTriggerEnabled() {
-        return triggerEnabled;
+        return triggerEnabledProperty.get();
     }
 
     public void setTriggerEnabled(boolean triggerEnabled) {
-        this.triggerEnabled = triggerEnabled;
+        this.triggerEnabledProperty.set(triggerEnabled);
     }
 
     public long getStartupDelay() {
-        return startupDelay;
+        return startupDelayProperty.get();
     }
 
     public void setStartupDelay(long startupDelay) {
-        this.startupDelay = startupDelay;
+        this.startupDelayProperty.set(startupDelay);
     }
 
     public String getSerialNumber() {
-        return serialNumber;
+        return serialNumberProperty.get();
     }
 
     public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+        this.serialNumberProperty.set(serialNumber);
     }
 
     public String getMaintenancePassword() {
-        return maintenancePassword;
+        return maintenancePasswordProperty.get();
     }
 
     public void setMaintenancePassword(String maintenancePassword) {
-        this.maintenancePassword = maintenancePassword;
+        this.maintenancePasswordProperty.set(maintenancePassword);
     }
 
     public String getMainMaintenancePassword() {
-        return mainMaintenancePassword;
+        return mainMaintenancePasswordProperty.get();
     }
 
     public void setMainMaintenancePassword(String mainMaintenancePassword) {
-        this.mainMaintenancePassword = mainMaintenancePassword;
+        this.mainMaintenancePasswordProperty.set(mainMaintenancePassword);
     }
 
     public String getLocaleAvailable() {
-        return localeAvailable;
+        return localeAvailableProperty.get();
     }
 
     public void setLocaleAvailable(String localeAvailable) {
-        this.localeAvailable = localeAvailable;
+        this.localeAvailableProperty.set(localeAvailable);
     }
 
     public String getDatePattern() {
-        return datePattern;
+        return datePatternProperty.get();
     }
 
     public void setDatePattern(String datePattern) {
-        this.datePattern = datePattern;
+        this.datePatternProperty.set(datePattern);
     }
 
     public int getSetpointMaxTemperature() {
-        return setpointMaxTemperature;
+        return setpointMaxTemperatureProperty.get();
     }
 
     public void setSetpointMaxTemperature(int setpointMaxTemperature) {
-        this.setpointMaxTemperature = setpointMaxTemperature;
+        this.setpointMaxTemperatureProperty.set(setpointMaxTemperature);
     }
 
     public int getSetpointMinTemperature() {
-        return setpointMinTemperature;
+        return setpointMinTemperatureProperty.get();
     }
 
     public void setSetpointMinTemperature(int setpointMinTemperature) {
-        this.setpointMinTemperature = setpointMinTemperature;
+        this.setpointMinTemperatureProperty.set(setpointMinTemperature);
     }
 
     public boolean isFulScreenEnabled() {
-        return fulScreenEnabled;
+        return fulScreenEnabledProperty.get();
     }
 
     public void setFulScreenEnabled(boolean fulScreenEnabled) {
-        this.fulScreenEnabled = fulScreenEnabled;
+        this.fulScreenEnabledProperty.set(fulScreenEnabled);
     }
 
     public int getWidthScreen() {
-        return widthScreen;
+        return widthScreenProperty.get();
     }
 
     public void setWidthScreen(int widthScreen) {
-        this.widthScreen = widthScreen;
+        this.widthScreenProperty.set(widthScreen);
     }
 
     public int getHeightScreen() {
-        return heightScreen;
+        return heightScreenProperty.get();
     }
 
     public void setHeightScreen(int heightScreen) {
-        this.heightScreen = heightScreen;
+        this.heightScreenProperty.set(heightScreen);
     }
 
     public int getCommRetryInterval() {
-        return commRetryInterval;
+        return commRetryIntervalProperty.get();
     }
 
     public void setCommRetryInterval(int commRetryInterval) {
-        this.commRetryInterval = commRetryInterval;
+        this.commRetryIntervalProperty.set(commRetryInterval);
     }
 
     public String getCommDriver() {
-        return commDriver;
+        return commDriverProperty.get();
     }
 
     public void setCommDriver(String commDriver) {
-        this.commDriver = commDriver;
+        this.commDriverProperty.set(commDriver);
     }
 
     public String getCommDriverArguments() {
-        return commDriverArguments;
+        return commDriverArgumentsProperty.get();
     }
 
     public void setCommDriverArguments(String commDriverArguments) {
-        this.commDriverArguments = commDriverArguments;
+        this.commDriverArgumentsProperty.set(commDriverArguments);
     }
 
     public int getCommMessageWaitingTimeout() {
-        return commMessageWaitingTimeout;
+        return commMessageWaitingTimeoutProperty.get();
     }
 
     public void setCommMessageWaitingTimeout(int commMessageWaitingTimeout) {
-        this.commMessageWaitingTimeout = commMessageWaitingTimeout;
+        this.commMessageWaitingTimeoutProperty.set(commMessageWaitingTimeout);
     }
 
     public int getCommAcknowledgeWaitingTimeout() {
-        return commAcknowledgeWaitingTimeout;
+        return commAcknowledgeWaitingTimeoutProperty.get();
     }
 
     public void setCommAcknowledgeWaitingTimeout(int commAcknowledgeWaitingTimeout) {
-        this.commAcknowledgeWaitingTimeout = commAcknowledgeWaitingTimeout;
+        this.commAcknowledgeWaitingTimeoutProperty.set(commAcknowledgeWaitingTimeout);
     }
 
     public int getCommAliveSignalInterval() {
-        return commAliveSignalInterval;
+        return commAliveSignalIntervalProperty.get();
     }
 
     public void setCommAliveSignalInterval(int commAliveSignalInterval) {
-        this.commAliveSignalInterval = commAliveSignalInterval;
+        this.commAliveSignalIntervalProperty.set(commAliveSignalInterval);
     }
 
     public int getToolsAccessClicks() {
-        return toolsAccessClicks;
+        return toolsAccessClicksProperty.get();
     }
 
     public void setToolsAccessClicks(int toolsAccessClicks) {
-        this.toolsAccessClicks = toolsAccessClicks;
+        this.toolsAccessClicksProperty.set(toolsAccessClicks);
     }
 
     public int getToolsAccessTime() {
-        return toolsAccessTime;
+        return toolsAccessTimeProperty.get();
     }
 
     public void setToolsAccessTime(int toolsAccessTime) {
-        this.toolsAccessTime = toolsAccessTime;
+        this.toolsAccessTimeProperty.set(toolsAccessTime);
     }
 
     public int getShutdownMessageTime() {
-        return shutdownMessageTime;
+        return shutdownMessageTimeProperty.get();
     }
 
     public void setShutdownMessageTime(int shutdownMessageTime) {
-        this.shutdownMessageTime = shutdownMessageTime;
+        this.shutdownMessageTimeProperty.set(shutdownMessageTime);
     }
 
     public int getErrorShutdownMessageTime() {
-        return errorShutdownMessageTime;
+        return errorShutdownMessageTimeProperty.get();
     }
 
     public void setErrorShutdownMessageTime(int errorShutdownMessageTime) {
-        this.errorShutdownMessageTime = errorShutdownMessageTime;
+        this.errorShutdownMessageTimeProperty.set(errorShutdownMessageTime);
     }
 
     public int getWorkIdleTimeout() {
-        return workIdleTimeout;
+        return workIdleTimeoutProperty.get();
     }
 
     public void setWorkIdleTimeout(int workIdleTimeout) {
-        this.workIdleTimeout = workIdleTimeout;
+        this.workIdleTimeoutProperty.set(workIdleTimeout);
     }
 
     public int getActivationSignalTrigger() {
-        return activationSignalTrigger;
+        return activationSignalTriggerProperty.get();
     }
 
     public void setActivationSignalTrigger(int activationSignalTrigger) {
-        this.activationSignalTrigger = activationSignalTrigger;
+        this.activationSignalTriggerProperty.set(activationSignalTrigger);
     }
 
     public int getActivationSignalPedal() {
-        return activationSignalPedal;
+        return activationSignalPedalProperty.get();
     }
 
     public void setActivationSignalPedal(int activationSignalPedal) {
-        this.activationSignalPedal = activationSignalPedal;
+        this.activationSignalPedalProperty.set(activationSignalPedal);
     }
 
     public int getActivationSignalInterlock() {
-        return activationSignalInterlock;
+        return activationSignalInterlockProperty.get();
     }
 
     public void setActivationSignalInterlock(int activationSignalInterlock) {
-        this.activationSignalInterlock = activationSignalInterlock;
+        this.activationSignalInterlockProperty.set(activationSignalInterlock);
     }
 
     public int getActivationSignalKey() {
-        return activationSignalKey;
+        return activationSignalKeyProperty.get();
     }
 
     public void setActivationSignalKey(int activationSignalKey) {
-        this.activationSignalKey = activationSignalKey;
+        this.activationSignalKeyProperty.set(activationSignalKey);
     }
 
     public int getActivationSignalFlow() {
-        return activationSignalFlow;
+        return activationSignalFlowProperty.get();
     }
 
     public void setActivationSignalFlow(int activationSignalFlow) {
-        this.activationSignalFlow = activationSignalFlow;
+        this.activationSignalFlowProperty.set(activationSignalFlow);
     }
 
     public int getActivationSignalTankLowLevel() {
-        return activationSignalTankLowLevel;
+        return activationSignalTankLowLevelProperty.get();
     }
 
     public void setActivationSignalTankLowLevel(int activationSignalTankLowLevel) {
-        this.activationSignalTankLowLevel = activationSignalTankLowLevel;
+        this.activationSignalTankLowLevelProperty.set(activationSignalTankLowLevel);
     }
 
     public int getActivationSignalFlowError() {
-        return activationSignalFlowError;
+        return activationSignalFlowErrorProperty.get();
     }
 
     public void setActivationSignalFlowError(int activationSignalFlowError) {
-        this.activationSignalFlowError = activationSignalFlowError;
+        this.activationSignalFlowErrorProperty.set(activationSignalFlowError);
     }
 
     public int getActivationSignalHighCompression() {
-        return activationSignalHighCompression;
+        return activationSignalHighCompressionProperty.get();
     }
 
     public void setActivationSignalHighCompression(int activationSignalHighCompression) {
-        this.activationSignalHighCompression = activationSignalHighCompression;
+        this.activationSignalHighCompressionProperty.set(activationSignalHighCompression);
     }
 
     public int getActivationSignalLowCompression() {
-        return activationSignalLowCompression;
+        return activationSignalLowCompressionProperty.get();
     }
 
     public void setActivationSignalLowCompression(int activationSignalLowCompression) {
-        this.activationSignalLowCompression = activationSignalLowCompression;
-    }
-
-
-    public static ApplicationSettings loadConf() {
-        final InputStream file = ApplicationSettings.class.getResourceAsStream(fileConfName);
-        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
-        try {
-            instance = mapper.readValue(file, ApplicationSettings.class);
-        } catch (IOException e) {
-            logger.error("Problem loading Application Conf Values ", e);
-        }
-        return instance;
+        this.activationSignalLowCompressionProperty.set(activationSignalLowCompression);
     }
 
 
@@ -448,4 +503,8 @@ public class ApplicationSettings {
         System.out.println("LocaleAvailable:" + ApplicationSettings.getInstance().getLocaleAvailable());
     }
 
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
 }

@@ -2,7 +2,14 @@ package org.testjfx.conf;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import org.reactfx.StateMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +26,7 @@ import java.security.spec.InvalidKeySpecException;
 /**
  * Created by alvaro.lopez on 05/07/2017.
  */
-public class WorkSettings {
+public class WorkSettings extends Settings{
 
     private static Logger logger = LoggerFactory.getLogger(WorkSettings.class);
 
@@ -43,6 +50,49 @@ public class WorkSettings {
     @JsonProperty boolean pedalEnabled;
     @JsonProperty boolean triggerEnabled;
 
+    FloatProperty tipWorkTempSetpointProperty = new SimpleFloatProperty(tipWorkTempSetpoint);
+    FloatProperty tipMaxTempSetpointProperty = new SimpleFloatProperty (tipMaxTempSetpoint);
+    FloatProperty tipTempHysteresisProperty = new SimpleFloatProperty (tipTempHysteresis);
+    FloatProperty tipTempHysteresisWarnProperty = new SimpleFloatProperty (tipTempHysteresisWarn);
+    FloatProperty tipTempHysteresisMaxProperty = new SimpleFloatProperty (tipTempHysteresisMax);
+    FloatProperty tankWorkTempSetpointProperty = new SimpleFloatProperty (tankWorkTempSetpoint);
+    FloatProperty tankMaxTempSetpointProperty = new SimpleFloatProperty (tankMaxTempSetpoint);
+    FloatProperty tankTempHysteresisUpProperty = new SimpleFloatProperty (tankTempHysteresisUp);
+    FloatProperty tankTempHysteresisDownProperty = new SimpleFloatProperty (tankTempHysteresisDown);
+    FloatProperty machineMinTempSetpointProperty = new SimpleFloatProperty (machineMinTempSetpoint);
+    FloatProperty machineMaxTempSetpointProperty = new SimpleFloatProperty (machineMaxTempSetpoint);
+    FloatProperty machineTempHysteresisProperty = new SimpleFloatProperty (machineTempHysteresis);
+    FloatProperty diodeWorkTempSetpointProperty = new SimpleFloatProperty (diodeWorkTempSetpoint);
+    FloatProperty diodeMaxTempSetpointProperty = new SimpleFloatProperty (diodeMaxTempSetpoint);
+    FloatProperty diodeTempHysteresisProperty = new SimpleFloatProperty (diodeTempHysteresis);
+    FloatProperty shotFrequencyProperty = new SimpleFloatProperty (shotFrequency);
+    FloatProperty shotFluenceProperty = new SimpleFloatProperty (shotFluence);
+    BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
+    BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty (triggerEnabled);
+
+    {
+        triggerEnabledProperty.addListener(changeListener);
+        tipWorkTempSetpointProperty.addListener(changeListener);
+        tipMaxTempSetpointProperty.addListener(changeListener);
+        tipTempHysteresisProperty.addListener(changeListener);
+        tipTempHysteresisWarnProperty.addListener(changeListener);
+        tipTempHysteresisMaxProperty.addListener(changeListener);
+        tankWorkTempSetpointProperty.addListener(changeListener);
+        tankMaxTempSetpointProperty.addListener(changeListener);
+        tankTempHysteresisUpProperty.addListener(changeListener);
+        tankTempHysteresisDownProperty.addListener(changeListener);
+        machineMinTempSetpointProperty.addListener(changeListener);
+        machineMaxTempSetpointProperty.addListener(changeListener);
+        machineTempHysteresisProperty.addListener(changeListener);
+        diodeWorkTempSetpointProperty.addListener(changeListener);
+        diodeMaxTempSetpointProperty.addListener(changeListener);
+        diodeTempHysteresisProperty.addListener(changeListener);
+        shotFrequencyProperty.addListener(changeListener);
+        shotFluenceProperty.addListener(changeListener);
+        pedalEnabledProperty.addListener(changeListener);
+        triggerEnabledProperty.addListener(changeListener);
+    }
+
     /**
      * Total laser shots
      */
@@ -53,13 +103,9 @@ public class WorkSettings {
      */
     public long totalPulsesB;
 
-    static String fileName = "/workSettings.conf";
+    static String fileName = "workSettings.conf";
 
-    // Encryption/decryption o fconfiguration files
-    static final String ENCRYPTER_ALGORITHM = "PBEWithMD5AndDES";
-    static final byte[] KEY_GENERATION_SALT = new byte[]{(byte)0x1A,(byte)0xAF,(byte)0x13,(byte)0xF5,(byte)0x12,(byte)0x01,(byte)0xAA,(byte)0xDC};
-    static final int KEY_GENERATION_ITERATIONS = 16;
-    static final char[] SECRET_KEY = "Test JavaFx Configuration Files".toCharArray();
+
 
     static final String FILE_NAME_PULSES_A1 = "slspa";
     static final String FILE_NAME_PULSES_A2 = "slspb";
@@ -68,159 +114,159 @@ public class WorkSettings {
 
 
     public float getTipWorkTempSetpoint() {
-        return tipWorkTempSetpoint;
+        return tipWorkTempSetpointProperty.get();
     }
 
     public void setTipWorkTempSetpoint(float tipWorkTempSetpoint) {
-        this.tipWorkTempSetpoint = tipWorkTempSetpoint;
+        this.tipWorkTempSetpointProperty.set(tipWorkTempSetpoint);
     }
 
     public float getTipMaxTempSetpoint() {
-        return tipMaxTempSetpoint;
+        return tipMaxTempSetpointProperty.get();
     }
 
     public void setTipMaxTempSetpoint(float tipMaxTempSetpoint) {
-        this.tipMaxTempSetpoint = tipMaxTempSetpoint;
+        this.tipMaxTempSetpointProperty.set(tipMaxTempSetpoint);
     }
 
     public float getTipTempHysteresis() {
-        return tipTempHysteresis;
+        return tipTempHysteresisProperty.get();
     }
 
     public void setTipTempHysteresis(float tipTempHysteresis) {
-        this.tipTempHysteresis = tipTempHysteresis;
+        this.tipTempHysteresisProperty.set(tipTempHysteresis);
     }
 
     public float getTipTempHysteresisWarn() {
-        return tipTempHysteresisWarn;
+        return tipTempHysteresisWarnProperty.get();
     }
 
     public void setTipTempHysteresisWarn(float tipTempHysteresisWarn) {
-        this.tipTempHysteresisWarn = tipTempHysteresisWarn;
+        this.tipTempHysteresisWarnProperty.set(tipTempHysteresisWarn);
     }
 
     public float getTipTempHysteresisMax() {
-        return tipTempHysteresisMax;
+        return tipTempHysteresisMaxProperty.get();
     }
 
     public void setTipTempHysteresisMax(float tipTempHysteresisMax) {
-        this.tipTempHysteresisMax = tipTempHysteresisMax;
+        this.tipTempHysteresisMaxProperty.set(tipTempHysteresisMax);
     }
 
     public float getTankWorkTempSetpoint() {
-        return tankWorkTempSetpoint;
+        return tankWorkTempSetpointProperty.get();
     }
 
     public void setTankWorkTempSetpoint(float tankWorkTempSetpoint) {
-        this.tankWorkTempSetpoint = tankWorkTempSetpoint;
+        this.tankWorkTempSetpointProperty.set(tankWorkTempSetpoint);
     }
 
     public float getTankMaxTempSetpoint() {
-        return tankMaxTempSetpoint;
+        return tankMaxTempSetpointProperty.get();
     }
 
     public void setTankMaxTempSetpoint(float tankMaxTempSetpoint) {
-        this.tankMaxTempSetpoint = tankMaxTempSetpoint;
+        this.tankMaxTempSetpointProperty.set(tankMaxTempSetpoint);
     }
 
     public float getTankTempHysteresisUp() {
-        return tankTempHysteresisUp;
+        return tankTempHysteresisUpProperty.get();
     }
 
     public void setTankTempHysteresisUp(float tankTempHysteresisUp) {
-        this.tankTempHysteresisUp = tankTempHysteresisUp;
+        this.tankTempHysteresisUpProperty.set(tankTempHysteresisUp);
     }
 
     public float getTankTempHysteresisDown() {
-        return tankTempHysteresisDown;
+        return tankTempHysteresisDownProperty.get();
     }
 
     public void setTankTempHysteresisDown(float tankTempHysteresisDown) {
-        this.tankTempHysteresisDown = tankTempHysteresisDown;
+        this.tankTempHysteresisDownProperty.set(tankTempHysteresisDown);
     }
 
     public float getMachineMinTempSetpoint() {
-        return machineMinTempSetpoint;
+        return machineMinTempSetpointProperty.get();
     }
 
     public void setMachineMinTempSetpoint(float machineMinTempSetpoint) {
-        this.machineMinTempSetpoint = machineMinTempSetpoint;
+        this.machineMinTempSetpointProperty.set(machineMinTempSetpoint);
     }
 
     public float getMachineMaxTempSetpoint() {
-        return machineMaxTempSetpoint;
+        return machineMaxTempSetpointProperty.get();
     }
 
     public void setMachineMaxTempSetpoint(float machineMaxTempSetpoint) {
-        this.machineMaxTempSetpoint = machineMaxTempSetpoint;
+        this.machineMaxTempSetpointProperty.set(machineMaxTempSetpoint);
     }
 
     public float getMachineTempHysteresis() {
-        return machineTempHysteresis;
+        return machineTempHysteresisProperty.get();
     }
 
     public void setMachineTempHysteresis(float machineTempHysteresis) {
-        this.machineTempHysteresis = machineTempHysteresis;
+        this.machineTempHysteresisProperty.set(machineTempHysteresis);
     }
 
     public float getDiodeWorkTempSetpoint() {
-        return diodeWorkTempSetpoint;
+        return diodeWorkTempSetpointProperty.get();
     }
 
     public void setDiodeWorkTempSetpoint(float diodeWorkTempSetpoint) {
-        this.diodeWorkTempSetpoint = diodeWorkTempSetpoint;
+        this.diodeWorkTempSetpointProperty.set(diodeWorkTempSetpoint);
     }
 
 
     public float getDiodeMaxTempSetpoint() {
-        return diodeMaxTempSetpoint;
+        return diodeMaxTempSetpointProperty.get();
     }
 
     public void setDiodeMaxTempSetpoint(float diodeMaxTempSetpoint) {
-        this.diodeMaxTempSetpoint = diodeMaxTempSetpoint;
+        this.diodeMaxTempSetpointProperty.set(diodeMaxTempSetpoint);
     }
 
     public float getDiodeTempHysteresis() {
-        return diodeTempHysteresis;
+        return diodeTempHysteresisProperty.get();
     }
 
     public void setDiodeTempHysteresis(float diodeTempHysteresis) {
-        this.diodeTempHysteresis = diodeTempHysteresis;
+        this.diodeTempHysteresisProperty.set(diodeTempHysteresis);
     }
 
     public float getShotFrequency() {
-        return shotFrequency;
+        return shotFrequencyProperty.get();
     }
 
     public void setShotFrequency(float shotFrequency) {
-        this.shotFrequency = shotFrequency;
+        this.shotFrequencyProperty.set(shotFrequency);
     }
 
     public float getShotFluence() {
-        return shotFluence;
+        return shotFluenceProperty.get();
     }
 
     public void setShotFluence(float shotFluence) {
-        this.shotFluence = shotFluence;
+        this.shotFluenceProperty.set(shotFluence);
     }
 
     public boolean isPedalEnabled() {
-        return pedalEnabled;
+        return pedalEnabledProperty.get();
     }
 
     public void setPedalEnabled(boolean pedalEnabled) {
-        this.pedalEnabled = pedalEnabled;
+        this.pedalEnabledProperty.set(pedalEnabled);
     }
 
     public boolean isTriggerEnabled() {
-        return triggerEnabled;
+        return triggerEnabledProperty.get();
     }
 
     public void setTriggerEnabled(boolean triggerEnabled) {
-        this.triggerEnabled = triggerEnabled;
+        this.triggerEnabledProperty.set(triggerEnabled);
     }
 
-    static WorkSettings instance = new WorkSettings().loadConf();
+    static WorkSettings instance = new WorkSettings().loadConf(WorkSettings.class);
 
     public static WorkSettings getInstance(){
         return instance;
@@ -229,63 +275,11 @@ public class WorkSettings {
     public static void main(String args[]) throws IOException {
         System.out.println("diodeMaxTempSetpoint:" + WorkSettings.getInstance().getDiodeMaxTempSetpoint());
         System.out.println("tipWorkTempSetpoint:" + WorkSettings.getInstance().getTipWorkTempSetpoint());
+        WorkSettings.getInstance().setTipWorkTempSetpoint(23);
     }
 
-    public static WorkSettings loadConf(){
-        try {
-            final InputStream file = PredefinedWorkModes.class.getResourceAsStream(fileName);
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            instance = mapper.readValue(file, WorkSettings.class);
-        } catch (IOException e) {
-            logger.error("Error loading predefined Work Modes ",e);
-            throw new RuntimeException(e);
-        }
-        return instance;
+    @Override
+    public String getFileName() {
+        return fileName;
     }
-
-    /**
-     * Writes the current total pulses to the given file
-     *
-     * @param pulsesFile File to write to
-     * @return
-     */
-    private static void writePulses(File pulsesFile, long totalPulses) throws Exception
-    {
-        PBEKeySpec keySpec = new PBEKeySpec(SECRET_KEY);
-        SecretKey key = SecretKeyFactory.getInstance(ENCRYPTER_ALGORITHM).generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance(ENCRYPTER_ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(KEY_GENERATION_SALT, KEY_GENERATION_ITERATIONS));
-
-        CipherOutputStream os = new CipherOutputStream(new FileOutputStream(pulsesFile), cipher);
-        os.write(Long.toString(totalPulses).getBytes());
-        os.flush();
-        os.close();
-    }
-
-    /**
-     * Reads total pulses from the given file
-     *
-     * @param pulsesFile File to read from
-     *
-     * @return The number of pulses
-     * @throws InvalidAlgorithmParameterException
-     * @throws InvalidKeyException
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     */
-    private static long readPulses(File pulsesFile) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException
-    {
-        PBEKeySpec keySpec = new PBEKeySpec(SECRET_KEY);
-        SecretKey key = SecretKeyFactory.getInstance(ENCRYPTER_ALGORITHM).generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance(ENCRYPTER_ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(KEY_GENERATION_SALT, KEY_GENERATION_ITERATIONS));
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(new CipherInputStream(new FileInputStream(pulsesFile), cipher)));
-        long result = Long.parseLong(br.readLine());
-        br.close();
-
-        return result;
-    }
-
 }
