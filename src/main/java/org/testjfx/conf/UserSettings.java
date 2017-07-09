@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,38 +26,30 @@ public class UserSettings extends Settings{
 
     private static Logger logger = LoggerFactory.getLogger(UserSettings.class);
 
-    /**
-     * Total laser shots
-     */
     private long totalPulsesA;
-
-    /**
-     * Main total laser shots
-     */
     private long totalPulsesB;
+    
+    LongProperty totalPulsesAProperty = new SimpleLongProperty();
+    LongProperty totalPulsesBProperty = new SimpleLongProperty();
+    
 
     String fileName = "userSettings.conf";
 
-    static final String FILE_NAME_PULSES_A1 = "slspa";
-    static final String FILE_NAME_PULSES_A2 = "slspb";
-    static final String FILE_NAME_PULSES_B1 = "slspba";
-    static final String FILE_NAME_PULSES_B2 = "slspbb";
-
-
+   
     public long getTotalPulsesA() {
-        return totalPulsesA;
+        return totalPulsesAProperty.get();
     }
 
     public void setTotalPulsesA(long totalPulsesA) {
-        this.totalPulsesA = totalPulsesA;
+        this.totalPulsesAProperty.set(totalPulsesA);
     }
 
     public long getTotalPulsesB() {
-        return totalPulsesB;
+        return totalPulsesBProperty.get();
     }
 
     public void setTotalPulsesB(long totalPulsesB) {
-        this.totalPulsesB = totalPulsesB;
+        this.totalPulsesBProperty.set(totalPulsesB);
     }
 
     static UserSettings instance = new UserSettings().loadConf(UserSettings.class);
@@ -65,6 +60,28 @@ public class UserSettings extends Settings{
 
     public static void main(String args[]) throws IOException {
         System.out.println("TotalPulsesA:" + UserSettings.getInstance().getTotalPulsesA());
+    }
+
+    @Override
+    protected void addChangeListener(ChangeListener changeListener) {
+        totalPulsesAProperty.addListener(changeListener);
+        totalPulsesBProperty.addListener(changeListener);
+    }
+
+    public long getTotalPulsesAProperty() {
+        return totalPulsesAProperty.get();
+    }
+
+    public LongProperty totalPulsesAProperty() {
+        return totalPulsesAProperty;
+    }
+
+    public long getTotalPulsesBProperty() {
+        return totalPulsesBProperty.get();
+    }
+
+    public LongProperty totalPulsesBProperty() {
+        return totalPulsesBProperty;
     }
 
     @Override

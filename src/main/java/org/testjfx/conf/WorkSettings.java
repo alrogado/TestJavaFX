@@ -70,7 +70,7 @@ public class WorkSettings extends Settings{
     BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
     BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty (triggerEnabled);
 
-    {
+    protected void addChangeListener(ChangeListener changeListener){
         triggerEnabledProperty.addListener(changeListener);
         tipWorkTempSetpointProperty.addListener(changeListener);
         tipMaxTempSetpointProperty.addListener(changeListener);

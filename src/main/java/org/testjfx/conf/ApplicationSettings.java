@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,7 +117,8 @@ public class ApplicationSettings extends Settings{
     BooleanProperty depositFillEnabledProperty = new SimpleBooleanProperty(depositFillEnabled);
     BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
     BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty(triggerEnabled);
-    {
+
+    protected void addChangeListener(ChangeListener changeListener){
         startupDelayProperty.addListener(changeListener);
         serialNumberProperty.addListener(changeListener);
         maintenancePasswordProperty.addListener(changeListener);
@@ -497,14 +499,327 @@ public class ApplicationSettings extends Settings{
         this.activationSignalLowCompressionProperty.set(activationSignalLowCompression);
     }
 
-
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
+    
+    
+    
     public static void main(String args[]) throws IOException {
         System.out.println("DatePattern:" + ApplicationSettings.getInstance().getDatePattern());
         System.out.println("LocaleAvailable:" + ApplicationSettings.getInstance().getLocaleAvailable());
     }
 
-    @Override
-    public String getFileName() {
-        return fileName;
+    public long getStartupDelayProperty() {
+        return startupDelayProperty.get();
+    }
+
+    public LongProperty startupDelayProperty() {
+        return startupDelayProperty;
+    }
+
+    public String getSerialNumberProperty() {
+        return serialNumberProperty.get();
+    }
+
+    public StringProperty serialNumberProperty() {
+        return serialNumberProperty;
+    }
+
+    public String getMaintenancePasswordProperty() {
+        return maintenancePasswordProperty.get();
+    }
+
+    public StringProperty maintenancePasswordProperty() {
+        return maintenancePasswordProperty;
+    }
+
+    public String getMainMaintenancePasswordProperty() {
+        return mainMaintenancePasswordProperty.get();
+    }
+
+    public StringProperty mainMaintenancePasswordProperty() {
+        return mainMaintenancePasswordProperty;
+    }
+
+    public String getLocaleAvailableProperty() {
+        return localeAvailableProperty.get();
+    }
+
+    public StringProperty localeAvailableProperty() {
+        return localeAvailableProperty;
+    }
+
+    public String getDatePatternProperty() {
+        return datePatternProperty.get();
+    }
+
+    public StringProperty datePatternProperty() {
+        return datePatternProperty;
+    }
+
+    public int getSetpointMinFullTemperatureProperty() {
+        return setpointMinFullTemperatureProperty.get();
+    }
+
+    public IntegerProperty setpointMinFullTemperatureProperty() {
+        return setpointMinFullTemperatureProperty;
+    }
+
+    public int getSetpointMinTemperatureProperty() {
+        return setpointMinTemperatureProperty.get();
+    }
+
+    public IntegerProperty setpointMinTemperatureProperty() {
+        return setpointMinTemperatureProperty;
+    }
+
+    public int getSetpointMaxTemperatureProperty() {
+        return setpointMaxTemperatureProperty.get();
+    }
+
+    public IntegerProperty setpointMaxTemperatureProperty() {
+        return setpointMaxTemperatureProperty;
+    }
+
+    public int getSetpointMaxFullTemperatureProperty() {
+        return setpointMaxFullTemperatureProperty.get();
+    }
+
+    public IntegerProperty setpointMaxFullTemperatureProperty() {
+        return setpointMaxFullTemperatureProperty;
+    }
+
+    public String getWorkModeNameProperty() {
+        return workModeNameProperty.get();
+    }
+
+    public StringProperty workModeNameProperty() {
+        return workModeNameProperty;
+    }
+
+    public boolean isFulScreenEnabledProperty() {
+        return fulScreenEnabledProperty.get();
+    }
+
+    public BooleanProperty fulScreenEnabledProperty() {
+        return fulScreenEnabledProperty;
+    }
+
+    public int getWidthScreenProperty() {
+        return widthScreenProperty.get();
+    }
+
+    public IntegerProperty widthScreenProperty() {
+        return widthScreenProperty;
+    }
+
+    public int getHeightScreenProperty() {
+        return heightScreenProperty.get();
+    }
+
+    public IntegerProperty heightScreenProperty() {
+        return heightScreenProperty;
+    }
+
+    public int getCommRetryIntervalProperty() {
+        return commRetryIntervalProperty.get();
+    }
+
+    public IntegerProperty commRetryIntervalProperty() {
+        return commRetryIntervalProperty;
+    }
+
+    public String getCommDriverProperty() {
+        return commDriverProperty.get();
+    }
+
+    public StringProperty commDriverProperty() {
+        return commDriverProperty;
+    }
+
+    public String getCommDriverArgumentsProperty() {
+        return commDriverArgumentsProperty.get();
+    }
+
+    public StringProperty commDriverArgumentsProperty() {
+        return commDriverArgumentsProperty;
+    }
+
+    public int getCommMessageWaitingTimeoutProperty() {
+        return commMessageWaitingTimeoutProperty.get();
+    }
+
+    public IntegerProperty commMessageWaitingTimeoutProperty() {
+        return commMessageWaitingTimeoutProperty;
+    }
+
+    public int getCommAcknowledgeWaitingTimeoutProperty() {
+        return commAcknowledgeWaitingTimeoutProperty.get();
+    }
+
+    public IntegerProperty commAcknowledgeWaitingTimeoutProperty() {
+        return commAcknowledgeWaitingTimeoutProperty;
+    }
+
+    public int getCommAliveSignalIntervalProperty() {
+        return commAliveSignalIntervalProperty.get();
+    }
+
+    public IntegerProperty commAliveSignalIntervalProperty() {
+        return commAliveSignalIntervalProperty;
+    }
+
+    public int getToolsAccessClicksProperty() {
+        return toolsAccessClicksProperty.get();
+    }
+
+    public IntegerProperty toolsAccessClicksProperty() {
+        return toolsAccessClicksProperty;
+    }
+
+    public int getToolsAccessTimeProperty() {
+        return toolsAccessTimeProperty.get();
+    }
+
+    public IntegerProperty toolsAccessTimeProperty() {
+        return toolsAccessTimeProperty;
+    }
+
+    public int getShutdownMessageTimeProperty() {
+        return shutdownMessageTimeProperty.get();
+    }
+
+    public IntegerProperty shutdownMessageTimeProperty() {
+        return shutdownMessageTimeProperty;
+    }
+
+    public int getErrorShutdownMessageTimeProperty() {
+        return errorShutdownMessageTimeProperty.get();
+    }
+
+    public IntegerProperty errorShutdownMessageTimeProperty() {
+        return errorShutdownMessageTimeProperty;
+    }
+
+    public int getWorkIdleTimeoutProperty() {
+        return workIdleTimeoutProperty.get();
+    }
+
+    public IntegerProperty workIdleTimeoutProperty() {
+        return workIdleTimeoutProperty;
+    }
+
+    public int getActivationSignalTriggerProperty() {
+        return activationSignalTriggerProperty.get();
+    }
+
+    public IntegerProperty activationSignalTriggerProperty() {
+        return activationSignalTriggerProperty;
+    }
+
+    public int getActivationSignalPedalProperty() {
+        return activationSignalPedalProperty.get();
+    }
+
+    public IntegerProperty activationSignalPedalProperty() {
+        return activationSignalPedalProperty;
+    }
+
+    public int getActivationSignalInterlockProperty() {
+        return activationSignalInterlockProperty.get();
+    }
+
+    public IntegerProperty activationSignalInterlockProperty() {
+        return activationSignalInterlockProperty;
+    }
+
+    public int getActivationSignalKeyProperty() {
+        return activationSignalKeyProperty.get();
+    }
+
+    public IntegerProperty activationSignalKeyProperty() {
+        return activationSignalKeyProperty;
+    }
+
+    public int getActivationSignalFlowProperty() {
+        return activationSignalFlowProperty.get();
+    }
+
+    public IntegerProperty activationSignalFlowProperty() {
+        return activationSignalFlowProperty;
+    }
+
+    public int getActivationSignalTankLowLevelProperty() {
+        return activationSignalTankLowLevelProperty.get();
+    }
+
+    public IntegerProperty activationSignalTankLowLevelProperty() {
+        return activationSignalTankLowLevelProperty;
+    }
+
+    public int getActivationSignalFlowErrorProperty() {
+        return activationSignalFlowErrorProperty.get();
+    }
+
+    public IntegerProperty activationSignalFlowErrorProperty() {
+        return activationSignalFlowErrorProperty;
+    }
+
+    public int getActivationSignalHighCompressionProperty() {
+        return activationSignalHighCompressionProperty.get();
+    }
+
+    public IntegerProperty activationSignalHighCompressionProperty() {
+        return activationSignalHighCompressionProperty;
+    }
+
+    public int getActivationSignalLowCompressionProperty() {
+        return activationSignalLowCompressionProperty.get();
+    }
+
+    public IntegerProperty activationSignalLowCompressionProperty() {
+        return activationSignalLowCompressionProperty;
+    }
+
+    public double getPulseVolumeProperty() {
+        return pulseVolumeProperty.get();
+    }
+
+    public DoubleProperty pulseVolumeProperty() {
+        return pulseVolumeProperty;
+    }
+
+    public double getScreenVolumeProperty() {
+        return screenVolumeProperty.get();
+    }
+
+    public DoubleProperty screenVolumeProperty() {
+        return screenVolumeProperty;
+    }
+
+    public boolean isDepositFillEnabledProperty() {
+        return depositFillEnabledProperty.get();
+    }
+
+    public BooleanProperty depositFillEnabledProperty() {
+        return depositFillEnabledProperty;
+    }
+
+    public boolean isPedalEnabledProperty() {
+        return pedalEnabledProperty.get();
+    }
+
+    public BooleanProperty pedalEnabledProperty() {
+        return pedalEnabledProperty;
+    }
+
+    public boolean isTriggerEnabledProperty() {
+        return triggerEnabledProperty.get();
+    }
+
+    public BooleanProperty triggerEnabledProperty() {
+        return triggerEnabledProperty;
     }
 }

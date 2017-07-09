@@ -45,8 +45,11 @@ public abstract class Settings {
         } catch (IOException e) {
             logger.error("Problem loading "+ valueType.getClass().getSimpleName(), e);
         }
+        addChangeListener(changeListener);
         return t;
     }
+
+    protected abstract void addChangeListener(ChangeListener changeListener);
 
     public void saveConf(){
         try {
