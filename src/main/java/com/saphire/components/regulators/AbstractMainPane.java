@@ -1,4 +1,4 @@
-package com.saphire.components;
+package com.saphire.components.regulators;
 
 import com.jfoenix.controls.JFXButton;
 import com.saphire.conf.ApplicationSettings;
@@ -32,7 +32,7 @@ import static com.saphire.util.GuiColors.*;
 /**
  * Created by alvaro.lopez on 09/07/2017.
  */
-public abstract class AbstractRegulatorsPane extends Region {
+public abstract class AbstractMainPane extends Region {
 
     public static Double WIDTHTILE = 180d;
     public static Double HEIGHTTILE = 180d;

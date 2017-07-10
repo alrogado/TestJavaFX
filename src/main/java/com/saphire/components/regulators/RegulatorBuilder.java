@@ -1,4 +1,4 @@
-package com.saphire.components;
+package com.saphire.components.regulators;
 
 import com.saphire.conf.ApplicationSettings;
 import eu.hansolo.fx.regulators.*;

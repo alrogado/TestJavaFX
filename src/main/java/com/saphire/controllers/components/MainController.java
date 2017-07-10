@@ -2,6 +2,7 @@ package com.saphire.controllers.components;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.saphire.components.regulators.MainPaneInnerControls;
 import eu.hansolo.tilesfx.tools.FlowGridPane;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.context.FXMLViewFlowContext;
@@ -23,8 +24,7 @@ import org.reactfx.value.Var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tbee.javafx.scene.layout.MigPane;
-import com.saphire.components.RegulatorsInnerControlsPane;
-import com.saphire.components.RegulatorsPane;
+import com.saphire.components.regulators.MainPane;
 import com.saphire.conf.ApplicationSettings;
 import com.saphire.util.GuiColors;
 import com.saphire.util.IkonUtils;
@@ -48,7 +48,7 @@ public class MainController {
 
     //String migLayoutConstraints = "w 45sp,h 45sp";
     //String migLayoutConstraints = "w 50%,h 40%";
-    RegulatorsPane regulatorsPane;
+    MainPane regulatorsPane;
     @FXMLViewFlowContext
     private ViewFlowContext context;
     private JFXDialog dialog;
@@ -60,18 +60,18 @@ public class MainController {
     public void init() {
         Objects.requireNonNull(context, "context");
 
-        regulatorsPane = RegulatorsInnerControlsPane.getInstance();
+        regulatorsPane = MainPaneInnerControls.getInstance();
         //todo, this assignment should be done in another way
         regulatorsPane.setPredefinedWorkMode(ApplicationSettings.getInstance().getWorkModeName());
 
         MigPane rootMP = new MigPane("fill");
         rootMP.add(regulatorsPane, "alignx center, aligny top, wrap");
-        //regulatorsPane = RegulatorsPane.getInstance();
+        //regulatorsPane = MainPane.getInstance();
 
         /*FlowPane rootMP = new FlowPane();
         rootMP.getChildren().addAll(regulatorsPane);*/
 
-        /*FlowGridPane rootMP = new FlowGridPane(1,2, createHBoxWorkModesList(), new RegulatorsPane(this));
+        /*FlowGridPane rootMP = new FlowGridPane(1,2, createHBoxWorkModesList(), new MainPane(this));
         rootMP.setAlignment(Pos.CENTER);*/
         root.getChildren().addAll(rootMP);
 

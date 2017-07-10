@@ -1,15 +1,15 @@
-package com.saphire.components;
+package com.saphire.components.regulators;
 
 /**
  * Created by alvaro.lopez on 04/07/2017.
  */
-public class RegulatorsInnerControlsPane extends RegulatorsPane {
+public class MainPaneInnerControls extends MainPane {
 
 
     int factorXForSecondTiles = 280;
 
-    public static RegulatorsPane getInstance() {
-        return instance == null ? instance = new RegulatorsInnerControlsPane() : instance;
+    public static MainPane getInstance() {
+        return instance == null ? instance = new MainPaneInnerControls() : instance;
     }
 
     protected double getXForComp() {

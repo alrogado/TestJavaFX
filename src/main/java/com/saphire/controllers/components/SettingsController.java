@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.tbee.javafx.scene.layout.MigPane;
-import com.saphire.components.RegulatorBuilder;
+import com.saphire.components.regulators.RegulatorBuilder;
 import com.saphire.conf.ApplicationSettings;
 
 import javax.annotation.PostConstruct;

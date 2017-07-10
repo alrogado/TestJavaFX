@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.saphire.components;
+package com.saphire.components.regulators;
 
 import com.fxexperience.javafx.animation.TadaTransition;
 import com.jfoenix.controls.JFXButton;
@@ -30,18 +30,18 @@ import org.slf4j.LoggerFactory;
 
 import static com.saphire.util.GuiColors.*;
 
-public class RegulatorsPane extends AbstractRegulatorsPane {
+public class MainPane extends AbstractMainPane {
 
-    static RegulatorsPane instance;
+    static MainPane instance;
 
-    private static Logger logger = LoggerFactory.getLogger(RegulatorsPane.class);
+    private static Logger logger = LoggerFactory.getLogger(MainPane.class);
 
     double sizeTile = 0;
     //factor has to be changed when for example text of fluency and freq are changed
     double factor = 1.78;
     SimpleBooleanProperty disabledProperty = new SimpleBooleanProperty(true);
 
-    protected RegulatorsPane() {
+    protected MainPane() {
         initComponents();
         //setPadding(new Insets(0,0,5,5));
 
@@ -82,8 +82,8 @@ public class RegulatorsPane extends AbstractRegulatorsPane {
         });
     }
 
-    public static RegulatorsPane getInstance() {
-        return instance == null ? instance = new RegulatorsPane() : instance;
+    public static MainPane getInstance() {
+        return instance == null ? instance = new MainPane() : instance;
     }
 
     @Override

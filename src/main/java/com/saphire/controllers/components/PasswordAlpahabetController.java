@@ -1,7 +1,7 @@
 package com.saphire.controllers.components;
 
 import com.jfoenix.controls.JFXPasswordField;
-import com.saphire.components.VirtualLimitedBoard;
+import com.saphire.components.VirtualReducedKeyBoard;
 import eu.hansolo.medusa.Fonts;
 import io.datafx.controller.ViewController;
 import javafx.beans.property.SimpleStringProperty;
@@ -36,7 +36,7 @@ public class PasswordAlpahabetController extends PasswordNumberController {
 
     protected Pane createPane() {
         MigPane buttonsPane = initButtonsPane();
-        buttonsPane.add(new VirtualLimitedBoard(this).view(), "alignx center, aligny center, grow,span");
+        buttonsPane.add(new VirtualReducedKeyBoard(this).view(), "alignx center, aligny center, grow,span");
 
         mainPane = new VBox(10, buttonsPane, passwordField);
         //MAXWIDTH ES EL VALOR A CAMBIAR CUANDO SE MODOFICA EL ESTILO DEL TECLADO

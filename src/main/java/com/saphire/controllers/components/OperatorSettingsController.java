@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import org.tbee.javafx.scene.layout.MigPane;
-import com.saphire.components.RegulatorBuilder;
+import com.saphire.components.regulators.RegulatorBuilder;
 import com.saphire.conf.ApplicationSettings;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +19,8 @@ import java.util.Random;
 
 import static javafx.scene.text.TextAlignment.LEFT;
 import static javafx.scene.text.TextAlignment.RIGHT;
-import static com.saphire.components.RegulatorsPane.HEIGHTTILE;
-import static com.saphire.components.RegulatorsPane.WIDTHTILE;
+import static com.saphire.components.regulators.MainPane.HEIGHTTILE;
+import static com.saphire.components.regulators.MainPane.WIDTHTILE;
 import static com.saphire.util.EffectUtils.fadeIn;
 
 @ViewController(value = "/com/saphire/fxml/ui/main_content_regulators.fxml")

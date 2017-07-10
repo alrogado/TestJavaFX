@@ -1,4 +1,4 @@
-package com.saphire.components;
+package vistualkeyboard;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;

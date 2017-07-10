@@ -7,12 +7,7 @@ import com.saphire.conf.ApplicationSettings;
  */
 public class CommunicationMgr {
 
-    static ICommunication instance = new InnerCommunication();
-    ICommunication comm;
-
-    public static ICommunication getICommunication() {
-        return instance;
-    }
+    ICommunication comm= new InnerCommunication();
 
     public void sendAlive() {
         while (true) {

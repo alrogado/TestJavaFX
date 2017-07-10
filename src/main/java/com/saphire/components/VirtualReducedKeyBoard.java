@@ -16,7 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import com.saphire.controllers.components.PasswordAlpahabetController;
 
-public class VirtualLimitedBoard {
+public class VirtualReducedKeyBoard {
 
     private final VBox root;
 
@@ -29,7 +29,7 @@ public class VirtualLimitedBoard {
      *                                    If target is null, KeyEvents will be dynamically forwarded to the focus owner
      *                                    in the Scene containing this keyboard.
      */
-    public VirtualLimitedBoard(PasswordAlpahabetController passwordAlpahabetController) {
+    public VirtualReducedKeyBoard(PasswordAlpahabetController passwordAlpahabetController) {
         this.passwordAlpahabetController = passwordAlpahabetController;
         this.root = new VBox(10);
         root.setPadding(new Insets(10));
