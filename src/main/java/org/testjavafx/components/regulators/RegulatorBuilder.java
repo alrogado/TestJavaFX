@@ -115,8 +115,6 @@ public class RegulatorBuilder {
         final Regulator regulator = eu.hansolo.fx.regulators.RegulatorBuilder.create()
                 .prefSize(width, height)
                 //.barColor(Color.rgb(255, 222, 102))
-                .title(title)
-                .subtitle(subtitle)
                 .unit(unit)
                 .targetValue(value != null ? value : 0)
                 .minValue(minVal != null ? minVal : 0)

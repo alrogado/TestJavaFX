@@ -80,96 +80,9 @@ public class AppController {
         drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(ANIM_DURATION, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
-        JFXButton operatorsButton = new JFXButton();
-        operatorsButton.setGraphic(IkonUtils.customizeIkon(Ionicons.ION_SETTINGS));
-        operatorsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, PasswordAlpahabetController.class));
 
-        JFXButton settingsButton = new JFXButton();
-        settingsButton.setGraphic(IkonUtils.customizeIkon(MaterialDesign.MDI_ACCOUNT_SETTINGS_VARIANT));
-        settingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, SettingsController.class));
-
-        JFXButton regulatorsButton = new JFXButton();
-        regulatorsButton.setGraphic(IkonUtils.customizeIkon(Typicons.HOME_OUTLINE));
-        regulatorsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mouseEventFlow(event, flowHandler, mainViewControllerClass));
-
-        JFXButton turonOffButton = new JFXButton();
-        turonOffButton.setGraphic(IkonUtils.customizeIkon(Elusive.OFF)); //o MetrizeIcons.MET_OFF
-        turonOffButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
-
-        toolbar.setRightItems(operatorsButton, settingsButton, regulatorsButton, turonOffButton);
-
-        toolbar.setCenter(ClockBuilder.createClock());
-
-        toolbar.getLeftItems().addAll(createPanelSessionShoots(), createPanelTotals());
     }
 
-    private void mouseEventFlow(MouseEvent event, FlowHandler flowHandler, Class controllerClass) {
-        if (event.getClickCount() == 1) {
-            try {
-                //flowHandler.handle(node.getId());
-                flowHandler.navigateTo(controllerClass);
-            } catch (FlowException e) {
-                e.printStackTrace();
-            } catch (VetoException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {
-        //flowHandler.getFlowContext().getCurrentViewContext().getConfiguration().getBuilderFactory().getBuilder()
-        flow.withGlobalLink(node.getId(), controllerClass);
-        flow.withGlobalLink(node.getId(), controllerClass);
-    }
-
-    private Node createPanelSessionShoots() {
-        Font robotoMedium = Fonts.robotoMedium(20);
-
-        Text lblSession = new Text(ApplicationSettings.getBundleString("shoots-sesion.label"));
-        lblSession.setFill(GuiColors.FRG);
-        lblSession.setTextOrigin(VPos.CENTER);
-        lblSession.setFont(robotoMedium);
-        lblSession.setTextAlignment(TextAlignment.LEFT);
-
-        Text lblShootsValue = new Text("0");
-        lblShootsValue.setFill(Color.WHITE);
-        lblShootsValue.setTextOrigin(VPos.CENTER);
-        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
-        lblShootsValue.setFont(robotoMedium);
-        lblShootsValue.setWrappingWidth(wrappingWidth);
-
-        JFXButton btnReload = new JFXButton();
-        FontIcon fontIcon = IkonUtils.customizeIkon(MaterialDesign.MDI_RELOAD);
-        fontIcon.setFill(Color.WHITE);
-        btnReload.setGraphic(fontIcon);
-
-        MigPane rootMP = new MigPane("fill");
-        rootMP.add(lblSession, "west");
-        rootMP.add(lblShootsValue, "center");
-        rootMP.add(btnReload, "east");
-        return rootMP;
-    }
-
-    private Node createPanelTotals() {
-        Font robotoMedium = Fonts.robotoMedium(20);
-
-        Text lblSession = new Text(ApplicationSettings.getBundleString("shoots-total.label"));
-        lblSession.setFill(GuiColors.FRG);
-        lblSession.setTextOrigin(VPos.CENTER);
-        lblSession.setFont(robotoMedium);
-        lblSession.setTextAlignment(TextAlignment.LEFT);
-
-        Text lblShootsValue = new Text("0");
-        lblShootsValue.setFill(Color.WHITE);
-        lblShootsValue.setTextOrigin(VPos.CENTER);
-        lblShootsValue.setTextAlignment(TextAlignment.RIGHT);
-        lblShootsValue.setFont(robotoMedium);
-        lblShootsValue.setWrappingWidth(wrappingWidth);
-
-        MigPane rootMP = new MigPane("fill");
-        rootMP.add(lblSession, "west");
-        rootMP.add(lblShootsValue, "east");
-        return rootMP;
-    }
 
 }
