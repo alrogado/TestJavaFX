@@ -2,7 +2,6 @@ package org.testjavafx;
 
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXDialog;
-import org.testjavafx.components.Audio;
 import org.testjavafx.conf.ApplicationSettings;
 import org.testjavafx.controllers.PreloaderController;
 import eu.hansolo.enzo.notification.Notification;
@@ -50,8 +49,6 @@ public class GuiApp extends Application {
                 GuiApp.class.getResource("/org/testjavafx/css/jfoenix-main-demo.css").toExternalForm());
         scene.setFill(GRAD_FGR_BGR);
         stage.setScene(scene);
-        //todo cssfx control should
-        Audio.addPlayersToMainScene(scene);
         //todo cssfx control should be configured by profile
         CSSFX.start(stage);
     }

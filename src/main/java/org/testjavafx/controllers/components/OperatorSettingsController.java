@@ -12,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import org.tbee.javafx.scene.layout.MigPane;
 import org.testjavafx.components.regulators.RegulatorBuilder;
 import org.testjavafx.conf.ApplicationSettings;
-import org.testjavafx.components.regulators.AbstractMainPane;
 import org.testjavafx.util.EffectUtils;
 
 import javax.annotation.PostConstruct;
@@ -47,36 +46,35 @@ public class OperatorSettingsController {
     private Node createTempeperatureSparkGauage() {
         Tile depositTempTile = RegulatorBuilder.createTempSparkRegulator(
                 ApplicationSettings.getBundleString("deposit.label"),
-                AbstractMainPane.WIDTHTILE, AbstractMainPane.HEIGHTTILE,
-                ApplicationSettings.getInstance().getSetpointMinTemperature(),
-                ApplicationSettings.getInstance().getSetpointMaxTemperature(),
+                400d, 400d,
+                55d,
+                95d,
                 true, true,
                 LEFT);
         Tile tipTempTile = RegulatorBuilder.createTempSparkRegulator(
                 ApplicationSettings.getBundleString("tip.label"),
-                AbstractMainPane.WIDTHTILE, AbstractMainPane.HEIGHTTILE,
-                ApplicationSettings.getInstance().getSetpointMinTemperature(),
-                ApplicationSettings.getInstance().getSetpointMaxTemperature(),
+                400d, 400d,
+                55d,
+                95d,
                 true, true,
                 RIGHT);
         Tile diodoTempTile = RegulatorBuilder.createTempSparkRegulator(
                 ApplicationSettings.getBundleString("diodo.label"),
-                AbstractMainPane.WIDTHTILE, AbstractMainPane.HEIGHTTILE,
-                ApplicationSettings.getInstance().getSetpointMinTemperature(),
-                ApplicationSettings.getInstance().getSetpointMaxTemperature(),
+                400d, 400d,
+                55d,
+                95d,
                 true, true,
                 LEFT);
         Tile machineTempTile = RegulatorBuilder.createTempSparkRegulator(
                 ApplicationSettings.getBundleString("machine.label"),
-                AbstractMainPane.WIDTHTILE, AbstractMainPane.HEIGHTTILE,
-                ApplicationSettings.getInstance().getSetpointMinTemperature(),
-                ApplicationSettings.getInstance().getSetpointMaxTemperature(),
+                400d, 400d,
+                55d,
+                95d,
                 true, true,
                 RIGHT);
 
         FlowGridPane pane = new FlowGridPane(2, 2, depositTempTile, tipTempTile, diodoTempTile, machineTempTile);
-        pane.setHgap(MainController.horizontalGap);
-        pane.setPadding(MainController.padding);
+
 
         Random RDM = new Random();
         final long[] lastTimerCall = {System.nanoTime()};

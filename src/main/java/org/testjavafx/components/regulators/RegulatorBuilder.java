@@ -81,8 +81,8 @@ public class RegulatorBuilder {
                 //.textColor(GuiColors.FRG_2)
                 .unit("ºC")
                 .averageVisible(averageVisible)
-                .minValue(ApplicationSettings.getInstance().getSetpointMinFullTemperature())
-                .maxValue(ApplicationSettings.getInstance().getSetpointMaxFullTemperature())
+                .minValue(0)
+                .maxValue(100)
                 .locale(ApplicationSettings.LOCALE)
                 .animated(true)
                 .highlightSections(false)
@@ -94,9 +94,9 @@ public class RegulatorBuilder {
                 //.barColor(FRG)
                 //.barBackgroundColor(Color.rgb(255, 255, 255, 0.0))
                 .sections(
-                        new eu.hansolo.tilesfx.Section(ApplicationSettings.getInstance().getSetpointMinFullTemperature(), start, Tile.GREEN),
+                        new eu.hansolo.tilesfx.Section(0, start, Tile.GREEN),
                         new eu.hansolo.tilesfx.Section(start, stop, GuiColors.FRG),
-                        new eu.hansolo.tilesfx.Section(stop, ApplicationSettings.getInstance().getSetpointMaxFullTemperature(), Tile.LIGHT_RED))
+                        new eu.hansolo.tilesfx.Section(stop, 100, Tile.LIGHT_RED))
                 .sectionsVisible(true)
                 .highlightSections(false) //is not working the default change
                 .strokeWithGradient(true)

@@ -6,7 +6,6 @@ import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXToolbar;
 import org.testjavafx.components.ClockBuilder;
 import org.testjavafx.conf.ApplicationSettings;
-import org.testjavafx.controllers.components.MainController;
 import org.testjavafx.controllers.components.PasswordAlpahabetController;
 import org.testjavafx.controllers.components.SettingsController;
 import org.testjavafx.util.ExtendedAnimatedFlowContainer;
@@ -67,7 +66,7 @@ public class AppController {
     @PostConstruct
     public void init() throws FlowException {
 
-        Class mainViewControllerClass = MainController.class;
+        Class mainViewControllerClass = SettingsController.class;
 
         // create the inner flow and content
         Objects.requireNonNull(context, "context");

@@ -1,6 +1,5 @@
 package org.testjavafx.util.apps.extra;
 
-import org.testjavafx.components.Audio;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,7 +24,7 @@ public class AudioTest extends Application {
         Scene scene = new Scene(root, 500, 200);
 
 
-        MediaPlayer mediaPlayer = new MediaPlayer(new Media(Audio.class.getResource("/audio/error.wav").toString()));
+        MediaPlayer mediaPlayer = new MediaPlayer(new Media(this.getClass().getResource("/audio/error.wav").toString()));
         //AutoPlay set to false
         mediaPlayer.setAutoPlay(false);
         //mediaPlayer.setVolume();

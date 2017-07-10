@@ -49,20 +49,16 @@ public class SettingsController {
                 "Pantalla", "", "%",
                 Elusive.SCREEN_ALT,
                 width, height,
-                ApplicationSettings.getInstance().getScreenVolume(), 0d, 100d);
+                50d, 0d, 100d);
         //use Reactfx to manipulate bindings and values from communications
         //volumScreen.minValueProperty()
-        volumScreen.setOnTargetSet(o->
-                ApplicationSettings.getInstance().setScreenVolume( volumScreen.getTargetValue()));
         volumPulse = RegulatorBuilder.createRegulator(
                 "Pulso", "", "%",
                 Ionicons.ION_IOS_PULSE_STRONG,
                 width, height,
-                (Double) ApplicationSettings.getInstance().getPulseVolume(), 0d, 100d);
+                50d, 0d, 100d);
         //volumPulse.targetValueProperty().
         //GuiApp.setConfigValue("volume.pulse", volumPulse.getValue());
-        volumPulse.setOnTargetSet(o->
-                ApplicationSettings.getInstance().setPulseVolume(volumPulse.getTargetValue()));
 
         FlowGridPane regulatorsPane = new FlowGridPane(2, 1, volumScreen, volumPulse);
         regulatorsPane.setHgap(100);
@@ -76,13 +72,8 @@ public class SettingsController {
 
         choiceBox = new ChoiceBox(FXCollections.observableArrayList("uno", "dos"));
         optionsPane.getChildren().add(choiceBox);
-        tsFillDeposit = new ToggleSwitch("fillDeposit.label", ApplicationSettings.getInstance().getDepositFillEnabled());
+        tsFillDeposit = new ToggleSwitch("fillDeposit.label",true);
         optionsPane.getChildren().add(tsFillDeposit);
-        tsPedal = new ToggleSwitch("pedal.label", ApplicationSettings.getInstance().getPedalEnabled());
-        optionsPane.getChildren().add(tsPedal);
-        tsTrigger = new ToggleSwitch("trigger.label", ApplicationSettings.getInstance().getTriggerEnabled());
-        optionsPane.getChildren().add(tsTrigger);
-        rootMP.add(optionsPane, "alignx center, wrap");
         root.getChildren().addAll(rootMP);
         EffectUtils.fadeIn(root);
     }
