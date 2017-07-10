@@ -62,8 +62,7 @@ public class UserSettings extends Settings{
         System.out.println("TotalPulsesA:" + UserSettings.getInstance().getTotalPulsesA());
     }
 
-    @Override
-    protected void addChangeListener(ChangeListener changeListener) {
+    {
         totalPulsesAProperty.addListener(changeListener);
         totalPulsesBProperty.addListener(changeListener);
     }

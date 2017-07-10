@@ -24,7 +24,9 @@ public class PredefinedWorkModes extends Settings {
 
     @JsonProperty
     private List<PredefinedWorkMode> predefinedWorkModes;
-    private ListProperty<PredefinedWorkMode> predefinedWorkModesProperty= new SimpleListProperty<>();
+
+    //todo see ant happens with the list property serialization
+    // private ListProperty<PredefinedWorkMode> predefinedWorkModesProperty= new SimpleListProperty<>();
 
     public List<PredefinedWorkMode> getPredefinedWorkModes() {
         return predefinedWorkModes;
@@ -34,13 +36,13 @@ public class PredefinedWorkModes extends Settings {
         this.predefinedWorkModes = predefinedWorkModes;
     }
 
-    public ObservableList<PredefinedWorkMode> getPredefinedWorkModesProperty() {
+   /* public ObservableList<PredefinedWorkMode> getPredefinedWorkModesProperty() {
         return predefinedWorkModesProperty.get();
     }
 
     public ListProperty<PredefinedWorkMode> predefinedWorkModesProperty() {
         return predefinedWorkModesProperty;
-    }
+    }*/
 
     static PredefinedWorkModes instance = new PredefinedWorkModes().loadConf(PredefinedWorkModes.class);
 
@@ -52,9 +54,8 @@ public class PredefinedWorkModes extends Settings {
         System.out.println("WorkModes Size:" + PredefinedWorkModes.getInstance().getPredefinedWorkModes().size());
     }
 
-    @Override
-    protected void addChangeListener(ChangeListener changeListener) {
-        predefinedWorkModesProperty.addListener(changeListener);
+    {
+        //predefinedWorkModesProperty.addListener(changeListener);
     }
 
     @Override

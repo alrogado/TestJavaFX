@@ -23,7 +23,10 @@ import org.fxmisc.cssfx.CSSFX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testjfx.components.Audio;
+import org.testjfx.components.RegulatorsInnerControlsPane;
+import org.testjfx.components.RegulatorsPane;
 import org.testjfx.conf.ApplicationSettings;
+import org.testjfx.conf.UserSettings;
 import org.testjfx.controllers.PreloaderController;
 
 import java.time.Instant;
@@ -121,7 +124,6 @@ public class GuiApp extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
-
 
     public static void showInfo(String title, String message) {
         notifier.notify(new Notification(title, message, Notification.INFO_ICON));

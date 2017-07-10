@@ -1,5 +1,7 @@
 package org.testjfx.conf;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
@@ -50,27 +52,27 @@ public class WorkSettings extends Settings{
     @JsonProperty boolean pedalEnabled;
     @JsonProperty boolean triggerEnabled;
 
-    FloatProperty tipWorkTempSetpointProperty = new SimpleFloatProperty(tipWorkTempSetpoint);
-    FloatProperty tipMaxTempSetpointProperty = new SimpleFloatProperty (tipMaxTempSetpoint);
-    FloatProperty tipTempHysteresisProperty = new SimpleFloatProperty (tipTempHysteresis);
-    FloatProperty tipTempHysteresisWarnProperty = new SimpleFloatProperty (tipTempHysteresisWarn);
-    FloatProperty tipTempHysteresisMaxProperty = new SimpleFloatProperty (tipTempHysteresisMax);
-    FloatProperty tankWorkTempSetpointProperty = new SimpleFloatProperty (tankWorkTempSetpoint);
-    FloatProperty tankMaxTempSetpointProperty = new SimpleFloatProperty (tankMaxTempSetpoint);
-    FloatProperty tankTempHysteresisUpProperty = new SimpleFloatProperty (tankTempHysteresisUp);
-    FloatProperty tankTempHysteresisDownProperty = new SimpleFloatProperty (tankTempHysteresisDown);
-    FloatProperty machineMinTempSetpointProperty = new SimpleFloatProperty (machineMinTempSetpoint);
-    FloatProperty machineMaxTempSetpointProperty = new SimpleFloatProperty (machineMaxTempSetpoint);
-    FloatProperty machineTempHysteresisProperty = new SimpleFloatProperty (machineTempHysteresis);
-    FloatProperty diodeWorkTempSetpointProperty = new SimpleFloatProperty (diodeWorkTempSetpoint);
-    FloatProperty diodeMaxTempSetpointProperty = new SimpleFloatProperty (diodeMaxTempSetpoint);
-    FloatProperty diodeTempHysteresisProperty = new SimpleFloatProperty (diodeTempHysteresis);
-    FloatProperty shotFrequencyProperty = new SimpleFloatProperty (shotFrequency);
-    FloatProperty shotFluenceProperty = new SimpleFloatProperty (shotFluence);
-    BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
-    BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty (triggerEnabled);
+    @JsonIgnore FloatProperty tipWorkTempSetpointProperty = new SimpleFloatProperty(tipWorkTempSetpoint);
+    @JsonIgnore FloatProperty tipMaxTempSetpointProperty = new SimpleFloatProperty (tipMaxTempSetpoint);
+    @JsonIgnore FloatProperty tipTempHysteresisProperty = new SimpleFloatProperty (tipTempHysteresis);
+    @JsonIgnore FloatProperty tipTempHysteresisWarnProperty = new SimpleFloatProperty (tipTempHysteresisWarn);
+    @JsonIgnore FloatProperty tipTempHysteresisMaxProperty = new SimpleFloatProperty (tipTempHysteresisMax);
+    @JsonIgnore FloatProperty tankWorkTempSetpointProperty = new SimpleFloatProperty (tankWorkTempSetpoint);
+    @JsonIgnore FloatProperty tankMaxTempSetpointProperty = new SimpleFloatProperty (tankMaxTempSetpoint);
+    @JsonIgnore FloatProperty tankTempHysteresisUpProperty = new SimpleFloatProperty (tankTempHysteresisUp);
+    @JsonIgnore FloatProperty tankTempHysteresisDownProperty = new SimpleFloatProperty (tankTempHysteresisDown);
+    @JsonIgnore FloatProperty machineMinTempSetpointProperty = new SimpleFloatProperty (machineMinTempSetpoint);
+    @JsonIgnore FloatProperty machineMaxTempSetpointProperty = new SimpleFloatProperty (machineMaxTempSetpoint);
+    @JsonIgnore FloatProperty machineTempHysteresisProperty = new SimpleFloatProperty (machineTempHysteresis);
+    @JsonIgnore FloatProperty diodeWorkTempSetpointProperty = new SimpleFloatProperty (diodeWorkTempSetpoint);
+    @JsonIgnore FloatProperty diodeMaxTempSetpointProperty = new SimpleFloatProperty (diodeMaxTempSetpoint);
+    @JsonIgnore FloatProperty diodeTempHysteresisProperty = new SimpleFloatProperty (diodeTempHysteresis);
+    @JsonIgnore FloatProperty shotFrequencyProperty = new SimpleFloatProperty (shotFrequency);
+    @JsonIgnore FloatProperty shotFluenceProperty = new SimpleFloatProperty (shotFluence);
+    @JsonIgnore BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
+    @JsonIgnore BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty (triggerEnabled);
 
-    protected void addChangeListener(ChangeListener changeListener){
+    {
         triggerEnabledProperty.addListener(changeListener);
         tipWorkTempSetpointProperty.addListener(changeListener);
         tipMaxTempSetpointProperty.addListener(changeListener);
@@ -275,7 +277,7 @@ public class WorkSettings extends Settings{
     public static void main(String args[]) throws IOException {
         System.out.println("diodeMaxTempSetpoint:" + WorkSettings.getInstance().getDiodeMaxTempSetpoint());
         System.out.println("tipWorkTempSetpoint:" + WorkSettings.getInstance().getTipWorkTempSetpoint());
-        WorkSettings.getInstance().setTipWorkTempSetpoint(23);
+        WorkSettings.getInstance().setTipWorkTempSetpoint(26);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.testjfx.conf;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
@@ -74,51 +75,65 @@ public class ApplicationSettings extends Settings{
     @JsonProperty private int activationSignalLowCompression;
     @JsonProperty private double pulseVolume;
     @JsonProperty private double screenVolume;
+    @JsonProperty private double frequencySelected;
+    @JsonProperty private double fluencySelected;
     @JsonProperty private boolean depositFillEnabled;
     @JsonProperty private boolean pedalEnabled;
     @JsonProperty private boolean triggerEnabled;
 
-    LongProperty startupDelayProperty = new SimpleLongProperty(startupDelay);
-    StringProperty serialNumberProperty = new SimpleStringProperty(serialNumber);
-    StringProperty maintenancePasswordProperty = new SimpleStringProperty(maintenancePassword);
-    StringProperty mainMaintenancePasswordProperty = new SimpleStringProperty(mainMaintenancePassword);
-    StringProperty localeAvailableProperty = new SimpleStringProperty(localeAvailable);
-    StringProperty datePatternProperty = new SimpleStringProperty(datePattern);
-    IntegerProperty setpointMinFullTemperatureProperty = new SimpleIntegerProperty(setpointMinFullTemperature);
-    IntegerProperty setpointMinTemperatureProperty = new SimpleIntegerProperty(setpointMinTemperature);
-    IntegerProperty setpointMaxTemperatureProperty = new SimpleIntegerProperty(setpointMaxTemperature);
-    IntegerProperty setpointMaxFullTemperatureProperty = new SimpleIntegerProperty(setpointMaxFullTemperature);
-    StringProperty workModeNameProperty = new SimpleStringProperty(workModeName);
-    BooleanProperty fulScreenEnabledProperty = new SimpleBooleanProperty(fulScreenEnabled);
-    IntegerProperty widthScreenProperty = new SimpleIntegerProperty(widthScreen);
-    IntegerProperty heightScreenProperty = new SimpleIntegerProperty(heightScreen);
-    IntegerProperty commRetryIntervalProperty = new SimpleIntegerProperty(commRetryInterval);
-    StringProperty commDriverProperty = new SimpleStringProperty(commDriver);
-    StringProperty commDriverArgumentsProperty = new SimpleStringProperty(commDriverArguments);
-    IntegerProperty commMessageWaitingTimeoutProperty = new SimpleIntegerProperty(commMessageWaitingTimeout);
-    IntegerProperty commAcknowledgeWaitingTimeoutProperty = new SimpleIntegerProperty(commAcknowledgeWaitingTimeout);
-    IntegerProperty commAliveSignalIntervalProperty = new SimpleIntegerProperty(commAliveSignalInterval);
-    IntegerProperty toolsAccessClicksProperty = new SimpleIntegerProperty(toolsAccessClicks);
-    IntegerProperty toolsAccessTimeProperty = new SimpleIntegerProperty(toolsAccessTime);
-    IntegerProperty shutdownMessageTimeProperty = new SimpleIntegerProperty(shutdownMessageTime);
-    IntegerProperty errorShutdownMessageTimeProperty = new SimpleIntegerProperty(errorShutdownMessageTime);
-    IntegerProperty workIdleTimeoutProperty = new SimpleIntegerProperty(workIdleTimeout);
-    IntegerProperty activationSignalTriggerProperty = new SimpleIntegerProperty(activationSignalTrigger);
-    IntegerProperty activationSignalPedalProperty = new SimpleIntegerProperty(activationSignalPedal);
-    IntegerProperty activationSignalInterlockProperty = new SimpleIntegerProperty(activationSignalInterlock);
-    IntegerProperty activationSignalKeyProperty = new SimpleIntegerProperty(activationSignalKey);
-    IntegerProperty activationSignalFlowProperty = new SimpleIntegerProperty(activationSignalFlow);
-    IntegerProperty activationSignalTankLowLevelProperty = new SimpleIntegerProperty(activationSignalTankLowLevel);
-    IntegerProperty activationSignalFlowErrorProperty = new SimpleIntegerProperty(activationSignalFlowError);
-    IntegerProperty activationSignalHighCompressionProperty = new SimpleIntegerProperty(activationSignalHighCompression);
-    IntegerProperty activationSignalLowCompressionProperty = new SimpleIntegerProperty(activationSignalLowCompression);
-    DoubleProperty pulseVolumeProperty = new SimpleDoubleProperty(pulseVolume);
-    DoubleProperty screenVolumeProperty = new SimpleDoubleProperty(screenVolume);
-    BooleanProperty depositFillEnabledProperty = new SimpleBooleanProperty(depositFillEnabled);
-    BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
-    BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty(triggerEnabled);
+    public static String getBundleString(String rscBundle) {
+        String res = rscBundle;
+        try {
+            res = APPBUNDLE.getString(rscBundle);
+        } catch (Exception e) {
+            logger.warn("Error loading resources ", e);
+        }
+        return res;
+    }
 
-    protected void addChangeListener(ChangeListener changeListener){
+    @JsonIgnore private LongProperty startupDelayProperty = new SimpleLongProperty(startupDelay);
+    @JsonIgnore private StringProperty serialNumberProperty = new SimpleStringProperty(serialNumber);
+    @JsonIgnore private StringProperty maintenancePasswordProperty = new SimpleStringProperty(maintenancePassword);
+    @JsonIgnore private StringProperty mainMaintenancePasswordProperty = new SimpleStringProperty(mainMaintenancePassword);
+    @JsonIgnore private StringProperty localeAvailableProperty = new SimpleStringProperty(localeAvailable);
+    @JsonIgnore private StringProperty datePatternProperty = new SimpleStringProperty(datePattern);
+    @JsonIgnore private IntegerProperty setpointMinFullTemperatureProperty = new SimpleIntegerProperty(setpointMinFullTemperature);
+    @JsonIgnore private IntegerProperty setpointMinTemperatureProperty = new SimpleIntegerProperty(setpointMinTemperature);
+    @JsonIgnore private IntegerProperty setpointMaxTemperatureProperty = new SimpleIntegerProperty(setpointMaxTemperature);
+    @JsonIgnore private IntegerProperty setpointMaxFullTemperatureProperty = new SimpleIntegerProperty(setpointMaxFullTemperature);
+    @JsonIgnore private StringProperty workModeNameProperty = new SimpleStringProperty(workModeName);
+    @JsonIgnore private BooleanProperty fulScreenEnabledProperty = new SimpleBooleanProperty(fulScreenEnabled);
+    @JsonIgnore private IntegerProperty widthScreenProperty = new SimpleIntegerProperty(widthScreen);
+    @JsonIgnore private IntegerProperty heightScreenProperty = new SimpleIntegerProperty(heightScreen);
+    @JsonIgnore private IntegerProperty commRetryIntervalProperty = new SimpleIntegerProperty(commRetryInterval);
+    @JsonIgnore private StringProperty commDriverProperty = new SimpleStringProperty(commDriver);
+    @JsonIgnore private StringProperty commDriverArgumentsProperty = new SimpleStringProperty(commDriverArguments);
+    @JsonIgnore private IntegerProperty commMessageWaitingTimeoutProperty = new SimpleIntegerProperty(commMessageWaitingTimeout);
+    @JsonIgnore private IntegerProperty commAcknowledgeWaitingTimeoutProperty = new SimpleIntegerProperty(commAcknowledgeWaitingTimeout);
+    @JsonIgnore private IntegerProperty commAliveSignalIntervalProperty = new SimpleIntegerProperty(commAliveSignalInterval);
+    @JsonIgnore private IntegerProperty toolsAccessClicksProperty = new SimpleIntegerProperty(toolsAccessClicks);
+    @JsonIgnore private IntegerProperty toolsAccessTimeProperty = new SimpleIntegerProperty(toolsAccessTime);
+    @JsonIgnore private IntegerProperty shutdownMessageTimeProperty = new SimpleIntegerProperty(shutdownMessageTime);
+    @JsonIgnore private IntegerProperty errorShutdownMessageTimeProperty = new SimpleIntegerProperty(errorShutdownMessageTime);
+    @JsonIgnore private IntegerProperty workIdleTimeoutProperty = new SimpleIntegerProperty(workIdleTimeout);
+    @JsonIgnore private IntegerProperty activationSignalTriggerProperty = new SimpleIntegerProperty(activationSignalTrigger);
+    @JsonIgnore private IntegerProperty activationSignalPedalProperty = new SimpleIntegerProperty(activationSignalPedal);
+    @JsonIgnore private IntegerProperty activationSignalInterlockProperty = new SimpleIntegerProperty(activationSignalInterlock);
+    @JsonIgnore private IntegerProperty activationSignalKeyProperty = new SimpleIntegerProperty(activationSignalKey);
+    @JsonIgnore private IntegerProperty activationSignalFlowProperty = new SimpleIntegerProperty(activationSignalFlow);
+    @JsonIgnore private IntegerProperty activationSignalTankLowLevelProperty = new SimpleIntegerProperty(activationSignalTankLowLevel);
+    @JsonIgnore private IntegerProperty activationSignalFlowErrorProperty = new SimpleIntegerProperty(activationSignalFlowError);
+    @JsonIgnore private IntegerProperty activationSignalHighCompressionProperty = new SimpleIntegerProperty(activationSignalHighCompression);
+    @JsonIgnore private IntegerProperty activationSignalLowCompressionProperty = new SimpleIntegerProperty(activationSignalLowCompression);
+    @JsonIgnore private DoubleProperty pulseVolumeProperty = new SimpleDoubleProperty(pulseVolume);
+    @JsonIgnore private DoubleProperty screenVolumeProperty = new SimpleDoubleProperty(screenVolume);
+    @JsonIgnore private DoubleProperty frequencySelectedProperty = new SimpleDoubleProperty(frequencySelected);
+    @JsonIgnore private DoubleProperty fluencySelectedProperty = new SimpleDoubleProperty(fluencySelected);
+    @JsonIgnore private BooleanProperty depositFillEnabledProperty = new SimpleBooleanProperty(depositFillEnabled);
+    @JsonIgnore private BooleanProperty pedalEnabledProperty = new SimpleBooleanProperty(pedalEnabled);
+    @JsonIgnore private BooleanProperty triggerEnabledProperty = new SimpleBooleanProperty(triggerEnabled);
+
+    {
         startupDelayProperty.addListener(changeListener);
         serialNumberProperty.addListener(changeListener);
         maintenancePasswordProperty.addListener(changeListener);
@@ -158,16 +173,8 @@ public class ApplicationSettings extends Settings{
         depositFillEnabledProperty.addListener(changeListener);
         pedalEnabledProperty.addListener(changeListener);
         triggerEnabledProperty.addListener(changeListener);
-    }
-
-    public static String getBundleString(String rscBundle) {
-        String res = rscBundle;
-        try {
-            res = APPBUNDLE.getString(rscBundle);
-        } catch (Exception e) {
-            logger.warn("Error loading resources ", e);
-        }
-        return res;
+        frequencySelectedProperty.addListener(changeListener);
+        fluencySelectedProperty.addListener(changeListener);
     }
 
     public static ApplicationSettings getInstance() {
@@ -214,6 +221,21 @@ public class ApplicationSettings extends Settings{
         this.screenVolumeProperty.set(screenVolume);
     }
 
+    public double getFrequencySelected() {
+        return frequencySelectedProperty.get();
+    }
+
+    public void setFrequencySelected(double frequencySelected) {
+        this.frequencySelectedProperty.set(frequencySelected);
+    }
+
+    public double getFluencySelected() {
+        return fluencySelectedProperty.get();
+    }
+
+    public void setFluencySelected(double fluencySelected) {
+        this.fluencySelectedProperty.set(fluencySelected);
+    }
 
     public boolean getDepositFillEnabled() {
         return depositFillEnabledProperty.get();
@@ -509,6 +531,7 @@ public class ApplicationSettings extends Settings{
     public static void main(String args[]) throws IOException {
         System.out.println("DatePattern:" + ApplicationSettings.getInstance().getDatePattern());
         System.out.println("LocaleAvailable:" + ApplicationSettings.getInstance().getLocaleAvailable());
+        ApplicationSettings.getInstance().setFrequencySelected(58);
     }
 
     public long getStartupDelayProperty() {
@@ -797,6 +820,22 @@ public class ApplicationSettings extends Settings{
 
     public DoubleProperty screenVolumeProperty() {
         return screenVolumeProperty;
+    }
+
+    public double getFrequencySelectedProperty() {
+        return frequencySelectedProperty.get();
+    }
+
+    public DoubleProperty frequencySelectedProperty() {
+        return frequencySelectedProperty;
+    }
+
+    public double getFluencySelectedProperty() {
+        return fluencySelectedProperty.get();
+    }
+
+    public DoubleProperty fluencySelectedProperty() {
+        return fluencySelectedProperty;
     }
 
     public boolean isDepositFillEnabledProperty() {

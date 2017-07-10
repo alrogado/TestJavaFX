@@ -1,5 +1,6 @@
 package org.testjfx.conf;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -24,12 +25,20 @@ public abstract class Settings {
     protected static Logger logger = LoggerFactory.getLogger(Settings.class);
 
     ChangeListener changeListener = (observable, oldValue, newValue) -> {
-        System.out.println("changed " + oldValue + "->" + newValue);
+        logger.debug(this.getClass().getSimpleName()+ " "+  observable.toString()+ " change " + oldValue + "->" + newValue);
         saveConf();
     };
 
     public <T extends Settings> T loadConf(Class<T> valueType) {
-        InputStream file = valueType.getResourceAsStream(System.getProperty("user.dir") + File.separator + getFileName());
+        InputStream file = null;
+        try {
+            String filePath = System.getProperty("user.dir") + File.separator + getFileName();
+            if(new File(filePath).length()>0) {
+                file = new FileInputStream(filePath);
+            }
+        } catch (FileNotFoundException e) {
+            logger.error("Problem reading  "+ System.getProperty("user.dir") + File.separator + getFileName(), e);
+        }
         if (file == null)
             file = valueType.getResourceAsStream("/" + getFileName());
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
@@ -45,11 +54,8 @@ public abstract class Settings {
         } catch (IOException e) {
             logger.error("Problem loading "+ valueType.getClass().getSimpleName(), e);
         }
-        addChangeListener(changeListener);
         return t;
     }
-
-    protected abstract void addChangeListener(ChangeListener changeListener);
 
     public void saveConf(){
         try {
@@ -64,6 +70,7 @@ public abstract class Settings {
         }
     }
 
+    @JsonIgnore
     public abstract String getFileName();
 
     // Encryption/decryption o fconfiguration files
