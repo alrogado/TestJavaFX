@@ -79,7 +79,7 @@ public class TextFieldDemo extends Application {
 
         final Scene scene = new Scene(pane, 600, 400, Color.WHITE);
         scene.getStylesheets()
-            .add(TextFieldDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+            .add(TextFieldDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX TextField Demo ");
         stage.setScene(scene);
         stage.setResizable(false);

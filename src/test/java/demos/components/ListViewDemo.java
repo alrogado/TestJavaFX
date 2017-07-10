@@ -70,7 +70,7 @@ public class ListViewDemo extends Application {
 
         final Scene scene = new Scene(main, 600, 600, Color.WHITE);
         stage.setTitle("JFX ListView Demo ");
-        scene.getStylesheets().add(ListViewDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(ListViewDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

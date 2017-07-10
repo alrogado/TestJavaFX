@@ -90,7 +90,7 @@ public class DrawerDemo extends Application {
 
         final Scene scene = new Scene(drawersStack, 800, 800);
         final ObservableList<String> stylesheets = scene.getStylesheets();
-        stylesheets.addAll(DrawerDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm(),
+        stylesheets.addAll(DrawerDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm(),
                            DrawerDemo.class.getResource("/css/jfoenix-design.css").toExternalForm());
 
         stage.setTitle("JFX Drawer Demo");

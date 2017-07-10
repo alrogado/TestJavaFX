@@ -19,7 +19,7 @@ public class SpinnerDemo extends Application {
         pane.getChildren().add(root);
 
         final Scene scene = new Scene(pane, 300, 300);
-        scene.getStylesheets().add(MainDemoApp.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(MainDemoApp.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("JFX Spinner Demo");
         stage.show();

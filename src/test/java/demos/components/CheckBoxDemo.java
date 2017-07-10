@@ -35,7 +35,7 @@ public class CheckBoxDemo extends Application {
         pane.setStyle("-fx-background-color:WHITE");
 
         final Scene scene = new Scene(pane, 600, 200);
-        scene.getStylesheets().add(CheckBoxDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(CheckBoxDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX CheckBox Demo ");
         stage.setScene(scene);
         stage.setResizable(false);

@@ -67,7 +67,7 @@ public class TabsDemo extends Application {
         Group root = new Group();
         Scene scene = new Scene(root, 700, 250);
         root.getChildren().addAll(hbox);
-        scene.getStylesheets().add(TabsDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(TabsDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
 
         primaryStage.setTitle("JFX Tabs Demo");
         primaryStage.setScene(scene);

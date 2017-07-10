@@ -42,7 +42,7 @@ public class PopupDemo extends Application {
         rippler.setOnMouseClicked(e -> popup.show(rippler, PopupVPosition.TOP, PopupHPosition.LEFT));
 
         final Scene scene = new Scene(main, 800, 800);
-        scene.getStylesheets().add(PopupDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(PopupDemo.class.getResource("/org/testjavafx/css/jfoenix-components.css").toExternalForm());
 
         primaryStage.setTitle("JFX Popup Demo");
         primaryStage.setScene(scene);
