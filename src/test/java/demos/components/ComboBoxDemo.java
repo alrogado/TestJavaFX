@@ -26,7 +26,7 @@ public class ComboBoxDemo extends Application {
         pane.getChildren().add(combo);
 
         final Scene scene = new Scene(pane, 300, 300);
-        scene.getStylesheets().add(ComboBoxDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(ComboBoxDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
 
         primaryStage.setTitle("JFX ComboBox Demo");
         primaryStage.setScene(scene);

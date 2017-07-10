@@ -57,7 +57,7 @@ public class ProgressBarDemo extends Application {
         StackPane.setMargin(pane, new Insets(20, 0, 0, 20));
 
         final Scene scene = new Scene(main, 600, 200, Color.WHITE);
-        scene.getStylesheets().add(ProgressBarDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(ProgressBarDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX ProgressBar Demo ");
         stage.setScene(scene);
         stage.setResizable(false);

@@ -35,7 +35,7 @@ public final class ButtonDemo extends Application {
         pane.setStyle("-fx-background-color:WHITE");
 
         final Scene scene = new Scene(pane, 800, 200);
-        scene.getStylesheets().add(ButtonDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
+        scene.getStylesheets().add(ButtonDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX Button Demo");
         stage.setScene(scene);
         stage.show();

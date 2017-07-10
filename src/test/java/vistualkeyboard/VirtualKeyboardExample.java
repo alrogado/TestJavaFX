@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.testjfx.components.VirtualKeyboard;
+import com.saphire.components.VirtualKeyboard;
 
 public class VirtualKeyboardExample extends Application {
 

@@ -42,7 +42,7 @@ public class ToggleButtonDemo extends Application {
         final Scene scene = new Scene(pane, 600, 400, Color.valueOf("#EEE"));
         stage.setTitle("JFX Toggle Button Demo ");
         scene.getStylesheets()
-            .add(ToggleButtonDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
+            .add(ToggleButtonDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

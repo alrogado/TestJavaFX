@@ -100,7 +100,7 @@ public class AnimationDemo extends Application {
         final Scene scene = new Scene(wizard, 800, 200);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.addAll(ButtonDemo.class.getResource("/css/jfoenix-design.css").toExternalForm(),
-                           ButtonDemo.class.getResource("/org/testjfx/css/jfoenix-components.css").toExternalForm());
+                           ButtonDemo.class.getResource("/com/saphire/css/jfoenix-components.css").toExternalForm());
         stage.setTitle("JFX Button Demo");
         stage.setScene(scene);
         stage.show();

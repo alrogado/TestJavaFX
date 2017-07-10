@@ -44,7 +44,7 @@ import java.util.*;
 
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.Helper.enableNode;
-import static org.testjfx.util.GuiColors.DROPSHADOW_TEXT;
+import static com.saphire.util.GuiColors.DROPSHADOW_TEXT;
 
 
 /**

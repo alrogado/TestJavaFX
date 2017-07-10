@@ -65,8 +65,8 @@ import java.util.concurrent.*;
 
 import static eu.hansolo.tilesfx.tools.Helper.clamp;
 import static eu.hansolo.tilesfx.tools.MovingAverage.MAX_PERIOD;
-import static org.testjfx.util.GuiColors.BKG;
-import static org.testjfx.util.GuiColors.FRG;
+import static com.saphire.util.GuiColors.BKG;
+import static com.saphire.util.GuiColors.FRG;
 
 
 /**

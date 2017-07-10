@@ -36,11 +36,11 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.testjfx.conf.ApplicationSettings;
+import com.saphire.conf.ApplicationSettings;
 
 import java.util.Locale;
 
-import static org.testjfx.util.GuiColors.DROPSHADOW_TEXT;
+import static com.saphire.util.GuiColors.DROPSHADOW_TEXT;
 
 
 public class Regulator extends Region implements RegulatorControl {
