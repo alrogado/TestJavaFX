@@ -14,7 +14,7 @@
             <VBox spacing="20">
                 <JFXToolbar fx:id="toolbar">
                     <leftItems>
-                        <Label text="%menu.title.app"></Label>
+                        <Label text="App"></Label>
                     </leftItems>
 
                     <rightItems>
