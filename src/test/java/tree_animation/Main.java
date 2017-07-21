@@ -63,7 +63,7 @@ public class Main extends Application {
     private static final String SOURCE = Main.class.getResource("Ronkorb_etenraku_ryuteki.wav").toExternalForm();
     private static final int SCENE_WIDTH = 1000;
     private static final int SCENE_HEIGHT = 800;
-    private static final int NUMBER_OF_BRANCH_GENERATIONS = 8;
+    private static final int NUMBER_OF_BRANCH_GENERATIONS = 80;
     private static final int NUM_BLADES = 200;
     private Group rootContent;
     private Group grassContent;
